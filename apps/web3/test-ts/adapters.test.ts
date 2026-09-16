@@ -18,7 +18,7 @@ type ContractCall = {
 
 function clientFor(calls: ContractCall[]) {
   return {
-    readContract: async ({ functionName }: { functionName: string }) => {
+    readContract: ({ functionName }: { functionName: string }) => {
       const call = calls.find((entry) => entry.functionName === functionName);
       if (!call) throw new Error(`unexpected call ${functionName}`);
       return call.result;

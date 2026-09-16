@@ -4,7 +4,7 @@ import { KeeperRuntime, evaluateKeeperObservation } from "../keeper/index.js";
 import type { KeeperObservation } from "../keeper/index.js";
 
 const observation: KeeperObservation = {
-  positionId: "position-1" as never,
+  positionId: "position-1",
   observedDeltaWad: 100n,
   targetDeltaWad: 0n,
   deltaToleranceWad: 10n,
@@ -38,16 +38,19 @@ describe("keeper runtime", () => {
     const runtime = new KeeperRuntime();
     let attempts = 0;
     await expect(
-      runtime.runCycle([observation], async () => {
+      runtime.runCycle([observation], () => {
         attempts += 1;
-        if (attempts === 1) throw new Error("temporary RPC failure");
+        return attempts === 1
+          ? Promise.reject(new Error("temporary RPC failure"))
+          : Promise.resolve();
       }),
     ).rejects.toThrow("temporary RPC failure");
-    const delivered = await runtime.runCycle([observation], async () => {
+    const delivered = await runtime.runCycle([observation], () => {
       attempts += 1;
+      return Promise.resolve();
     });
     expect(delivered).toHaveLength(5);
-    expect(await runtime.runCycle([observation], async () => undefined)).toHaveLength(0);
+    expect(await runtime.runCycle([observation], () => Promise.resolve())).toHaveLength(0);
     expect(attempts).toBe(6);
   });
 });
