@@ -1,0 +1,29 @@
+{
+  "name": "@metron/backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p convex/tsconfig.json --noEmit",
+    "clean": "node -e \"require('node:fs').rmSync('.convex',{recursive:true,force:true})\"",
+    "codegen": "convex codegen",
+    "deploy": "convex deploy",
+    "dev": "convex dev",
+    "lint": "eslint convex --max-warnings=0",
+    "typecheck": "tsc -p convex/tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@metron/config": "workspace:*",
+    "@metron/logger": "workspace:*",
+    "@metron/protocol": "workspace:*",
+    "@metron/types": "workspace:*",
+    "@metron/validation": "workspace:*",
+    "convex": "^1.34.1",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.3",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.0"
+  }
+}
