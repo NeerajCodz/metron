@@ -285,17 +285,6 @@ button {
   box-shadow: none;
 }
 
-.app-nav__item.is-active::after {
-  position: absolute;
-  right: 0.8rem;
-  bottom: 0.28rem;
-  left: 0.8rem;
-  height: 2px;
-  border-radius: 999px;
-  background: var(--metron-crimson-bright);
-  content: "";
-  opacity: 0.9;
-}
 
 .app-nav__item.is-active svg {
   color: var(--metron-sand-bright);
