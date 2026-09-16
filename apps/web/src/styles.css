@@ -266,6 +266,7 @@ button {
   line-height: 1.2;
   text-align: left;
   cursor: pointer;
+  text-decoration: none;
   transition:
     color var(--metron-duration-fast) var(--metron-ease),
     background-color var(--metron-duration-fast) var(--metron-ease),
@@ -282,6 +283,7 @@ button {
   border-color: var(--metron-crimson-glow);
   background: linear-gradient(90deg, rgb(113 0 20 / 34%), rgb(113 0 20 / 9%));
   color: var(--metron-pearl);
+  text-decoration: none;
   box-shadow: none;
 }
 
