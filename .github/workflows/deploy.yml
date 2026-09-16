@@ -40,6 +40,10 @@ jobs:
       - uses: foundry-rs/foundry-toolchain@v1
         with:
           version: v1.8.3
+      - run: node ../../scripts/forge.mjs install foundry-rs/forge-std --no-commit
+        working-directory: apps/web3
+      - run: node ../../scripts/forge.mjs install OpenZeppelin/openzeppelin-contracts --no-commit
+        working-directory: apps/web3
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @metron/config build
       - run: node scripts/deploy-web3.mjs "${{ inputs.chain }}"
