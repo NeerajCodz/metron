@@ -1,0 +1,20 @@
+{
+  "manifestVersion": "1.0.0",
+  "models": [
+    {
+      "modelVersion": "risk-deterministic-v1",
+      "featureSchemaVersion": "features-v1",
+      "modelType": "transparent-deterministic-baseline",
+      "trainingPeriod": null,
+      "datasetProvenance": "No production training dataset is bundled; synthetic and caller-supplied scenarios only.",
+      "evaluationReport": "Deterministic unit and API contract tests in apps/ai/tests/test_models.py.",
+      "calibrationMetrics": null,
+      "fallbackBehavior": [
+        "Reject malformed or out-of-range inputs with versioned validation errors.",
+        "Return fallbackUsed=false only when all required features are present.",
+        "Never produce an execution authorization or signing key."
+      ],
+      "driftPlan": "Collect versioned feature fingerprints and compare distribution summaries before promoting a trained model."
+    }
+  ]
+}
