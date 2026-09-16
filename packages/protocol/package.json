@@ -1,5 +1,5 @@
 {
-  "name": "@metron/validation",
+  "name": "@metron/protocol",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -23,7 +23,8 @@
   },
   "dependencies": {
     "@metron/types": "workspace:*",
-    "zod": "^4.0.0"
+    "@metron/validation": "workspace:*",
+    "viem": "^2.0.0"
   },
   "devDependencies": {
     "typescript": "^5.9.3",
