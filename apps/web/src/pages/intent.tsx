@@ -1,4 +1,4 @@
-import { useState, type CSSProperties, type FormEvent } from "react";
+import { useState, type CSSProperties, type FormEvent, type ReactNode } from "react";
 import {
   AlertTriangle,
   ArrowRight,
@@ -306,7 +306,7 @@ export function IntentPage() {
                   <p style={{ ...mutedText, fontSize: "0.84rem", margin: "0.7rem 0 1rem" }}>
                     Mapping outcomes into risk, liquidity, and execution boundaries.
                   </p>
-                  <Progress value={56} aria-label="Intent processing progress" />
+                  <Progress label="Intent parsing" value={56} aria-label="Intent processing progress" />
                 </div>
               ) : isParsed ? (
                 <div className="web-page-intent__constraints" style={{ display: "grid", gap: "0.7rem" }}>
@@ -508,7 +508,7 @@ export function IntentPage() {
 type ConstraintFieldProps = {
   label: string;
   value: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
   onChange: (value: string) => void;
 };
 
