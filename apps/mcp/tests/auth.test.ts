@@ -15,9 +15,9 @@ const config: McpAuthConfig = {
 describe("MCP authentication", () => {
   it("requires the configured origin, host, and bearer token", () => {
     const authorizer = new McpAuthorizer(config);
-    expect(() => authorizer.authenticate(new Headers(), "https://claude.ai", "mcp.example.test")).toThrow(
-      "MCP bearer token is required",
-    );
+    expect(() =>
+      authorizer.authenticate(new Headers(), "https://claude.ai", "mcp.example.test"),
+    ).toThrow("MCP bearer token is required");
     expect(() =>
       authorizer.authenticate(
         new Headers({ authorization: "Bearer reader" }),
@@ -35,7 +35,9 @@ describe("MCP authentication", () => {
       "mcp.example.test",
     );
     expect(principal.tokenId).toBe("reader");
-    expect(() => authorizer.requireScope(principal, "simulate")).toThrow("MCP scope 'simulate' is required");
+    expect(() => authorizer.requireScope(principal, "simulate")).toThrow(
+      "MCP scope 'simulate' is required",
+    );
     expect(() =>
       authorizer.authenticate(
         new Headers({ authorization: "Bearer reader" }),
@@ -43,5 +45,19 @@ describe("MCP authentication", () => {
         "mcp.example.test",
       ),
     ).toThrow(/RATE_LIMITED|rate limit/i);
+  });
+
+  it("rejects conflicting authentication headers", () => {
+    const authorizer = new McpAuthorizer(config);
+    expect(() =>
+      authorizer.authenticate(
+        new Headers({
+          authorization: "Bearer reader",
+          "x-metron-mcp-token": "different-token",
+        }),
+        "https://claude.ai",
+        "mcp.example.test",
+      ),
+    ).toThrow("MCP authentication headers disagree");
   });
 });

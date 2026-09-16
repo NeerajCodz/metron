@@ -1,0 +1,42 @@
+<evaluation>
+  <qa_pair>
+    <question>Which MCP scope is required to read a position timeline?</question>
+    <answer>read</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Which tool drafts a natural-language strategy without submitting it?</question>
+    <answer>metron_ai_intent_draft</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Which tool runs bounded market stress scenarios against portfolio features?</question>
+    <answer>metron_ai_simulate</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Which tool reports liquidation cascade rounds and convergence?</question>
+    <answer>metron_ai_cascade</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Which tool scores candidate routes using exact bigint arithmetic?</question>
+    <answer>metron_solver_score_routes</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Which tool ranks recovery actions without moving funds?</question>
+    <answer>metron_recovery_rank</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>What extra input is mandatory before a funds-moving execution can be submitted?</question>
+    <answer>approved=true</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Which MCP resource lists tool names and required scopes?</question>
+    <answer>metron://capabilities</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Which resource documents token, scope, and fail-closed execution behavior?</question>
+    <answer>metron://security</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Which prompt tells a host to inspect a position before making recommendations?</question>
+    <answer>metron_strategy_review</answer>
+  </qa_pair>
+</evaluation>

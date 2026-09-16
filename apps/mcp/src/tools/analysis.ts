@@ -51,7 +51,7 @@ export function registerAnalysisTools(server: McpServer, context: AnalysisToolCo
     },
     async ({ trace_id, text, response_format: format }) =>
       executeAnalysis(context, "Intent draft", format, async () =>
-        context.services.ai("v1/intent/draft", { trace_id, text }),
+        context.services.ai("v1/intent/parse", { trace_id, text }),
       ),
   );
 
@@ -75,7 +75,7 @@ export function registerAnalysisTools(server: McpServer, context: AnalysisToolCo
     },
     async ({ trace_id, text, response_format: format }) =>
       executeAnalysis(context, "Scenario draft", format, async () =>
-        context.services.ai("v1/scenario/draft", { trace_id, text }),
+        context.services.ai("v1/scenario/parse", { trace_id, text }),
       ),
   );
 
@@ -101,7 +101,7 @@ export function registerAnalysisTools(server: McpServer, context: AnalysisToolCo
     },
     async ({ position_id, trace_id, features, scenarios, response_format: format }) =>
       executeAnalysis(context, "Scenario simulation", format, async () =>
-        context.services.ai("v1/simulation", { position_id, trace_id, features, scenarios }),
+        context.services.ai("v1/stress/simulate", { position_id, trace_id, features, scenarios }),
       ),
   );
 
@@ -139,7 +139,139 @@ export function registerAnalysisTools(server: McpServer, context: AnalysisToolCo
     },
     async ({ response_format: format, ...payload }) =>
       executeAnalysis(context, "Cascade simulation", format, async () =>
-        context.services.ai("v1/risk/cascade", payload),
+        context.services.ai("v1/cascade/simulate", payload),
+      ),
+  );
+  server.registerTool(
+    "metron_ai_threshold",
+    {
+      title: "Recommend Intervention Threshold",
+      description:
+        "Calculate a regime- and liquidity-aware liquidation intervention threshold within policy bounds.",
+      inputSchema: {
+        trace_id: z.string().min(1).max(128),
+        current_liquidation_probability_bps: z.number().int().min(0).max(10_000),
+        user_max_probability_bps: z.number().int().min(0).max(10_000),
+        administrator_max_probability_bps: z.number().int().min(0).max(10_000),
+        hysteresis_bps: z.number().int().min(0).max(10_000),
+        market_regime: z
+          .enum([
+            "stable",
+            "trending",
+            "high_volatility",
+            "liquidity_stress",
+            "flash_crash",
+            "recovery",
+          ])
+          .optional(),
+        liquidity_stress_bps: z.number().int().min(0).max(10_000).default(0),
+        protocol_risk_bps: z.number().int().min(0).max(10_000).default(0),
+        response_format: responseFormat,
+      },
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false,
+      },
+    },
+    async ({ response_format: format, ...payload }) =>
+      executeAnalysis(context, "Intervention threshold", format, () =>
+        context.services.ai("v1/recommendations/threshold", payload),
+      ),
+  );
+
+  server.registerTool(
+    "metron_ai_liquidity",
+    {
+      title: "Estimate Liquidity Risk",
+      description: "Estimate price impact and failure probability for a bounded liquidity action.",
+      inputSchema: {
+        trace_id: z.string().min(1).max(128),
+        pool_depth_usd: z.string().min(1),
+        trade_size_usd: z.string().min(1),
+        fee_bps: z.number().int().min(0).max(10_000),
+        volatility_bps: z.number().int().min(0).max(1_000_000),
+        gas_usd: z.string().min(1),
+        response_format: responseFormat,
+      },
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false,
+      },
+    },
+    async ({ response_format: format, ...payload }) =>
+      executeAnalysis(context, "Liquidity estimate", format, () =>
+        context.services.ai("v1/liquidity/estimate", payload),
+      ),
+  );
+
+  server.registerTool(
+    "metron_ai_allocation",
+    {
+      title: "Optimize Allocation",
+      description:
+        "Allocate capital across supplied opportunities while enforcing risk and delta limits.",
+      inputSchema: {
+        trace_id: z.string().min(1).max(128),
+        capital_usd: z.string().min(1),
+        target_delta_wad: z.string(),
+        delta_tolerance_wad: z.string().min(1),
+        max_risk_bps: z.number().int().min(0).max(10_000),
+        opportunities: z
+          .array(
+            z.object({
+              opportunity_id: z.string().min(1).max(128),
+              expected_yield_bps: z.number().int(),
+              risk_bps: z.number().int().min(0).max(100_000),
+              cost_bps: z.number().int().min(0).max(100_000),
+              delta_wad: z.string(),
+              capacity_usd: z.string().min(1),
+            }),
+          )
+          .min(1)
+          .max(100),
+        response_format: responseFormat,
+      },
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false,
+      },
+    },
+    async ({ response_format: format, ...payload }) =>
+      executeAnalysis(context, "Allocation optimization", format, () =>
+        context.services.ai("v1/optimization/allocate", payload),
+      ),
+  );
+
+  server.registerTool(
+    "metron_ai_explain",
+    {
+      title: "Explain Metron Prediction",
+      description:
+        "Return the supplied observation, deterministic calculation, prediction, and scenario provenance groups.",
+      inputSchema: {
+        trace_id: z.string().min(1).max(128),
+        observed_data: z.array(z.string().min(1)).min(1).max(100),
+        deterministic_calculations: z.array(z.string().min(1)).min(1).max(100),
+        model_predictions: z.array(z.string().min(1)).min(1).max(100),
+        scenario_assumptions: z.array(z.string().min(1)).min(1).max(100),
+        response_format: responseFormat,
+      },
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false,
+      },
+    },
+    async ({ response_format: format, ...payload }) =>
+      executeAnalysis(context, "Prediction explanation", format, () =>
+        context.services.ai("v1/explain", payload),
       ),
   );
 
@@ -166,7 +298,7 @@ export function registerAnalysisTools(server: McpServer, context: AnalysisToolCo
     },
     async ({ response_format: format, ...payload }) =>
       executeAnalysis(context, "Action recommendation", format, async () =>
-        context.services.ai("v1/recommendation", payload),
+        context.services.ai("v1/recommendations", payload),
       ),
   );
 

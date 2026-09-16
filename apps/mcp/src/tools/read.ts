@@ -38,10 +38,17 @@ export function registerReadOnlyTools(server: McpServer, context: ReadToolContex
       title: "Get Metron Position",
       description: "Read one position by ID, including ownership and chain-level components.",
       inputSchema: { position_id: z.string().min(1).max(128), response_format: responseFormat },
-      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: true,
+      },
     },
-    async ({ position_id, response_format: format }) => executeRead(context, "Get position", format, async () =>
-      context.services.convex("positions.get", { positionId: position_id })),
+    async ({ position_id, response_format: format }) =>
+      executeRead(context, "Get position", format, async () =>
+        context.services.convex("positions.get", { positionId: position_id }),
+      ),
   );
 
   server.registerTool(
@@ -54,10 +61,17 @@ export function registerReadOnlyTools(server: McpServer, context: ReadToolContex
         limit: z.number().int().min(1).max(200).default(50),
         response_format: responseFormat,
       },
-      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: true,
+      },
     },
-    async ({ owner_address, limit, response_format: format }) => executeRead(context, "List positions", format, async () =>
-      context.services.convex("positions.listMine", { ownerAddress: owner_address, limit })),
+    async ({ owner_address, limit, response_format: format }) =>
+      executeRead(context, "List positions", format, async () =>
+        context.services.convex("positions.listMine", { ownerAddress: owner_address, limit }),
+      ),
   );
 
   server.registerTool(
@@ -70,17 +84,25 @@ export function registerReadOnlyTools(server: McpServer, context: ReadToolContex
         limit: z.number().int().min(1).max(200).default(50),
         response_format: responseFormat,
       },
-      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: true,
+      },
     },
-    async ({ position_id, limit, response_format: format }) => executeRead(context, "Position timeline", format, async () =>
-      context.services.convex("positions.timeline", { positionId: position_id, limit })),
+    async ({ position_id, limit, response_format: format }) =>
+      executeRead(context, "Position timeline", format, async () =>
+        context.services.convex("positions.timeline", { positionId: position_id, limit }),
+      ),
   );
 
   server.registerTool(
     "metron_risk_liquidation",
     {
       title: "Predict Liquidation Risk",
-      description: "Return bounded liquidation probabilities for requested horizons using the Metron AI service.",
+      description:
+        "Return bounded liquidation probabilities for requested horizons using the Metron AI service.",
       inputSchema: {
         position_id: z.string().min(1).max(128),
         trace_id: z.string().min(1).max(128),
@@ -88,27 +110,47 @@ export function registerReadOnlyTools(server: McpServer, context: ReadToolContex
         horizons_days: z.array(z.number().int().positive().max(3650)).min(1).max(8),
         response_format: responseFormat,
       },
-      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: true,
+      },
     },
-    async ({ position_id, trace_id, features, horizons_days, response_format: format }) => executeRead(context, "Liquidation prediction", format, async () =>
-      context.services.ai("v1/risk/liquidation", { position_id, trace_id, features, horizons_days })),
+    async ({ position_id, trace_id, features, horizons_days, response_format: format }) =>
+      executeRead(context, "Liquidation prediction", format, async () =>
+        context.services.ai("v1/risk/liquidation", {
+          position_id,
+          trace_id,
+          features,
+          horizons_days,
+        }),
+      ),
   );
 
   server.registerTool(
     "metron_risk_regime",
     {
       title: "Classify Market Regime",
-      description: "Classify the current portfolio market regime and return normalized probabilities.",
+      description:
+        "Classify the current portfolio market regime and return normalized probabilities.",
       inputSchema: {
         position_id: z.string().min(1).max(128),
         trace_id: z.string().min(1).max(128),
         features: featureInput,
         response_format: responseFormat,
       },
-      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: true,
+      },
     },
-    async ({ position_id, trace_id, features, response_format: format }) => executeRead(context, "Market regime", format, async () =>
-      context.services.ai("v1/risk/regime", { position_id, trace_id, features })),
+    async ({ position_id, trace_id, features, response_format: format }) =>
+      executeRead(context, "Market regime", format, async () =>
+        context.services.ai("v1/risk/regime", { position_id, trace_id, features }),
+      ),
   );
 
   server.registerTool(
@@ -123,29 +165,55 @@ export function registerReadOnlyTools(server: McpServer, context: ReadToolContex
         limit: z.number().int().min(1).max(200).default(50),
         response_format: responseFormat,
       },
-      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: true,
+      },
     },
-    async ({ chain_id, protocol, metric, limit, response_format: format }) => executeRead(context, "Protocol metrics", format, async () =>
-      context.services.convex("protocolMetrics.latest", { chainId: chain_id, protocol, metric, limit })),
+    async ({ chain_id, protocol, metric, limit, response_format: format }) =>
+      executeRead(context, "Protocol metrics", format, async () =>
+        context.services.convex("protocolMetrics.latest", {
+          chainId: chain_id,
+          protocol,
+          metric,
+          limit,
+        }),
+      ),
   );
 
   server.registerTool(
     "metron_position_answer",
     {
       title: "Answer Position Question",
-      description: "Answer a position question only from supplied indexed or simulation data and provenance.",
+      description:
+        "Answer a position question only from supplied indexed or simulation data and provenance.",
       inputSchema: {
-        position_id: z.string().min(1).max(128),
         trace_id: z.string().min(1).max(128),
-        question: z.string().min(1).max(2_000),
-        indexed_data: z.record(z.string(), z.union([z.string(), z.number(), z.boolean()])).default({}),
-        simulation_outputs: z.record(z.string(), z.union([z.string(), z.number(), z.boolean()])).default({}),
+        question: z.string().min(1).max(1_000),
+        indexed_data: z
+          .record(z.string(), z.union([z.string(), z.number()]))
+          .refine((value) => Object.keys(value).length > 0, "indexed_data must not be empty"),
+        simulation_outputs: z.record(z.string(), z.union([z.string(), z.number()])).default({}),
         response_format: responseFormat,
       },
-      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false,
+      },
     },
-    async ({ position_id, trace_id, question, indexed_data, simulation_outputs, response_format: format }) => executeRead(context, "Position answer", format, async () =>
-      context.services.ai("v1/explain/position", { position_id, trace_id, question, indexed_data, simulation_outputs })),
+    async ({ trace_id, question, indexed_data, simulation_outputs, response_format: format }) =>
+      executeRead(context, "Position answer", format, async () =>
+        context.services.ai("v1/position/answer", {
+          trace_id,
+          question,
+          indexed_data,
+          simulation_outputs,
+        }),
+      ),
   );
 }
 

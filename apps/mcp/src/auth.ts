@@ -51,7 +51,10 @@ function parseScope(value: string): McpScope {
 
 export function loadMcpAuthConfig(env: NodeJS.ProcessEnv = process.env): McpAuthConfig {
   const tokens = new Map<string, McpPrincipal>();
-  const configured = env.METRON_MCP_TOKENS?.split(",").map((entry) => entry.trim()).filter(Boolean) ?? [];
+  const configured =
+    env.METRON_MCP_TOKENS?.split(",")
+      .map((entry) => entry.trim())
+      .filter(Boolean) ?? [];
   const single = env.METRON_MCP_TOKEN?.trim();
   if (single) configured.push(`${single}=read|simulate`);
   if (configured.length === 0) {
@@ -62,12 +65,22 @@ export function loadMcpAuthConfig(env: NodeJS.ProcessEnv = process.env): McpAuth
     if (separator <= 0) throw new Error("MCP token entries must use token=scope|scope format");
     const token = entry.slice(0, separator).trim();
     if (token.length < 32) throw new Error("MCP tokens must contain at least 32 characters");
-    const scopes = new Set(entry.slice(separator + 1).split("|").map((scope) => parseScope(scope)));
+    const scopes = new Set(
+      entry
+        .slice(separator + 1)
+        .split("|")
+        .map((scope) => parseScope(scope)),
+    );
     if (scopes.size === 0) throw new Error("MCP tokens must have at least one scope");
     tokens.set(tokenDigest(token), { tokenId: tokenDigest(token).slice(0, 16), scopes });
   }
   const split = (value: string | undefined): ReadonlySet<string> =>
-    new Set(value?.split(",").map((item) => item.trim()).filter(Boolean) ?? []);
+    new Set(
+      value
+        ?.split(",")
+        .map((item) => item.trim())
+        .filter(Boolean) ?? [],
+    );
   const requestsPerMinute = Number(env.METRON_MCP_REQUESTS_PER_MINUTE ?? 120);
   if (!Number.isInteger(requestsPerMinute) || requestsPerMinute < 1 || requestsPerMinute > 10_000) {
     throw new Error("METRON_MCP_REQUESTS_PER_MINUTE must be an integer between 1 and 10000");
@@ -83,18 +96,29 @@ export function loadMcpAuthConfig(env: NodeJS.ProcessEnv = process.env): McpAuth
 export class McpAuthorizer {
   private readonly buckets = new Map<string, RateBucket>();
 
-  public constructor(private readonly config: McpAuthConfig, private readonly now = () => Date.now()) {}
+  public constructor(
+    private readonly config: McpAuthConfig,
+    private readonly now = () => Date.now(),
+  ) {}
 
-  public authenticate(headers: Headers, origin?: string, host?: string): McpPrincipal {
+  public validateRequest(origin?: string, host?: string): void {
     if (this.config.allowedOrigins.size > 0 && origin && !this.config.allowedOrigins.has(origin)) {
       throw new McpAuthError("origin is not allowed", 403, "FORBIDDEN");
     }
     if (this.config.allowedHosts.size > 0 && host && !this.config.allowedHosts.has(host)) {
       throw new McpAuthError("host is not allowed", 403, "FORBIDDEN");
     }
+  }
+
+  public authenticate(headers: Headers, origin?: string, host?: string): McpPrincipal {
+    this.validateRequest(origin, host);
     const authorization = headers.get("authorization");
     const bearer = authorization?.match(/^Bearer\s+(.+)$/i)?.[1];
-    const supplied = bearer ?? headers.get("x-metron-mcp-token");
+    const headerToken = headers.get("x-metron-mcp-token");
+    if (bearer && headerToken && !tokenEquals(tokenDigest(bearer), tokenDigest(headerToken))) {
+      throw new McpAuthError("MCP authentication headers disagree", 401, "UNAUTHORIZED");
+    }
+    const supplied = bearer ?? headerToken;
     if (!supplied) throw new McpAuthError("MCP bearer token is required", 401, "UNAUTHORIZED");
     const digest = tokenDigest(supplied);
     const principalEntry = [...this.config.tokens.entries()].find(([configuredDigest]) =>
@@ -120,7 +144,11 @@ export class McpAuthorizer {
     }
     bucket.count += 1;
     if (bucket.count > this.config.requestsPerMinute) {
-      throw new McpAuthError("MCP rate limit exceeded; retry after the current window", 429, "RATE_LIMITED");
+      throw new McpAuthError(
+        "MCP rate limit exceeded; retry after the current window",
+        429,
+        "RATE_LIMITED",
+      );
     }
   }
 }

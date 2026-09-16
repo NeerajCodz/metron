@@ -2,14 +2,14 @@ export type JsonValue =
   string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
 
 export type McpServiceConfig = {
-  aiBaseUrl?: string;
-  aiServiceToken?: string;
-  convexUrl?: string;
-  convexInternalToken?: string;
-  executionGatewayUrl?: string;
-  executionGatewayToken?: string;
-  timeoutMs?: number;
-  fetcher?: typeof fetch;
+  aiBaseUrl?: string | undefined;
+  aiServiceToken?: string | undefined;
+  convexUrl?: string | undefined;
+  convexInternalToken?: string | undefined;
+  executionGatewayUrl?: string | undefined;
+  executionGatewayToken?: string | undefined;
+  timeoutMs?: number | undefined;
+  fetcher?: typeof fetch | undefined;
 };
 
 export type ExecutionRequest = {

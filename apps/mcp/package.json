@@ -13,7 +13,7 @@
     "dev": "tsx src/index.ts",
     "lint": "eslint src tests --max-warnings=0",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "vitest run"
+    "test": "vitest run tests"
   },
   "dependencies": {
     "@metron/ai": "workspace:*",
