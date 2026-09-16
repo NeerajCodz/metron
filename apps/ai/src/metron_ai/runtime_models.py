@@ -3,8 +3,16 @@ from __future__ import annotations
 import re
 from typing import Annotated, Literal
 
-from pydantic import AnyHttpUrl, BaseModel, ConfigDict, Field, SecretStr, StringConstraints, field_validator, model_validator
-
+from pydantic import (
+    AnyHttpUrl,
+    BaseModel,
+    ConfigDict,
+    Field,
+    SecretStr,
+    StringConstraints,
+    field_validator,
+    model_validator,
+)
 
 ProviderKind = Literal["gemini", "openai_compatible", "anthropic_compatible", "custom"]
 ProviderProtocol = Literal["gemini", "openai", "anthropic"]
@@ -13,7 +21,9 @@ BotStrategy = Literal["hold", "risk_off", "liquidity_guard", "stress_test", "reb
 TurnMode = Literal["simulation", "solver"]
 Primitive = str | int | float | bool | None
 
-SafeIdentifier = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=128)]
+SafeIdentifier = Annotated[
+    str, StringConstraints(strip_whitespace=True, min_length=1, max_length=128)
+]
 
 _SENSITIVE_KEY_MARKERS = (
     "private",
@@ -39,6 +49,7 @@ def _reject_sensitive_text(value: str, field_name: str) -> str:
         raise ValueError(f"{field_name} must not contain private key material")
     return value
 
+
 def _reject_sensitive_keys(value: dict[str, Primitive], field_name: str) -> dict[str, Primitive]:
     for key, item in value.items():
         normalized = key.casefold().replace("-", "_")
@@ -48,9 +59,9 @@ def _reject_sensitive_keys(value: dict[str, Primitive], field_name: str) -> dict
             _reject_sensitive_text(item, field_name)
     return value
 
+
 def _default_tools() -> list[ToolName]:
     return ["internet_research"]
-
 
 
 class ModelSelection(BaseModel):

@@ -126,7 +126,9 @@ export class MetronConvexClient {
   }
 
   listCrossChainMessages(limit?: number): Promise<CrossChainMessage[]> {
-    return this.transport("crossChainMessages.listMine", { ...(limit === undefined ? {} : { limit }) });
+    return this.transport("crossChainMessages.listMine", {
+      ...(limit === undefined ? {} : { limit }),
+    });
   }
 
   listRecoveryMessages(limit?: number): Promise<CrossChainMessage[]> {

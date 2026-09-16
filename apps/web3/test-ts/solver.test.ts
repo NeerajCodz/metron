@@ -48,7 +48,7 @@ const context = {
       resultingDeltaWad: "0",
       resultingHealthFactorWad: "2000000000000000000",
       liquidityScoreBps: 9000,
-      observedAt: 900,
+      observedAtMs: 900,
     },
   ],
 } as const;
@@ -86,6 +86,22 @@ describe("solver route engine", () => {
     expect(routes[0]?.actions.map((action) => action.chainId)).toEqual([
       421614, 84532, 84532, 84532,
     ]);
+  });
+
+  it("returns an executable action graph with explicit dependencies", () => {
+    const route = buildComposedCandidateRoutes(intent, {
+      ...context,
+      bridgeTarget: "0x5555555555555555555555555555555555555555",
+      hedgeTarget: "0x6666666666666666666666666666666666666666",
+      destinationMarkets: [{ ...context.markets[0], chainId: 84532 }],
+    })[0]!;
+    expect(route.strategyGraph?.nodes.map((node) => node.dependsOn)).toEqual([
+      [],
+      [`${route.routeId}:action:0`],
+      [`${route.routeId}:action:1`],
+      [`${route.routeId}:action:2`],
+    ]);
+    expect(route.strategyGraph?.terminalNodeIds).toEqual([`${route.routeId}:action:3`]);
   });
 
   it("matches the Solidity commitment encoding and rejects altered salt", () => {

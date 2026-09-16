@@ -11,7 +11,10 @@ import {
   unsignedIntegerStringSchema,
 } from "./primitives.js";
 
-const metadataSchema = z.record(z.string(), z.union([z.string(), z.number(), z.boolean(), z.null()]));
+const metadataSchema = z.record(
+  z.string(),
+  z.union([z.string(), z.number(), z.boolean(), z.null()]),
+);
 
 export const portfolioNodeSchema = z.strictObject({
   nodeId: nonEmptyIdSchema,
@@ -62,10 +65,18 @@ export const portfolioGraphSchema = z
     }
     graph.edges.forEach((edge, index) => {
       if (!nodeIds.has(edge.fromNodeId) || !nodeIds.has(edge.toNodeId)) {
-        context.addIssue({ code: "custom", path: ["edges", index], message: "edge references a missing node" });
+        context.addIssue({
+          code: "custom",
+          path: ["edges", index],
+          message: "edge references a missing node",
+        });
       }
       if (edge.fromNodeId === edge.toNodeId) {
-        context.addIssue({ code: "custom", path: ["edges", index], message: "self-referential edges are invalid" });
+        context.addIssue({
+          code: "custom",
+          path: ["edges", index],
+          message: "self-referential edges are invalid",
+        });
       }
     });
   });

@@ -21,15 +21,18 @@ const legalTransitions: Record<string, readonly string[]> = {
   expired: ["expired"],
 };
 
-async function appendExecutionAudit(ctx: MutationCtx, execution: {
-  executionKey: string;
-  intentId: string;
-  positionId?: string;
-  status: string;
-  traceId: string;
-  transactionHash?: string;
-  failureCode?: string;
-}): Promise<void> {
+async function appendExecutionAudit(
+  ctx: MutationCtx,
+  execution: {
+    executionKey: string;
+    intentId: string;
+    positionId?: string;
+    status: string;
+    traceId: string;
+    transactionHash?: string;
+    failureCode?: string;
+  },
+): Promise<void> {
   const eventId = `execution:${execution.executionKey}:${execution.status}`;
   const existing = await ctx.db
     .query("auditEvents")
@@ -57,7 +60,9 @@ async function appendExecutionAudit(ctx: MutationCtx, execution: {
     executionKey: execution.executionKey,
     detailsJson: JSON.stringify({
       executionId: execution.executionKey,
-      ...(execution.transactionHash === undefined ? {} : { transactionHash: execution.transactionHash }),
+      ...(execution.transactionHash === undefined
+        ? {}
+        : { transactionHash: execution.transactionHash }),
       ...(execution.failureCode === undefined ? {} : { failureCode: execution.failureCode }),
     }),
   });
@@ -83,16 +88,26 @@ export const upsertExecution = internalMutation({
       .withIndex("by_execution_key", (query) => query.eq("executionKey", args.executionKey))
       .unique();
     const updatedAt = Date.now();
-    if (args.status === "pending" && (args.submittedAt !== undefined || args.confirmedAt !== undefined)) {
+    if (
+      args.status === "pending" &&
+      (args.submittedAt !== undefined || args.confirmedAt !== undefined)
+    ) {
       throw new Error("pending execution cannot have submission timestamps");
     }
     if (args.status === "submitted" && args.submittedAt === undefined) {
       throw new Error("submitted execution requires submittedAt");
     }
-    if (args.status === "confirmed" && (args.submittedAt === undefined || args.confirmedAt === undefined)) {
+    if (
+      args.status === "confirmed" &&
+      (args.submittedAt === undefined || args.confirmedAt === undefined)
+    ) {
       throw new Error("confirmed execution requires submittedAt and confirmedAt");
     }
-    if (args.confirmedAt !== undefined && args.submittedAt !== undefined && args.confirmedAt < args.submittedAt) {
+    if (
+      args.confirmedAt !== undefined &&
+      args.submittedAt !== undefined &&
+      args.confirmedAt < args.submittedAt
+    ) {
       throw new Error("confirmedAt must not precede submittedAt");
     }
     if (existing) {
@@ -125,7 +140,8 @@ export const upsertExecution = internalMutation({
         existing.failureCode === args.failureCode &&
         existing.submittedAt === args.submittedAt &&
         existing.confirmedAt === args.confirmedAt
-      ) return existing._id;
+      )
+        return existing._id;
       await ctx.db.patch(existing._id, {
         status: args.status,
         transactionHash: args.transactionHash,

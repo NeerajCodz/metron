@@ -49,7 +49,7 @@ export const ingest = internalMutation({
       .withIndex("by_event", (query) => query.eq("eventId", args.eventId))
       .unique();
     if (existing) {
-      const { _id: _existingId, _creationTime: _existingTime, ...existingPayload } = existing;
+      const existingPayload = { ...existing, _id: undefined, _creationTime: undefined };
       if (JSON.stringify(existingPayload) !== JSON.stringify(args)) {
         throw new Error("audit event ID already exists with a conflicting payload");
       }

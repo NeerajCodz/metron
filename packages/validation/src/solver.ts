@@ -40,8 +40,17 @@ export const routeActionSchema = z.strictObject({
   calldata: hexSchema,
 });
 
+const strategyStageSchema = z.enum([
+  "discovery",
+  "quote",
+  "approval",
+  "execution",
+  "settlement",
+  "recovery",
+]);
 const strategyGraphNodeSchema = z.strictObject({
   nodeId: nonEmptyIdSchema,
+  stage: strategyStageSchema,
   action: routeActionSchema,
   dependsOn: z.array(nonEmptyIdSchema),
 });
@@ -106,7 +115,10 @@ export const solverRouteSchema = z
         }
       }
     }
-    for (const nodeId of [...route.strategyGraph.entryNodeIds, ...route.strategyGraph.terminalNodeIds]) {
+    for (const nodeId of [
+      ...route.strategyGraph.entryNodeIds,
+      ...route.strategyGraph.terminalNodeIds,
+    ]) {
       if (!nodeIds.has(nodeId)) {
         context.addIssue({
           code: "custom",

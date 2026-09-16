@@ -195,26 +195,41 @@ const simulationStartAction = internalAction(async (ctx, request) => {
   const body = await readJson(request);
   rejectSigningFields(body);
   const participants = body.participants;
-  if (participants !== undefined && !Array.isArray(participants)) throw new Error("participants must be an array");
+  if (participants !== undefined && !Array.isArray(participants))
+    throw new Error("participants must be an array");
   return jsonResponse(
     await ctx.runMutation(internal.simulations.startInternal, {
       sessionId: stringField(body, "sessionId"),
       ownerSubject: stringField(body, "ownerSubject"),
-      ...(body.ownerAddress === undefined ? {} : { ownerAddress: stringField(body, "ownerAddress") }),
+      ...(body.ownerAddress === undefined
+        ? {}
+        : { ownerAddress: stringField(body, "ownerAddress") }),
       scenarioJson: stringField(body, "scenarioJson"),
       traceId: stringField(body, "traceId"),
       idempotencyKey: stringField(body, "idempotencyKey"),
-      ...(body.maxParticipants === undefined ? {} : { maxParticipants: numberField(body, "maxParticipants") }),
+      ...(body.maxParticipants === undefined
+        ? {}
+        : { maxParticipants: numberField(body, "maxParticipants") }),
       ...(body.maxTurns === undefined ? {} : { maxTurns: numberField(body, "maxTurns") }),
-      ...(body.coordinatorProvider === undefined ? {} : { coordinatorProvider: stringField(body, "coordinatorProvider") }),
-      ...(body.coordinatorModel === undefined ? {} : { coordinatorModel: stringField(body, "coordinatorModel") }),
-      ...(body.observationIds === undefined ? {} : { observationIds: body.observationIds as never }),
+      ...(body.coordinatorProvider === undefined
+        ? {}
+        : { coordinatorProvider: stringField(body, "coordinatorProvider") }),
+      ...(body.coordinatorModel === undefined
+        ? {}
+        : { coordinatorModel: stringField(body, "coordinatorModel") }),
+      ...(body.observationIds === undefined
+        ? {}
+        : { observationIds: body.observationIds as never }),
       ...(participants === undefined ? {} : { participants: participants as never }),
     }),
   );
 });
 
-router.route({ path: "/internal/simulation/start", method: "POST", handler: simulationStartAction });
+router.route({
+  path: "/internal/simulation/start",
+  method: "POST",
+  handler: simulationStartAction,
+});
 
 const simulationTurnAction = internalAction(async (ctx, request) => {
   const body = await readJson(request);
@@ -231,7 +246,9 @@ const simulationTurnAction = internalAction(async (ctx, request) => {
       ...(body.eventType === undefined ? {} : { eventType: stringField(body, "eventType") }),
       ...(body.inputJson === undefined ? {} : { inputJson: stringField(body, "inputJson") }),
       ...(body.outputJson === undefined ? {} : { outputJson: stringField(body, "outputJson") }),
-      ...(body.observationIds === undefined ? {} : { observationIds: body.observationIds as never }),
+      ...(body.observationIds === undefined
+        ? {}
+        : { observationIds: body.observationIds as never }),
       ...(body.resultJson === undefined ? {} : { resultJson: stringField(body, "resultJson") }),
     }),
   );
@@ -248,33 +265,54 @@ const simulationProposalAction = internalAction(async (ctx, request) => {
       sessionId: stringField(body, "sessionId"),
       proposalId: stringField(body, "proposalId"),
       ...(body.solverId === undefined ? {} : { solverId: stringField(body, "solverId") }),
-      ...(body.participantId === undefined ? {} : { participantId: stringField(body, "participantId") }),
+      ...(body.participantId === undefined
+        ? {}
+        : { participantId: stringField(body, "participantId") }),
       proposalType: stringField(body, "proposalType"),
       provider: stringField(body, "provider"),
       model: stringField(body, "model"),
       proposalJson: stringField(body, "proposalJson"),
-      ...(body.rationaleJson === undefined ? {} : { rationaleJson: stringField(body, "rationaleJson") }),
+      ...(body.rationaleJson === undefined
+        ? {}
+        : { rationaleJson: stringField(body, "rationaleJson") }),
       ...(body.status === undefined ? {} : { status: body.status as never }),
       ...(body.traceId === undefined ? {} : { traceId: stringField(body, "traceId") }),
       idempotencyKey: stringField(body, "idempotencyKey"),
-      ...(body.observationIds === undefined ? {} : { observationIds: body.observationIds as never }),
+      ...(body.observationIds === undefined
+        ? {}
+        : { observationIds: body.observationIds as never }),
     }),
   );
 });
 
-router.route({ path: "/internal/simulation/proposal", method: "POST", handler: simulationProposalAction });
+router.route({
+  path: "/internal/simulation/proposal",
+  method: "POST",
+  handler: simulationProposalAction,
+});
 
 const simulationStatusAction = internalAction(async (ctx, request) => {
-  const body = request.method === "GET"
-    ? Object.fromEntries(new URL(request.url).searchParams.entries()) as Record<string, unknown>
-    : await readJson(request);
+  const body =
+    request.method === "GET"
+      ? (Object.fromEntries(new URL(request.url).searchParams.entries()) as Record<string, unknown>)
+      : await readJson(request);
   rejectSigningFields(body);
-  const limit = body.limit === undefined
-    ? undefined
-    : request.method === "GET"
-      ? Number.parseInt(String(body.limit), 10)
-      : numberField(body, "limit");
-  if (limit !== undefined && !Number.isSafeInteger(limit)) throw new Error("limit must be an integer");
+  const limitValue = body.limit;
+  if (
+    limitValue !== undefined &&
+    typeof limitValue !== "string" &&
+    typeof limitValue !== "number"
+  ) {
+    throw new Error("limit must be a number");
+  }
+  const limit =
+    limitValue === undefined
+      ? undefined
+      : request.method === "GET"
+        ? Number.parseInt(String(limitValue), 10)
+        : numberField(body, "limit");
+  if (limit !== undefined && !Number.isSafeInteger(limit))
+    throw new Error("limit must be an integer");
   return jsonResponse(
     await ctx.runQuery(internal.simulations.getStatusInternal, {
       sessionId: stringField(body, "sessionId"),
@@ -284,8 +322,15 @@ const simulationStatusAction = internalAction(async (ctx, request) => {
   );
 });
 
-router.route({ path: "/internal/simulation/status", method: "POST", handler: simulationStatusAction });
-router.route({ path: "/internal/simulation/status", method: "GET", handler: simulationStatusAction });
-
+router.route({
+  path: "/internal/simulation/status",
+  method: "POST",
+  handler: simulationStatusAction,
+});
+router.route({
+  path: "/internal/simulation/status",
+  method: "GET",
+  handler: simulationStatusAction,
+});
 
 export default router;

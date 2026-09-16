@@ -10,6 +10,7 @@ import type { MetronServices } from "../services.js";
 
 import { scoreRoute, type RouteScoreLimits } from "@metron/protocol";
 import type { SolverRoute } from "@metron/types";
+import { solverRouteSchema } from "@metron/validation";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
@@ -330,7 +331,10 @@ export function registerAnalysisTools(server: McpServer, context: AnalysisToolCo
     },
     async ({ routes, limits, response_format: format }) =>
       executeAnalysis(context, "Solver route scores", format, () => ({
-        scores: routes.map((route) => scoreRoute(route as SolverRoute, toScoreLimits(limits))),
+        scores: routes.map((route) => {
+          const parsed = solverRouteSchema.parse(route) as SolverRoute;
+          return scoreRoute(parsed, toScoreLimits(limits));
+        }),
       })),
   );
 }

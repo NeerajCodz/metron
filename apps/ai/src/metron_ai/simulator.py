@@ -15,7 +15,9 @@ def _scaled(value: Decimal, shock_bps: int) -> Decimal:
 
 def run_simulation(request: SimulationRequest, generated_at: int) -> SimulationResponse:
     results: list[ScenarioResult] = []
-    provenance = [reference for component in request.components for reference in component.observations]
+    provenance = [
+        reference for component in request.components for reference in component.observations
+    ]
     for index, scenario in enumerate(request.scenarios):
         collateral = _scaled(request.features.collateral_usd, scenario.eth_price_shock_bps)
         collateral = _scaled(collateral, -scenario.dex_liquidity_shock_bps // 4)
@@ -24,7 +26,8 @@ def run_simulation(request: SimulationRequest, generated_at: int) -> SimulationR
             0,
             min(
                 10_000,
-                request.features.liquidation_threshold_bps - scenario.lending_utilization_shock_bps // 2,
+                request.features.liquidation_threshold_bps
+                - scenario.lending_utilization_shock_bps // 2,
             ),
         )
         health = Decimal("100") if debt == 0 else collateral * Decimal(threshold) / _BPS / debt
@@ -36,20 +39,29 @@ def run_simulation(request: SimulationRequest, generated_at: int) -> SimulationR
                 "collateral_usd": collateral,
                 "debt_usd": debt,
                 "liquidation_threshold_bps": threshold,
-                "volatility_bps": min(1_000_000, request.features.volatility_bps * max(1, scenario.volatility_multiplier_bps) // 10_000),
-                "stablecoin_deviation_bps": request.features.stablecoin_deviation_bps + scenario.stablecoin_depeg_bps,
+                "volatility_bps": min(
+                    1_000_000,
+                    request.features.volatility_bps
+                    * max(1, scenario.volatility_multiplier_bps)
+                    // 10_000,
+                ),
+                "stablecoin_deviation_bps": request.features.stablecoin_deviation_bps
+                + scenario.stablecoin_depeg_bps,
                 "health_factor_wad": health_wad,
             },
         )
-        probability = int((_base_probability(type("Request", (), {"features": shocked})()) * _BPS).to_integral_value())
+        probability = int(
+            (
+                _base_probability(type("Request", (), {"features": shocked})()) * _BPS
+            ).to_integral_value()
+        )
         loss = max(
             0,
             min(
                 100_000,
                 int(
                     (
-                        max(Decimal("0"), Decimal("1") - health)
-                        * _BPS
+                        max(Decimal("0"), Decimal("1") - health) * _BPS
                         + Decimal(max(0, scenario.gas_multiplier_bps - 10_000)) / 2
                     ).to_integral_value()
                 ),
@@ -61,8 +73,17 @@ def run_simulation(request: SimulationRequest, generated_at: int) -> SimulationR
             if component.component_type == "liquidity":
                 shock -= scenario.dex_liquidity_shock_bps
             after_value = _scaled(component.value_usd, shock)
-            after_delta = int((Decimal(component.delta_wad) * Decimal(10_000 + shock) / _BPS).to_integral_value())
-            failed = next((observation.quality for observation in component.observations if observation.quality != "valid"), None)
+            after_delta = int(
+                (Decimal(component.delta_wad) * Decimal(10_000 + shock) / _BPS).to_integral_value()
+            )
+            failed = next(
+                (
+                    observation.quality
+                    for observation in component.observations
+                    if observation.quality != "valid"
+                ),
+                None,
+            )
             effects.append(
                 ComponentEffect(
                     component_id=component.component_id,
@@ -98,6 +119,8 @@ def run_simulation(request: SimulationRequest, generated_at: int) -> SimulationR
         generated_at=generated_at,
         scenarios=results,
         provenance=provenance,
-        fallback_reason="invalid_or_stale_component_observation" if any(reference.quality != "valid" for reference in provenance) else None,
+        fallback_reason="invalid_or_stale_component_observation"
+        if any(reference.quality != "valid" for reference in provenance)
+        else None,
         fallback_used=any(reference.quality != "valid" for reference in provenance),
     )

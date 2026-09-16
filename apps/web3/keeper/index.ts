@@ -16,6 +16,30 @@ export interface KeeperActionRequest {
 
 export type KeeperSubmit = (request: KeeperActionRequest) => Promise<void>;
 
+export interface KeeperGatewayConfig {
+  endpoint: string;
+  token: string;
+  fetcher?: typeof fetch;
+}
+
+export function createKeeperGatewaySubmit(config: KeeperGatewayConfig): KeeperSubmit {
+  const fetcher = config.fetcher ?? fetch;
+  return async (request) => {
+    const response = await fetcher(config.endpoint, {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "content-type": "application/json",
+        authorization: `Bearer ${config.token}`,
+        "idempotency-key": request.key,
+      },
+      body: JSON.stringify(request),
+    });
+    if (!response.ok)
+      throw new Error(`keeper gateway rejected request with status ${response.status}`);
+  };
+}
+
 export class KeeperRuntime {
   private readonly idempotency = new KeeperIdempotency();
 

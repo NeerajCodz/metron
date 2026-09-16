@@ -37,7 +37,7 @@ type ExecuteToolContext = {
 
 export function registerExecutionTools(server: McpServer, context: ExecuteToolContext): void {
   server.registerTool(
-    "metron_recovery_rank",
+    "metron_ai_recovery_rank",
     {
       title: "Rank Recovery Actions",
       description:

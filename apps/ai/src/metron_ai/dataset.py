@@ -381,15 +381,16 @@ def validate_dataset(records: list[SyntheticRecord]) -> dict[str, object]:
     }
     scenario_coverage_by_split = {
         split: {
-            scenario: sum(1 for record in split_rows if record.scenario_id.split("-", maxsplit=1)[0] == scenario)
+            scenario: sum(
+                1
+                for record in split_rows
+                if record.scenario_id.split("-", maxsplit=1)[0] == scenario
+            )
             for scenario in sorted(scenarios)
         }
         for split, split_rows in split_records.items()
     }
-    label_prevalence = {
-        label: label_counts[label] / len(records)
-        for label in binary_labels
-    }
+    label_prevalence = {label: label_counts[label] / len(records) for label in binary_labels}
     return {
         "rows": len(records),
         "feature_schema_version": FEATURE_SCHEMA_VERSION,

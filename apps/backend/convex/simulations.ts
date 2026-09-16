@@ -1,6 +1,13 @@
 import { v } from "convex/values";
 
-import { internalMutation, internalQuery, mutation, query, type MutationCtx, type QueryCtx } from "./_generated/server.js";
+import {
+  internalMutation,
+  internalQuery,
+  mutation,
+  query,
+  type MutationCtx,
+  type QueryCtx,
+} from "./_generated/server.js";
 import type { Doc } from "./_generated/dataModel.js";
 import { requireUser } from "./lib/auth.js";
 
@@ -145,7 +152,8 @@ function assertText(value: string, field: string, maxLength: number): string {
 
 function assertId(value: string, field: string): string {
   assertText(value, field, MAX_ID_LENGTH);
-  if (!/^[A-Za-z0-9][A-Za-z0-9._:-]*$/.test(value)) throw new Error(`${field} has invalid characters`);
+  if (!/^[A-Za-z0-9][A-Za-z0-9._:-]*$/.test(value))
+    throw new Error(`${field} has invalid characters`);
   return value;
 }
 
@@ -157,8 +165,14 @@ function assertNoSigningFields(value: unknown, path = "input", depth = 0): void 
   }
   if (!value || typeof value !== "object") return;
   for (const [key, nested] of Object.entries(value)) {
-    if (/(private[._-]?key|secret[._-]?key|signing|signature|signed|signer|mnemonic|seed[._-]?phrase|keystore)/i.test(key)) {
-      throw new Error(`${path}.${key} is not permitted; simulations cannot sign or hold private keys`);
+    if (
+      /(private[._-]?key|secret[._-]?key|signing|signature|signed|signer|mnemonic|seed[._-]?phrase|keystore)/i.test(
+        key,
+      )
+    ) {
+      throw new Error(
+        `${path}.${key} is not permitted; simulations cannot sign or hold private keys`,
+      );
     }
     assertNoSigningFields(nested, `${path}.${key}`, depth + 1);
   }
@@ -182,18 +196,27 @@ function parseJson(value: string, field: string, maxLength: number): unknown {
 
 function observationIds(value: string[] | undefined): string[] {
   const ids = value ?? [];
-  if (ids.length > MAX_OBSERVATIONS) throw new Error(`at most ${MAX_OBSERVATIONS} observation IDs are allowed`);
+  if (ids.length > MAX_OBSERVATIONS)
+    throw new Error(`at most ${MAX_OBSERVATIONS} observation IDs are allowed`);
   return ids.map((id, index) => assertId(id, `observationIds[${index}]`));
 }
 
-function modelMetadata(provider: string | undefined, model: string | undefined, required: boolean): void {
+function modelMetadata(
+  provider: string | undefined,
+  model: string | undefined,
+  required: boolean,
+): void {
   if (!required && provider === undefined && model === undefined) return;
-  if (provider === undefined || model === undefined) throw new Error("provider and model are both required");
+  if (provider === undefined || model === undefined)
+    throw new Error("provider and model are both required");
   assertText(provider, "provider", MAX_PROVIDER_LENGTH);
   assertText(model, "model", MAX_MODEL_LENGTH);
 }
 
-function limits(maxParticipants: number | undefined, maxTurns: number | undefined): { maxParticipants: number; maxTurns: number } {
+function limits(
+  maxParticipants: number | undefined,
+  maxTurns: number | undefined,
+): { maxParticipants: number; maxTurns: number } {
   const participants = maxParticipants ?? 16;
   const turns = maxTurns ?? 24;
   if (!Number.isSafeInteger(participants) || participants < 1 || participants > MAX_PARTICIPANTS) {
@@ -206,19 +229,33 @@ function limits(maxParticipants: number | undefined, maxTurns: number | undefine
 }
 
 async function sessionById(ctx: QueryCtx | MutationCtx, sessionId: string) {
-  return ctx.db.query("simulationSessions").withIndex("by_session", (q) => q.eq("sessionId", sessionId)).unique();
+  return ctx.db
+    .query("simulationSessions")
+    .withIndex("by_session", (q) => q.eq("sessionId", sessionId))
+    .unique();
 }
 
-async function assertSessionOwner(ctx: QueryCtx | MutationCtx, sessionId: string, ownerSubject: string) {
+async function assertSessionOwner(
+  ctx: QueryCtx | MutationCtx,
+  sessionId: string,
+  ownerSubject: string,
+) {
   const session = await sessionById(ctx, sessionId);
-  if (!session || session.ownerSubject !== ownerSubject) throw new Error("simulation session not found");
+  if (!session || session.ownerSubject !== ownerSubject)
+    throw new Error("simulation session not found");
   return session;
 }
 
-async function participantById(ctx: QueryCtx | MutationCtx, sessionId: string, participantId: string) {
+async function participantById(
+  ctx: QueryCtx | MutationCtx,
+  sessionId: string,
+  participantId: string,
+) {
   return ctx.db
     .query("simulationParticipants")
-    .withIndex("by_session_and_participant", (q) => q.eq("sessionId", sessionId).eq("participantId", participantId))
+    .withIndex("by_session_and_participant", (q) =>
+      q.eq("sessionId", sessionId).eq("participantId", participantId),
+    )
     .unique();
 }
 
@@ -238,7 +275,10 @@ async function appendAudit(
   participantId?: string,
 ): Promise<void> {
   const eventId = `simulation:${session.sessionId}:${eventKey}`;
-  const existing = await ctx.db.query("auditEvents").withIndex("by_event", (q) => q.eq("eventId", eventId)).unique();
+  const existing = await ctx.db
+    .query("auditEvents")
+    .withIndex("by_event", (q) => q.eq("eventId", eventId))
+    .unique();
   if (existing) return;
   await ctx.db.insert("auditEvents", {
     eventId,
@@ -254,7 +294,10 @@ async function appendAudit(
   });
 }
 
-function sessionResult(session: { sessionId: string; status: string; turnCount: number; participantCount: number }, idempotent = false) {
+function sessionResult(
+  session: { sessionId: string; status: string; turnCount: number; participantCount: number },
+  idempotent = false,
+) {
   return {
     sessionId: session.sessionId,
     status: session.status,
@@ -264,7 +307,11 @@ function sessionResult(session: { sessionId: string; status: string; turnCount: 
   };
 }
 
-async function assertStartMatches(ctx: MutationCtx, existing: Doc<"simulationSessions">, args: StartInput): Promise<void> {
+async function assertStartMatches(
+  ctx: MutationCtx,
+  existing: Doc<"simulationSessions">,
+  args: StartInput,
+): Promise<void> {
   const requestedObservations = observationIds(args.observationIds);
   if (
     existing.idempotencyKey !== args.idempotencyKey ||
@@ -280,10 +327,16 @@ async function assertStartMatches(ctx: MutationCtx, existing: Doc<"simulationSes
     throw new Error("idempotency key already exists with a conflicting payload");
   }
   const requested = args.participants ?? [];
-  const persisted = await ctx.db.query("simulationParticipants").withIndex("by_session", (q) => q.eq("sessionId", existing.sessionId)).collect();
-  if (persisted.length !== requested.length) throw new Error("idempotency key already exists with a conflicting payload");
+  const persisted = await ctx.db
+    .query("simulationParticipants")
+    .withIndex("by_session", (q) => q.eq("sessionId", existing.sessionId))
+    .collect();
+  if (persisted.length !== requested.length)
+    throw new Error("idempotency key already exists with a conflicting payload");
   for (const participant of requested) {
-    const saved = persisted.find((candidate) => candidate.participantId === participant.participantId);
+    const saved = persisted.find(
+      (candidate) => candidate.participantId === participant.participantId,
+    );
     if (
       !saved ||
       saved.participantType !== participant.participantType ||
@@ -311,18 +364,28 @@ async function createSession(ctx: MutationCtx, args: StartInput, ownerSubject: s
   const observationIdList = observationIds(args.observationIds);
   modelMetadata(args.coordinatorProvider, args.coordinatorModel, false);
   const participants = args.participants ?? [];
-  if (participants.length > maxParticipants) throw new Error("participant count exceeds maxParticipants");
+  if (participants.length > maxParticipants)
+    throw new Error("participant count exceeds maxParticipants");
   const seenParticipantIds = new Set<string>();
   for (const participant of participants) {
     assertId(participant.participantId, "participantId");
-    if (seenParticipantIds.has(participant.participantId)) throw new Error("duplicate participantId");
+    if (seenParticipantIds.has(participant.participantId))
+      throw new Error("duplicate participantId");
     seenParticipantIds.add(participant.participantId);
     assertText(participant.role, "role", MAX_ROLE_LENGTH);
-    modelMetadata(participant.provider, participant.model, participant.participantType === "ai_agent");
-    if (participant.displayName !== undefined) assertText(participant.displayName, "displayName", MAX_ROLE_LENGTH);
-    if (participant.toolsJson !== undefined) parseJson(participant.toolsJson, "toolsJson", MAX_JSON_LENGTH);
-    if (participant.configJson !== undefined) parseJson(participant.configJson, "configJson", MAX_JSON_LENGTH);
-    if (participant.traceId !== undefined) assertText(participant.traceId, "participant traceId", MAX_ID_LENGTH);
+    modelMetadata(
+      participant.provider,
+      participant.model,
+      participant.participantType === "ai_agent",
+    );
+    if (participant.displayName !== undefined)
+      assertText(participant.displayName, "displayName", MAX_ROLE_LENGTH);
+    if (participant.toolsJson !== undefined)
+      parseJson(participant.toolsJson, "toolsJson", MAX_JSON_LENGTH);
+    if (participant.configJson !== undefined)
+      parseJson(participant.configJson, "configJson", MAX_JSON_LENGTH);
+    if (participant.traceId !== undefined)
+      assertText(participant.traceId, "participant traceId", MAX_ID_LENGTH);
   }
 
   const existing = await sessionById(ctx, args.sessionId);
@@ -333,7 +396,9 @@ async function createSession(ctx: MutationCtx, args: StartInput, ownerSubject: s
   }
   const existingByKey = await ctx.db
     .query("simulationSessions")
-    .withIndex("by_owner_and_idempotency", (q) => q.eq("ownerSubject", ownerSubject).eq("idempotencyKey", args.idempotencyKey))
+    .withIndex("by_owner_and_idempotency", (q) =>
+      q.eq("ownerSubject", ownerSubject).eq("idempotencyKey", args.idempotencyKey),
+    )
     .unique();
   if (existingByKey) {
     await assertStartMatches(ctx, existingByKey, args);
@@ -360,7 +425,9 @@ async function createSession(ctx: MutationCtx, args: StartInput, ownerSubject: s
     maxTurns,
     participantCount: participants.length,
     turnCount: 0,
-    ...(args.coordinatorProvider === undefined ? {} : { coordinatorProvider: args.coordinatorProvider }),
+    ...(args.coordinatorProvider === undefined
+      ? {}
+      : { coordinatorProvider: args.coordinatorProvider }),
     ...(args.coordinatorModel === undefined ? {} : { coordinatorModel: args.coordinatorModel }),
     observationIds: observationIdList,
     createdAt: now,
@@ -397,7 +464,7 @@ export const start = mutation({
   args: startFields,
   handler: async (ctx, args) => {
     const { identity } = await requireUser(ctx);
-    return createSession(ctx, args as StartInput, identity.subject);
+    return createSession(ctx, args, identity.subject);
   },
 });
 
@@ -406,20 +473,32 @@ export const startInternal = internalMutation({
   handler: async (ctx, args) => {
     const ownerSubject = args.ownerSubject;
     if (!ownerSubject) throw new Error("ownerSubject is required");
-    return createSession(ctx, args as StartInput, ownerSubject);
+    return createSession(ctx, args, ownerSubject);
   },
 });
 
-async function addParticipantImpl(ctx: MutationCtx, args: ParticipantInput & { sessionId: string }, ownerSubject: string) {
+async function addParticipantImpl(
+  ctx: MutationCtx,
+  args: ParticipantInput & { sessionId: string },
+  ownerSubject: string,
+) {
   const session = await assertSessionOwner(ctx, args.sessionId, ownerSubject);
-  if (session.status === "cancelled" || session.status === "failed" || session.status === "completed") throw new Error("simulation session is not accepting participants");
+  if (
+    session.status === "cancelled" ||
+    session.status === "failed" ||
+    session.status === "completed"
+  )
+    throw new Error("simulation session is not accepting participants");
   assertId(args.participantId, "participantId");
   assertText(args.role, "role", MAX_ROLE_LENGTH);
   modelMetadata(args.provider, args.model, args.participantType === "ai_agent");
   if (args.displayName !== undefined) assertText(args.displayName, "displayName", MAX_ROLE_LENGTH);
   if (args.toolsJson !== undefined) parseJson(args.toolsJson, "toolsJson", MAX_JSON_LENGTH);
   if (args.configJson !== undefined) parseJson(args.configJson, "configJson", MAX_JSON_LENGTH);
-  const existing = await ctx.db.query("simulationParticipants").withIndex("by_participant", (q) => q.eq("participantId", args.participantId)).unique();
+  const existing = await ctx.db
+    .query("simulationParticipants")
+    .withIndex("by_participant", (q) => q.eq("participantId", args.participantId))
+    .unique();
   if (existing) {
     if (
       existing.sessionId === args.sessionId &&
@@ -436,8 +515,12 @@ async function addParticipantImpl(ctx: MutationCtx, args: ParticipantInput & { s
     }
     throw new Error("participantId already exists with a conflicting payload");
   }
-  const count = await ctx.db.query("simulationParticipants").withIndex("by_session", (q) => q.eq("sessionId", args.sessionId)).collect();
-  if (count.length >= session.maxParticipants) throw new Error("participant count exceeds maxParticipants");
+  const count = await ctx.db
+    .query("simulationParticipants")
+    .withIndex("by_session", (q) => q.eq("sessionId", args.sessionId))
+    .collect();
+  if (count.length >= session.maxParticipants)
+    throw new Error("participant count exceeds maxParticipants");
   const now = Date.now();
   await ctx.db.insert("simulationParticipants", {
     participantId: args.participantId,
@@ -453,12 +536,24 @@ async function addParticipantImpl(ctx: MutationCtx, args: ParticipantInput & { s
     createdAt: now,
     updatedAt: now,
   });
-  await ctx.db.patch(session._id, { participantCount: count.length + 1, updatedAt: now, status: session.status === "created" ? "running" : session.status });
-  await appendAudit(ctx, session, `participant:${args.participantId}`, "accepted", args.traceId ?? session.traceId, {
-    action: "participant_added",
-    participantType: args.participantType,
-    role: args.role,
-  }, args.participantId);
+  await ctx.db.patch(session._id, {
+    participantCount: count.length + 1,
+    updatedAt: now,
+    status: session.status === "created" ? "running" : session.status,
+  });
+  await appendAudit(
+    ctx,
+    session,
+    `participant:${args.participantId}`,
+    "accepted",
+    args.traceId ?? session.traceId,
+    {
+      action: "participant_added",
+      participantType: args.participantType,
+      role: args.role,
+    },
+    args.participantId,
+  );
   return { participantId: args.participantId, idempotent: false };
 }
 
@@ -466,20 +561,22 @@ export const addParticipant = mutation({
   args: { ...participantInput.fields, sessionId: v.string(), ownerSubject: v.optional(v.string()) },
   handler: async (ctx, args) => {
     const { identity } = await requireUser(ctx);
-    return addParticipantImpl(ctx, args as ParticipantInput & { sessionId: string }, identity.subject);
+    return addParticipantImpl(ctx, args, identity.subject);
   },
 });
 
 export const addParticipantInternal = internalMutation({
   args: { ...participantInput.fields, sessionId: v.string(), ownerSubject: v.string() },
-  handler: async (ctx, args) => addParticipantImpl(ctx, args as ParticipantInput & { sessionId: string }, args.ownerSubject),
+  handler: async (ctx, args) =>
+    addParticipantImpl(ctx, args as ParticipantInput & { sessionId: string }, args.ownerSubject),
 });
 
 async function submitTurnImpl(ctx: MutationCtx, args: TurnInput, ownerSubject: string) {
   const session = await assertSessionOwner(ctx, args.sessionId, ownerSubject);
   assertId(args.eventId, "eventId");
   assertId(args.idempotencyKey, "idempotencyKey");
-  if (!Number.isSafeInteger(args.turn) || args.turn < 1) throw new Error("turn must be a positive integer");
+  if (!Number.isSafeInteger(args.turn) || args.turn < 1)
+    throw new Error("turn must be a positive integer");
   const eventType = args.eventType ?? "turn";
   assertText(eventType, "eventType", MAX_EVENT_TYPE_LENGTH);
   if (args.traceId !== undefined) assertText(args.traceId, "traceId", MAX_ID_LENGTH);
@@ -490,7 +587,9 @@ async function submitTurnImpl(ctx: MutationCtx, args: TurnInput, ownerSubject: s
 
   const existingByKey = await ctx.db
     .query("simulationEvents")
-    .withIndex("by_session_and_idempotency", (q) => q.eq("sessionId", args.sessionId).eq("idempotencyKey", args.idempotencyKey))
+    .withIndex("by_session_and_idempotency", (q) =>
+      q.eq("sessionId", args.sessionId).eq("idempotencyKey", args.idempotencyKey),
+    )
     .unique();
   if (existingByKey) {
     if (
@@ -501,15 +600,22 @@ async function submitTurnImpl(ctx: MutationCtx, args: TurnInput, ownerSubject: s
       existingByKey.traceId !== (args.traceId ?? session.traceId) ||
       existingByKey.inputJson !== args.inputJson ||
       existingByKey.outputJson !== args.outputJson ||
-      existingByKey.resultJson !== args.resultJson &&
-        existingByKey.resultJson !== args.outputJson ||
+      (existingByKey.resultJson !== args.resultJson &&
+        existingByKey.resultJson !== args.outputJson) ||
       JSON.stringify(existingByKey.observationIds) !== JSON.stringify(ids)
     ) {
       throw new Error("idempotency key already exists with a conflicting payload");
     }
-    return { ...sessionResult(session, true), eventId: existingByKey.eventId, turn: existingByKey.turn };
+    return {
+      ...sessionResult(session, true),
+      eventId: existingByKey.eventId,
+      turn: existingByKey.turn,
+    };
   }
-  const existingById = await ctx.db.query("simulationEvents").withIndex("by_event", (q) => q.eq("eventId", args.eventId)).unique();
+  const existingById = await ctx.db
+    .query("simulationEvents")
+    .withIndex("by_event", (q) => q.eq("eventId", args.eventId))
+    .unique();
   if (existingById) {
     if (
       existingById.sessionId !== args.sessionId ||
@@ -520,16 +626,26 @@ async function submitTurnImpl(ctx: MutationCtx, args: TurnInput, ownerSubject: s
       existingById.traceId !== (args.traceId ?? session.traceId) ||
       existingById.inputJson !== args.inputJson ||
       existingById.outputJson !== args.outputJson ||
-      existingById.resultJson !== args.resultJson &&
-        existingById.resultJson !== args.outputJson ||
+      (existingById.resultJson !== args.resultJson &&
+        existingById.resultJson !== args.outputJson) ||
       JSON.stringify(existingById.observationIds) !== JSON.stringify(ids)
     ) {
       throw new Error("eventId already exists with a conflicting payload");
     }
-    return { ...sessionResult(session, true), eventId: existingById.eventId, turn: existingById.turn };
+    return {
+      ...sessionResult(session, true),
+      eventId: existingById.eventId,
+      turn: existingById.turn,
+    };
   }
-  if (session.status === "cancelled" || session.status === "failed" || session.status === "completed") throw new Error("simulation session is not accepting turns");
-  if (args.turn !== session.turnCount + 1) throw new Error("turn must advance the session by exactly one");
+  if (
+    session.status === "cancelled" ||
+    session.status === "failed" ||
+    session.status === "completed"
+  )
+    throw new Error("simulation session is not accepting turns");
+  if (args.turn !== session.turnCount + 1)
+    throw new Error("turn must advance the session by exactly one");
   if (args.turn > session.maxTurns) throw new Error("turn count exceeds maxTurns");
   const participant = await participantById(ctx, args.sessionId, args.participantId);
   if (!participant) throw new Error("participant not found");
@@ -553,24 +669,42 @@ async function submitTurnImpl(ctx: MutationCtx, args: TurnInput, ownerSubject: s
   });
   await ctx.db.patch(session._id, {
     status,
-    ...(args.resultJson === undefined && args.outputJson === undefined ? {} : { resultJson: args.resultJson ?? args.outputJson }),
+    ...(args.resultJson === undefined && args.outputJson === undefined
+      ? {}
+      : { resultJson: args.resultJson ?? args.outputJson }),
     updatedAt: now,
   });
-  await appendAudit(ctx, session, `turn:${args.turn}`, "accepted", traceId, {
-    action: "turn_submitted",
+  await appendAudit(
+    ctx,
+    session,
+    `turn:${args.turn}`,
+    "accepted",
+    traceId,
+    {
+      action: "turn_submitted",
+      eventId: args.eventId,
+      participantId: args.participantId,
+      turn: args.turn,
+      observationCount: ids.length,
+    },
+    args.participantId,
+  );
+  return {
+    sessionId: args.sessionId,
     eventId: args.eventId,
-    participantId: args.participantId,
     turn: args.turn,
-    observationCount: ids.length,
-  }, args.participantId);
-  return { sessionId: args.sessionId, eventId: args.eventId, turn: args.turn, status, turnCount: args.turn, participantCount: session.participantCount, idempotent: false };
+    status,
+    turnCount: args.turn,
+    participantCount: session.participantCount,
+    idempotent: false,
+  };
 }
 
 export const submitTurn = mutation({
   args: turnFields,
   handler: async (ctx, args) => {
     const { identity } = await requireUser(ctx);
-    return submitTurnImpl(ctx, args as TurnInput, identity.subject);
+    return submitTurnImpl(ctx, args, identity.subject);
   },
 });
 
@@ -579,7 +713,7 @@ export const submitTurnInternal = internalMutation({
   handler: async (ctx, args) => {
     const ownerSubject = args.ownerSubject;
     if (!ownerSubject) throw new Error("ownerSubject is required");
-    return submitTurnImpl(ctx, args as TurnInput, ownerSubject);
+    return submitTurnImpl(ctx, args, ownerSubject);
   },
 });
 
@@ -591,15 +725,23 @@ async function recordProposalImpl(ctx: MutationCtx, args: ProposalInput, ownerSu
   assertText(args.proposalType, "proposalType", MAX_EVENT_TYPE_LENGTH);
   modelMetadata(args.provider, args.model, true);
   parseJson(args.proposalJson, "proposalJson", MAX_OUTPUT_LENGTH);
-  if (args.rationaleJson !== undefined) parseJson(args.rationaleJson, "rationaleJson", MAX_RATIONALE_LENGTH);
+  if (args.rationaleJson !== undefined)
+    parseJson(args.rationaleJson, "rationaleJson", MAX_RATIONALE_LENGTH);
   if (args.traceId !== undefined) assertText(args.traceId, "traceId", MAX_ID_LENGTH);
   const ids = observationIds(args.observationIds);
-  if (args.participantId !== undefined && !(await participantById(ctx, args.sessionId, args.participantId))) throw new Error("participant not found");
-  if (session.status === "cancelled" || session.status === "failed") throw new Error("simulation session is not accepting proposals");
+  if (
+    args.participantId !== undefined &&
+    !(await participantById(ctx, args.sessionId, args.participantId))
+  )
+    throw new Error("participant not found");
+  if (session.status === "cancelled" || session.status === "failed")
+    throw new Error("simulation session is not accepting proposals");
 
   const existingByKey = await ctx.db
     .query("solverProposals")
-    .withIndex("by_session_and_idempotency", (q) => q.eq("sessionId", args.sessionId).eq("idempotencyKey", args.idempotencyKey))
+    .withIndex("by_session_and_idempotency", (q) =>
+      q.eq("sessionId", args.sessionId).eq("idempotencyKey", args.idempotencyKey),
+    )
     .unique();
   if (existingByKey) {
     if (
@@ -617,9 +759,17 @@ async function recordProposalImpl(ctx: MutationCtx, args: ProposalInput, ownerSu
     ) {
       throw new Error("idempotency key already exists with a conflicting payload");
     }
-    return { proposalId: existingByKey.proposalId, sessionId: args.sessionId, status: existingByKey.status, idempotent: true };
+    return {
+      proposalId: existingByKey.proposalId,
+      sessionId: args.sessionId,
+      status: existingByKey.status,
+      idempotent: true,
+    };
   }
-  const existingById = await ctx.db.query("solverProposals").withIndex("by_proposal", (q) => q.eq("proposalId", args.proposalId)).unique();
+  const existingById = await ctx.db
+    .query("solverProposals")
+    .withIndex("by_proposal", (q) => q.eq("proposalId", args.proposalId))
+    .unique();
   if (existingById) {
     if (
       existingById.solverId !== args.solverId ||
@@ -637,10 +787,19 @@ async function recordProposalImpl(ctx: MutationCtx, args: ProposalInput, ownerSu
     ) {
       throw new Error("proposalId already exists with a conflicting payload");
     }
-    return { proposalId: existingById.proposalId, sessionId: args.sessionId, status: existingById.status, idempotent: true };
+    return {
+      proposalId: existingById.proposalId,
+      sessionId: args.sessionId,
+      status: existingById.status,
+      idempotent: true,
+    };
   }
-  const proposalCount = await ctx.db.query("solverProposals").withIndex("by_session", (q) => q.eq("sessionId", args.sessionId)).collect();
-  if (proposalCount.length >= MAX_PROPOSALS_PER_SESSION) throw new Error("proposal count exceeds session bound");
+  const proposalCount = await ctx.db
+    .query("solverProposals")
+    .withIndex("by_session", (q) => q.eq("sessionId", args.sessionId))
+    .collect();
+  if (proposalCount.length >= MAX_PROPOSALS_PER_SESSION)
+    throw new Error("proposal count exceeds session bound");
   const traceId = args.traceId ?? session.traceId;
   await ctx.db.insert("solverProposals", {
     proposalId: args.proposalId,
@@ -658,22 +817,35 @@ async function recordProposalImpl(ctx: MutationCtx, args: ProposalInput, ownerSu
     observationIds: ids,
     createdAt: Date.now(),
   });
-  await appendAudit(ctx, session, `proposal:${args.proposalId}`, "accepted", traceId, {
-    action: "solver_proposal_recorded",
+  await appendAudit(
+    ctx,
+    session,
+    `proposal:${args.proposalId}`,
+    "accepted",
+    traceId,
+    {
+      action: "solver_proposal_recorded",
+      proposalId: args.proposalId,
+      proposalType: args.proposalType,
+      provider: args.provider,
+      model: args.model,
+      observationCount: ids.length,
+    },
+    args.participantId,
+  );
+  return {
     proposalId: args.proposalId,
-    proposalType: args.proposalType,
-    provider: args.provider,
-    model: args.model,
-    observationCount: ids.length,
-  }, args.participantId);
-  return { proposalId: args.proposalId, sessionId: args.sessionId, status: args.status ?? "pending", idempotent: false };
+    sessionId: args.sessionId,
+    status: args.status ?? "pending",
+    idempotent: false,
+  };
 }
 
 export const recordProposal = mutation({
   args: proposalFields,
   handler: async (ctx, args) => {
     const { identity } = await requireUser(ctx);
-    return recordProposalImpl(ctx, args as ProposalInput, identity.subject);
+    return recordProposalImpl(ctx, args, identity.subject);
   },
 });
 
@@ -682,19 +854,30 @@ export const recordProposalInternal = internalMutation({
   handler: async (ctx, args) => {
     const ownerSubject = args.ownerSubject;
     if (!ownerSubject) throw new Error("ownerSubject is required");
-    return recordProposalImpl(ctx, args as ProposalInput, ownerSubject);
+    return recordProposalImpl(ctx, args, ownerSubject);
   },
 });
 
 async function statusFor(ctx: QueryCtx, sessionId: string, ownerSubject: string, limit = 200) {
   assertId(sessionId, "sessionId");
   assertText(ownerSubject, "ownerSubject", MAX_ID_LENGTH);
-  if (!Number.isSafeInteger(limit) || limit < 1 || limit > 200) throw new Error("limit must be between 1 and 200");
+  if (!Number.isSafeInteger(limit) || limit < 1 || limit > 200)
+    throw new Error("limit must be between 1 and 200");
   const session = await assertSessionOwner(ctx, sessionId, ownerSubject);
   const [participants, events, proposals] = await Promise.all([
-    ctx.db.query("simulationParticipants").withIndex("by_session", (q) => q.eq("sessionId", sessionId)).collect(),
-    ctx.db.query("simulationEvents").withIndex("by_session_and_turn", (q) => q.eq("sessionId", sessionId)).order("asc").collect(),
-    ctx.db.query("solverProposals").withIndex("by_session", (q) => q.eq("sessionId", sessionId)).collect(),
+    ctx.db
+      .query("simulationParticipants")
+      .withIndex("by_session", (q) => q.eq("sessionId", sessionId))
+      .collect(),
+    ctx.db
+      .query("simulationEvents")
+      .withIndex("by_session_and_turn", (q) => q.eq("sessionId", sessionId))
+      .order("asc")
+      .collect(),
+    ctx.db
+      .query("solverProposals")
+      .withIndex("by_session", (q) => q.eq("sessionId", sessionId))
+      .collect(),
   ]);
   return {
     session,

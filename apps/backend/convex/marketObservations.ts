@@ -12,7 +12,8 @@ const source = v.union(
 );
 
 function assertDecimal(value: string): void {
-  if (!/^(0|[1-9]\d*)(\.\d+)?$/.test(value)) throw new Error("observation value must be a decimal string");
+  if (!/^(0|[1-9]\d*)(\.\d+)?$/.test(value))
+    throw new Error("observation value must be a decimal string");
 }
 
 export const ingest = internalMutation({
@@ -51,7 +52,7 @@ export const ingest = internalMutation({
       .withIndex("by_observation", (query) => query.eq("observationId", args.observationId))
       .unique();
     if (existing) {
-      const { _id: _existingId, _creationTime: _existingTime, ...existingPayload } = existing;
+      const existingPayload = { ...existing, _id: undefined, _creationTime: undefined };
       const argsPayload = { ...args };
       if (JSON.stringify(existingPayload) !== JSON.stringify(argsPayload)) {
         throw new Error("observation ID already exists with a conflicting payload");
@@ -80,7 +81,8 @@ export const latest = internalQuery({
   },
   handler: async (ctx, args) => {
     const limit = args.limit ?? 50;
-    if (!Number.isInteger(limit) || limit < 1 || limit > 200) throw new Error("limit must be between 1 and 200");
+    if (!Number.isInteger(limit) || limit < 1 || limit > 200)
+      throw new Error("limit must be between 1 and 200");
     return ctx.db
       .query("marketObservations")
       .withIndex("by_protocol_metric_time", (query) =>

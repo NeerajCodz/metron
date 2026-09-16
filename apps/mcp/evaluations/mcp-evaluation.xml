@@ -21,7 +21,7 @@
   </qa_pair>
   <qa_pair>
     <question>Which tool ranks recovery actions without moving funds?</question>
-    <answer>metron_recovery_rank</answer>
+    <answer>metron_ai_recovery_rank</answer>
   </qa_pair>
   <qa_pair>
     <question>What extra input is mandatory before a funds-moving execution can be submitted?</question>

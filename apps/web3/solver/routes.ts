@@ -16,7 +16,7 @@ export interface RouteMarketSnapshot {
   resultingDeltaWad: string;
   resultingHealthFactorWad: string;
   liquidityScoreBps: number;
-  observedAt: number;
+  observedAtMs: number;
 }
 
 export interface RouteBuildContext {
@@ -37,6 +37,26 @@ function routeId(context: RouteBuildContext, kind: string, market: RouteMarketSn
 
 function asHex(value: string): `0x${string}` {
   return value as `0x${string}`;
+}
+
+function strategyGraphFor(routeIdValue: string, actions: readonly RouteAction[]) {
+  const stageFor = (action: RouteAction): "execution" | "settlement" => {
+    return action.actionType === "cross_chain_message" ? "settlement" : "execution";
+  };
+  const nodes = actions.map((action, index) => ({
+    nodeId: `${routeIdValue}:action:${index}`,
+    stage: stageFor(action),
+    action,
+    dependsOn: index === 0 ? [] : [`${routeIdValue}:action:${index - 1}`],
+  }));
+  const firstNode = nodes[0];
+  const lastNode = nodes[nodes.length - 1];
+  return {
+    graphId: `${routeIdValue}:graph`,
+    nodes,
+    entryNodeIds: firstNode ? [firstNode.nodeId] : [],
+    terminalNodeIds: lastNode ? [lastNode.nodeId] : [],
+  };
 }
 
 function actionTarget(
@@ -87,7 +107,12 @@ export function buildCandidateRoutes(
         strategyId: `${routeId(context, "lending", market)}:strategy`,
         actions: [
           {
-            ...actionTarget(market.lendingTarget, market.asset, "0", "supply"),
+            ...actionTarget(
+              market.lendingTarget,
+              market.asset,
+              intent.exposure.targetDeltaWad.replace(/^-/, ""),
+              "supply",
+            ),
             chainId: market.chainId,
           },
         ],
@@ -114,7 +139,12 @@ export function buildCandidateRoutes(
         strategyId: `${routeId(context, "liquidity", market)}:strategy`,
         actions: [
           {
-            ...actionTarget(market.liquidityTarget, market.asset, "0", "add_liquidity"),
+            ...actionTarget(
+              market.liquidityTarget,
+              market.asset,
+              intent.exposure.targetDeltaWad.replace(/^-/, ""),
+              "add_liquidity",
+            ),
             chainId: market.chainId,
           },
         ],
@@ -133,7 +163,10 @@ export function buildCandidateRoutes(
       });
     }
   }
-  return routes;
+  return routes.map((route) => ({
+    ...route,
+    strategyGraph: strategyGraphFor(route.routeId, route.actions),
+  }));
 }
 
 function average(left: number, right: number): number {
@@ -195,7 +228,7 @@ export function buildComposedCandidateRoutes(
             actionType: "cross_chain_message",
             target: context.bridgeTarget,
             assetIn: source.asset,
-            amount: "0",
+            amount: intent.exposure.targetDeltaWad.replace(/^-/, ""),
             calldata: asHex("0x"),
           }),
         );
@@ -208,7 +241,7 @@ export function buildComposedCandidateRoutes(
           actionType: "supply",
           target: destination.lendingTarget,
           assetIn: destination.asset,
-          amount: "0",
+          amount: intent.exposure.targetDeltaWad.replace(/^-/, ""),
           calldata: asHex("0x"),
         }),
         actionWithIndex(destinationIndex + 1, {
@@ -217,7 +250,7 @@ export function buildComposedCandidateRoutes(
           actionType: "add_liquidity",
           target: destination.liquidityTarget,
           assetIn: destination.asset,
-          amount: "0",
+          amount: intent.exposure.targetDeltaWad.replace(/^-/, ""),
           calldata: asHex("0x"),
         }),
         actionWithIndex(destinationIndex + 2, {
@@ -226,7 +259,7 @@ export function buildComposedCandidateRoutes(
           actionType: "adjust_hedge",
           target: context.hedgeTarget,
           assetIn: destination.asset,
-          amount: "0",
+          amount: intent.exposure.targetDeltaWad.replace(/^-/, ""),
           calldata: asHex("0x"),
         }),
       );
@@ -261,5 +294,8 @@ export function buildComposedCandidateRoutes(
       });
     }
   }
-  return routes;
+  return routes.map((route) => ({
+    ...route,
+    strategyGraph: strategyGraphFor(route.routeId, route.actions),
+  }));
 }

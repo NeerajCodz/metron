@@ -29,15 +29,26 @@ def simulate_cascade(request: CascadeRequest, generated_at: int) -> CascadeRespo
         remaining_depth -= consumed
         total_consumed += consumed
         utilization = consumed / request.market_depth_usd
-        incremental_impact = min(Decimal(100_000), utilization * Decimal(request.price_impact_slope_bps))
+        incremental_impact = min(
+            Decimal(100_000), utilization * Decimal(request.price_impact_slope_bps)
+        )
         cumulative_impact = min(Decimal(100_000), cumulative_impact + incremental_impact)
         round_exposure = Decimal("0")
         round_liquidations: list[str] = []
         for position in request.positions:
             if position.position_id in affected:
                 continue
-            shocked_collateral = position.collateral_usd * max(Decimal("0"), Decimal("1") - cumulative_impact / _BPS)
-            health = Decimal("100") if position.debt_usd == 0 else shocked_collateral * Decimal(position.liquidation_threshold_bps) / _BPS / position.debt_usd
+            shocked_collateral = position.collateral_usd * max(
+                Decimal("0"), Decimal("1") - cumulative_impact / _BPS
+            )
+            health = (
+                Decimal("100")
+                if position.debt_usd == 0
+                else shocked_collateral
+                * Decimal(position.liquidation_threshold_bps)
+                / _BPS
+                / position.debt_usd
+            )
             if health < Decimal("1"):
                 affected.add(position.position_id)
                 newly_liquidatable.append(position.position_id)
@@ -63,7 +74,9 @@ def simulate_cascade(request: CascadeRequest, generated_at: int) -> CascadeRespo
             termination_reason = "fixed_point"
             break
     else:
-        termination_reason = "depth_exhausted" if remaining_depth <= 0 and selling > 0 else "max_rounds"
+        termination_reason = (
+            "depth_exhausted" if remaining_depth <= 0 and selling > 0 else "max_rounds"
+        )
 
     return CascadeResponse(
         trace_id=request.trace_id,

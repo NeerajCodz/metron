@@ -13,13 +13,7 @@ export const AUDIT_EVENT_SCHEMA_VERSION = "audit-event-v1" as const;
 
 export type ExecutionStatus = "pending" | "submitted" | "confirmed" | "failed" | "expired";
 export type IntentEventStatus =
-  | "draft"
-  | "published"
-  | "authorized"
-  | "auctioning"
-  | "settled"
-  | "cancelled"
-  | "expired";
+  "draft" | "published" | "authorized" | "auctioning" | "settled" | "cancelled" | "expired";
 export type SolverEventStatus = "committed" | "revealed" | "selected" | "rejected";
 export type ComponentEventStatus = "observed" | "updated" | "replaced";
 export type PredictionEventStatus = "generated" | "rejected";

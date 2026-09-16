@@ -278,7 +278,9 @@ export default defineSchema({
     confidenceBps: v.optional(v.number()),
     fallbackUsed: v.boolean(),
     fallbackReason: v.optional(v.string()),
-    predictionSource: v.optional(v.union(v.literal("model"), v.literal("deterministic"), v.literal("mixed"))),
+    predictionSource: v.optional(
+      v.union(v.literal("model"), v.literal("deterministic"), v.literal("mixed")),
+    ),
     datasetFingerprint: v.optional(v.string()),
     featureFingerprint: v.optional(v.string()),
     artifactVersion: v.optional(v.string()),
@@ -376,7 +378,6 @@ export default defineSchema({
     .index("by_session", ["sessionId"])
     .index("by_session_and_idempotency", ["sessionId", "idempotencyKey"])
     .index("by_trace", ["traceId"]),
-
 
   alerts: defineTable({
     positionId: v.optional(v.id("positions")),

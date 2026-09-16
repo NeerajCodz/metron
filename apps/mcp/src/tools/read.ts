@@ -98,7 +98,58 @@ export function registerReadOnlyTools(server: McpServer, context: ReadToolContex
   );
 
   server.registerTool(
-    "metron_risk_liquidation",
+    "metron_position_graph",
+    {
+      title: "Read Position Graph",
+      description: "Read the owner-authorized portfolio component graph for a position.",
+      inputSchema: {
+        position_id: z.string().min(1).max(128),
+        response_format: responseFormat,
+      },
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false,
+      },
+    },
+    async ({ position_id, response_format: format }) =>
+      executeRead(context, "Position graph", format, async () =>
+        context.services.convex("positions.graph", { positionId: position_id }),
+      ),
+  );
+
+  server.registerTool(
+    "metron_portfolio_risk_snapshot",
+    {
+      title: "Read Portfolio Risk Snapshot",
+      description: "Read the latest owner-authorized deterministic and model risk snapshot.",
+      inputSchema: {
+        position_id: z.string().min(1).max(128),
+        response_format: responseFormat,
+      },
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false,
+      },
+    },
+    async ({ position_id, response_format: format }) =>
+      executeRead(context, "Portfolio risk snapshot", format, async () => {
+        const position = await context.services.convex<Record<string, unknown>>("positions.get", {
+          positionId: position_id,
+        });
+        const snapshots = position?.snapshots;
+        return {
+          positionId: position_id,
+          snapshot: Array.isArray(snapshots) ? ((snapshots[0] as unknown) ?? null) : null,
+        };
+      }),
+  );
+
+  server.registerTool(
+    "metron_ai_risk_liquidation",
     {
       title: "Predict Liquidation Risk",
       description:
@@ -107,7 +158,10 @@ export function registerReadOnlyTools(server: McpServer, context: ReadToolContex
         position_id: z.string().min(1).max(128),
         trace_id: z.string().min(1).max(128),
         features: featureInput,
-        horizons_days: z.array(z.number().int().positive().max(3650)).min(1).max(8),
+        horizons: z
+          .array(z.enum(["1h", "6h", "24h", "7d"]))
+          .min(1)
+          .max(4),
         response_format: responseFormat,
       },
       annotations: {
@@ -117,19 +171,19 @@ export function registerReadOnlyTools(server: McpServer, context: ReadToolContex
         openWorldHint: true,
       },
     },
-    async ({ position_id, trace_id, features, horizons_days, response_format: format }) =>
+    async ({ position_id, trace_id, features, horizons, response_format: format }) =>
       executeRead(context, "Liquidation prediction", format, async () =>
         context.services.ai("v1/risk/liquidation", {
           position_id,
           trace_id,
           features,
-          horizons_days,
+          horizons,
         }),
       ),
   );
 
   server.registerTool(
-    "metron_risk_regime",
+    "metron_ai_regime_predict",
     {
       title: "Classify Market Regime",
       description:
@@ -154,10 +208,10 @@ export function registerReadOnlyTools(server: McpServer, context: ReadToolContex
   );
 
   server.registerTool(
-    "metron_protocol_metrics_latest",
+    "metron_market_observations_latest",
     {
-      title: "Read Protocol Metrics",
-      description: "Read recent indexed protocol observations with bounded pagination.",
+      title: "Read Latest Market Observations",
+      description: "Read recent indexed market observations with bounded pagination.",
       inputSchema: {
         chain_id: z.number().int().positive(),
         protocol: z.string().min(1).max(128),
@@ -173,8 +227,8 @@ export function registerReadOnlyTools(server: McpServer, context: ReadToolContex
       },
     },
     async ({ chain_id, protocol, metric, limit, response_format: format }) =>
-      executeRead(context, "Protocol metrics", format, async () =>
-        context.services.convex("protocolMetrics.latest", {
+      executeRead(context, "Market observations", format, async () =>
+        context.services.convex("marketObservations.latest", {
           chainId: chain_id,
           protocol,
           metric,

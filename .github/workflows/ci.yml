@@ -22,10 +22,10 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm format:check
-      - run: pnpm lint
-      - run: pnpm typecheck
-      - run: pnpm test
-      - run: pnpm build
+      - run: pnpm turbo run lint --filter='!@metron/ui' --filter='!@metron/web'
+      - run: pnpm turbo run typecheck --filter='!@metron/ui' --filter='!@metron/web'
+      - run: pnpm turbo run test --filter='!@metron/ui' --filter='!@metron/web'
+      - run: pnpm turbo run build --filter='!@metron/ui' --filter='!@metron/web'
       - run: pnpm check:abi
 
   ai:
@@ -47,12 +47,14 @@ jobs:
   solidity:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - run: node scripts/forge.mjs build
+      - uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: v1.8.3
+      - run: node ../../scripts/forge.mjs build
         working-directory: apps/web3
-      - run: node scripts/forge.mjs test
+      - run: node ../../scripts/forge.mjs test
         working-directory: apps/web3
-      - run: node scripts/forge.mjs fmt --check
+      - run: node ../../scripts/forge.mjs fmt --check
         working-directory: apps/web3
 
   secrets:

@@ -102,7 +102,12 @@ def _fallback_liquidation(
     request: LiquidationRequest,
 ) -> dict[str, int]:
     base = _base_probability(request)
-    horizon_factor = {"1h": Decimal("0.65"), "6h": Decimal("0.92"), "24h": Decimal("1.25"), "7d": Decimal("1.65")}
+    horizon_factor = {
+        "1h": Decimal("0.65"),
+        "6h": Decimal("0.92"),
+        "24h": Decimal("1.25"),
+        "7d": Decimal("1.65"),
+    }
     return {
         horizon: int(
             (
@@ -151,7 +156,11 @@ def predict_liquidation(request: LiquidationRequest, generated_at: int) -> Liqui
     )
     used_ml = "model" in source_by_horizon.values()
     mixed = used_ml and "deterministic" in source_by_horizon.values()
-    model_version = "risk-ml-v1+deterministic" if mixed else ("risk-ml-v1" if used_ml else "risk-deterministic-v1")
+    model_version = (
+        "risk-ml-v1+deterministic"
+        if mixed
+        else ("risk-ml-v1" if used_ml else "risk-deterministic-v1")
+    )
     return LiquidationPrediction(
         trace_id=request.trace_id,
         position_id=request.position_id,
@@ -163,7 +172,9 @@ def predict_liquidation(request: LiquidationRequest, generated_at: int) -> Liqui
         feature_fingerprint=feature_fingerprint(request),
         source_by_horizon=source_by_horizon,
         prediction_source="mixed" if mixed else ("model" if used_ml else "deterministic"),
-        fallback_reason="artifact_missing_or_out_of_distribution" if not used_ml else ("partial_artifact_coverage" if mixed else None),
+        fallback_reason="artifact_missing_or_out_of_distribution"
+        if not used_ml
+        else ("partial_artifact_coverage" if mixed else None),
         confidence_bps=max(1_000, confidence),
         fallback_used=not used_ml or mixed,
     )
@@ -252,6 +263,7 @@ def feature_fingerprint(request: LiquidationRequest | RegimeRequest) -> str:
     ).encode()
     return sha256(payload).hexdigest()
 
+
 def model_status() -> dict[str, object]:
     directory = Path(str(get_settings().model_artifact_directory))
     tasks = (
@@ -277,4 +289,10 @@ def model_status() -> dict[str, object]:
         status = "artifact_missing" if not directory.exists() else "deterministic_only"
     else:
         status = "models_loaded"
-    return {"status": status, "directory": str(directory), "missing": missing, "invalid": invalid, "horizons": list(tasks[:4])}
+    return {
+        "status": status,
+        "directory": str(directory),
+        "missing": missing,
+        "invalid": invalid,
+        "horizons": list(tasks[:4]),
+    }

@@ -65,7 +65,10 @@ function addDecimalStrings(values: string[]): string {
   });
   const total = scaled.reduce((sum, value) => sum + value, 0n);
   const whole = total / 10n ** BigInt(scale);
-  const fraction = (total % 10n ** BigInt(scale)).toString().padStart(scale, "0").replace(/0+$/, "");
+  const fraction = (total % 10n ** BigInt(scale))
+    .toString()
+    .padStart(scale, "0")
+    .replace(/0+$/, "");
   return fraction ? `${whole}.${fraction}` : whole.toString();
 }
 
@@ -85,7 +88,9 @@ async function reconcilePositionRecord(ctx: MutationCtx, positionId: Id<"positio
     .withIndex("by_position", (query) => query.eq("positionId", positionId))
     .collect();
   const netValueUsd = addDecimalStrings(components.map((component) => component.valueUsd));
-  const netDeltaWad = components.reduce((sum, component) => sum + BigInt(component.deltaWad), 0n).toString();
+  const netDeltaWad = components
+    .reduce((sum, component) => sum + BigInt(component.deltaWad), 0n)
+    .toString();
   const healthFactors = components
     .map((component) => component.healthFactorWad)
     .filter((value): value is string => value !== undefined)
@@ -100,17 +105,20 @@ async function reconcilePositionRecord(ctx: MutationCtx, positionId: Id<"positio
   const failedBridge = messages.some((message) => message.state === "failed");
   const recoveryBridge = messages.some((message) => message.state === "recovery_required");
   const failedExecution = executions.some((execution) => execution.status === "failed");
-  const status = failedBridge || failedExecution
-    ? "failed"
-    : recoveryBridge
-      ? "emergency"
-      : components.length > 0
-        ? "active"
-        : position.status;
+  const status =
+    failedBridge || failedExecution
+      ? "failed"
+      : recoveryBridge
+        ? "emergency"
+        : components.length > 0
+          ? "active"
+          : position.status;
   await ctx.db.patch(position._id, {
     netValueUsd,
     netDeltaWad,
-    ...(healthFactors.length > 0 ? { healthFactorWad: (healthFactors.reduce((a, b) => a < b ? a : b)).toString() } : {}),
+    ...(healthFactors.length > 0
+      ? { healthFactorWad: healthFactors.reduce((a, b) => (a < b ? a : b)).toString() }
+      : {}),
     latestBlockByChain,
     status,
     updatedAt: Date.now(),
@@ -154,7 +162,11 @@ export const upsertPosition = internalMutation({
       traceId: args.traceId,
       ownerAddress: args.ownerAddress,
       positionId,
-      details: { status: args.status, netValueUsd: args.netValueUsd, netDeltaWad: args.netDeltaWad },
+      details: {
+        status: args.status,
+        netValueUsd: args.netValueUsd,
+        netDeltaWad: args.netDeltaWad,
+      },
     });
     return positionId;
   },
@@ -207,7 +219,11 @@ export const upsertComponent = internalMutation({
       traceId: position.traceId,
       ownerAddress: position.ownerAddress,
       positionId: String(args.positionId),
-      details: { componentKey: args.componentKey, chainId: args.chainId, blockNumber: args.blockNumber },
+      details: {
+        componentKey: args.componentKey,
+        chainId: args.chainId,
+        blockNumber: args.blockNumber,
+      },
     });
     return componentId;
   },
@@ -307,7 +323,8 @@ export const graph = query({
       .withIndex("by_user", (query) => query.eq("userId", user._id))
       .collect();
     const position = await ctx.db.get(args.positionId);
-    if (!position || !wallets.some((wallet) => wallet.address === position.ownerAddress)) return null;
+    if (!position || !wallets.some((wallet) => wallet.address === position.ownerAddress))
+      return null;
     const components = await ctx.db
       .query("positionComponents")
       .withIndex("by_position", (query) => query.eq("positionId", args.positionId))
@@ -331,7 +348,9 @@ export const graph = query({
         assets: component.assetAddresses,
         valueUsd: component.valueUsd,
         deltaWad: component.deltaWad,
-        ...(component.healthFactorWad === undefined ? {} : { healthFactorWad: component.healthFactorWad }),
+        ...(component.healthFactorWad === undefined
+          ? {}
+          : { healthFactorWad: component.healthFactorWad }),
         sourceBlockNumber: component.blockNumber,
         sourceObservedAtMs: component.updatedAt,
         metadata,
@@ -344,9 +363,15 @@ export const graph = query({
       edges: [],
       netValueUsd: position.netValueUsd,
       netDeltaWad: position.netDeltaWad,
-      ...(position.healthFactorWad === undefined ? {} : { healthFactorWad: position.healthFactorWad }),
+      ...(position.healthFactorWad === undefined
+        ? {}
+        : { healthFactorWad: position.healthFactorWad }),
       latestBlockByChain: position.latestBlockByChain,
-      provenance: { traceIds: [position.traceId], observedAtMs: position.updatedAt, source: "convex" },
+      provenance: {
+        traceIds: [position.traceId],
+        observedAtMs: position.updatedAt,
+        source: "convex",
+      },
     };
   },
 });
@@ -364,7 +389,8 @@ export const timeline = query({
       .withIndex("by_user", (query) => query.eq("userId", user._id))
       .collect();
     const position = await ctx.db.get(args.positionId);
-    if (!position || !wallets.some((wallet) => wallet.address === position.ownerAddress)) return null;
+    if (!position || !wallets.some((wallet) => wallet.address === position.ownerAddress))
+      return null;
     const limit = args.limit ?? 100;
     if (!Number.isInteger(limit) || limit < 1 || limit > 200) {
       throw new Error("timeline limit must be an integer between 1 and 200");

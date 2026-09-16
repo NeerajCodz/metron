@@ -15,12 +15,7 @@ export type Horizon = "1h" | "6h" | "24h" | "7d";
 export const RISK_HORIZONS: readonly Horizon[] = ["1h", "6h", "24h", "7d"];
 
 export type MarketRegime =
-  | "stable"
-  | "trending"
-  | "high_volatility"
-  | "liquidity_stress"
-  | "flash_crash"
-  | "recovery";
+  "stable" | "trending" | "high_volatility" | "liquidity_stress" | "flash_crash" | "recovery";
 
 export type EvidenceKind = "observation" | "calculation" | "prediction" | "scenario";
 export interface AiEvidence {

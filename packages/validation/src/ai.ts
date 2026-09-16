@@ -22,11 +22,19 @@ const traceFields = {
 const modelFields = {
   modelVersion: nonEmptyIdSchema,
   featureSchemaVersion: nonEmptyIdSchema,
-  datasetFingerprint: z.string().regex(/^[0-9a-f]{64}$/).optional(),
-  featureFingerprint: z.string().regex(/^[0-9a-f]{64}$/).optional(),
+  datasetFingerprint: z
+    .string()
+    .regex(/^[0-9a-f]{64}$/)
+    .optional(),
+  featureFingerprint: z
+    .string()
+    .regex(/^[0-9a-f]{64}$/)
+    .optional(),
   artifactVersion: nonEmptyIdSchema.optional(),
   predictionSource: z.enum(["model", "deterministic", "mixed"]).optional(),
-  sourceByHorizon: z.record(z.enum(["1h", "6h", "24h", "7d"]), z.enum(["model", "deterministic"])).optional(),
+  sourceByHorizon: z
+    .record(z.enum(["1h", "6h", "24h", "7d"]), z.enum(["model", "deterministic"]))
+    .optional(),
   fallbackReason: nonEmptyIdSchema.optional(),
   generatedAt: unixSecondsSchema,
 };

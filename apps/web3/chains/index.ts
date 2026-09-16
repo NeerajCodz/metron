@@ -39,3 +39,22 @@ export function createRequiredChainRuntimes(
 ): Web3ChainRuntime[] {
   return REQUIRED_CHAIN_KEYS.map((key) => createChainRuntime(key, environment));
 }
+
+export async function validateChainRuntime(runtime: Web3ChainRuntime): Promise<number> {
+  const chainId = await runtime.client.getChainId();
+  const expected = VIEM_CHAIN_BY_KEY[runtime.key].id;
+  if (chainId !== expected) {
+    throw new Error(
+      `RPC chain mismatch for ${runtime.key}: expected ${expected}, received ${chainId}`,
+    );
+  }
+  return chainId;
+}
+
+export async function validateRequiredChainRuntimes(
+  environment: NodeJS.ProcessEnv = process.env,
+): Promise<Web3ChainRuntime[]> {
+  const runtimes = createRequiredChainRuntimes(environment);
+  await Promise.all(runtimes.map(validateChainRuntime));
+  return runtimes;
+}

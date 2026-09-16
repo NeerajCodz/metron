@@ -11,12 +11,7 @@ import type {
 export const PORTFOLIO_GRAPH_SCHEMA_VERSION = "portfolio-graph-v1" as const;
 
 export type PortfolioNodeComponentType =
-  | "vault"
-  | "lending"
-  | "liquidity"
-  | "hedge"
-  | "cross_chain"
-  | "insurance";
+  "vault" | "lending" | "liquidity" | "hedge" | "cross_chain" | "insurance";
 export type PortfolioEdgeKind = "dependency" | "bridge" | "hedge" | "recovery";
 
 export interface PortfolioNode {
@@ -59,14 +54,17 @@ export interface PortfolioGraph extends VersionedPayload {
 
 export function validatePortfolioGraph(graph: PortfolioGraph): void {
   const nodeIds = new Set(graph.nodes.map((node) => node.nodeId));
-  if (nodeIds.size !== graph.nodes.length) throw new Error("portfolio graph contains duplicate node IDs");
+  if (nodeIds.size !== graph.nodes.length)
+    throw new Error("portfolio graph contains duplicate node IDs");
   const edgeIds = new Set(graph.edges.map((edge) => edge.edgeId));
-  if (edgeIds.size !== graph.edges.length) throw new Error("portfolio graph contains duplicate edge IDs");
+  if (edgeIds.size !== graph.edges.length)
+    throw new Error("portfolio graph contains duplicate edge IDs");
   for (const edge of graph.edges) {
     if (!nodeIds.has(edge.fromNodeId) || !nodeIds.has(edge.toNodeId)) {
       throw new Error(`portfolio graph edge ${edge.edgeId} references a missing node`);
     }
-    if (edge.fromNodeId === edge.toNodeId) throw new Error(`portfolio graph edge ${edge.edgeId} is self-referential`);
+    if (edge.fromNodeId === edge.toNodeId)
+      throw new Error(`portfolio graph edge ${edge.edgeId} is self-referential`);
   }
 }
 

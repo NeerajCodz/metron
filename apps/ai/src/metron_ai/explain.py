@@ -69,7 +69,10 @@ def answer_position(request: PositionAnswerRequest) -> PositionAnswerResponse:
         return PositionAnswerResponse(
             trace_id=request.trace_id,
             answer="I cannot answer because indexed and simulated evidence conflicts.",
-            provenance=[*(f"indexed_data.{key}" for key in request.indexed_data), *(f"simulation_outputs.{key}" for key in request.simulation_outputs)],
+            provenance=[
+                *(f"indexed_data.{key}" for key in request.indexed_data),
+                *(f"simulation_outputs.{key}" for key in request.simulation_outputs),
+            ],
             refusal_reason="CONFLICTING_EVIDENCE",
         )
     source = {**request.simulation_outputs, **request.indexed_data}

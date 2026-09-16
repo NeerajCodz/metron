@@ -39,6 +39,8 @@ _PROTOCOL_NAMES = {
     "chainlink": "chainlink",
     "layerzero": "layerzero-v2",
 }
+
+
 def _labeled_bps(text: str, labels: tuple[str, ...], default: int | None = None) -> int | None:
     label = "|".join(re.escape(item) for item in labels)
     match = re.search(rf"(\d+(?:\.\d+)?)\s*%\s*(?:of\s+)?(?:{label})", text, re.IGNORECASE)
@@ -94,11 +96,13 @@ def parse_intent_draft(request: IntentDraftRequest) -> IntentDraftResponse:
     text = request.text
     normalized = text.lower()
     percentages = [Decimal(value) for value in _PERCENT.findall(text)]
-    target_apy = _labeled_bps(normalized, ("apy", "yield"), int(percentages[0] * 100) if percentages else None)
+    target_apy = _labeled_bps(normalized, ("apy", "yield"))
     max_drawdown = _labeled_bps(normalized, ("drawdown",))
     max_il = _labeled_bps(normalized, ("impermanent loss", "il"))
     max_slippage = _labeled_bps(normalized, ("slippage",))
-    protocols = list(dict.fromkeys(protocol for name, protocol in _PROTOCOL_NAMES.items() if name in normalized))
+    protocols = list(
+        dict.fromkeys(protocol for name, protocol in _PROTOCOL_NAMES.items() if name in normalized)
+    )
     chains = [int(value) for value in _CHAIN.findall(text)]
     for name, chain_id in sorted(_CHAIN_NAMES.items(), key=lambda item: len(item[0]), reverse=True):
         if name in normalized and chain_id not in chains:
@@ -112,14 +116,19 @@ def parse_intent_draft(request: IntentDraftRequest) -> IntentDraftResponse:
         intent_type = "protection"
     elif any(token in normalized for token in ("borrow", "loan", "lending")):
         intent_type = "lending"
-    elif any(token in normalized for token in ("lp", "liquidity", "pool", "impermanent loss", "uniswap")):
+    elif any(
+        token in normalized for token in ("lp", "liquidity", "pool", "impermanent loss", "uniswap")
+    ):
         intent_type = "liquidity"
     elif any(token in normalized for token in ("stable yield", "stablecoin")):
         intent_type = "stable_yield"
     else:
         intent_type = "yield"
     target_delta_wad: int | None = None
-    if any(token in normalized for token in ("delta neutral", "delta-neutral", "net delta zero", "zero delta")):
+    if any(
+        token in normalized
+        for token in ("delta neutral", "delta-neutral", "net delta zero", "zero delta")
+    ):
         target_delta_wad = 0
     else:
         delta_match = re.search(r"delta\s*(?:of|at|to)?\s*(-?\d+(?:\.\d+)?)\s*%", normalized)
@@ -127,7 +136,13 @@ def parse_intent_draft(request: IntentDraftRequest) -> IntentDraftResponse:
             target_delta_wad = int(Decimal(delta_match.group(1)) * Decimal(10**16))
     ambiguities: list[Ambiguity] = []
     if len(percentages) > 1 and max_drawdown is None and max_il is None:
-        ambiguities.append(Ambiguity(field="percentages", reason_code="unlabeled", alternatives=[str(value) for value in percentages]))
+        ambiguities.append(
+            Ambiguity(
+                field="percentages",
+                reason_code="unlabeled",
+                alternatives=[str(value) for value in percentages],
+            )
+        )
     if not protocols:
         ambiguities.append(Ambiguity(field="protocols", reason_code="missing"))
     if not assets:
@@ -182,7 +197,9 @@ def recommend_threshold(request: ThresholdRequest) -> ThresholdResponse:
         intervention_level = min(bound, request.current_liquidation_probability_bps)
         fallback_reason = f"observation_quality_{request.observation_quality}"
     else:
-        intervention_level = max(0, bound - request.hysteresis_bps - max(regime_adjustment, market_adjustment))
+        intervention_level = max(
+            0, bound - request.hysteresis_bps - max(regime_adjustment, market_adjustment)
+        )
     return ThresholdResponse(
         trace_id=request.trace_id,
         recommended_intervention_bps=intervention_level,
@@ -203,6 +220,8 @@ def recommend_threshold(request: ThresholdRequest) -> ThresholdResponse:
         selected_cap_bps=bound,
         fallback_reason=fallback_reason,
     )
+
+
 def parse_scenario_draft(request: ScenarioDraftRequest) -> ScenarioDraftResponse:
     text = request.text.lower()
     crash = _labeled_percent(text, ("crash", "drop", "price shock"))
@@ -210,7 +229,11 @@ def parse_scenario_draft(request: ScenarioDraftRequest) -> ScenarioDraftResponse
     liquidity = _labeled_percent(text, ("liquidity", "depth"))
     ambiguities = [
         Ambiguity(field=field, reason_code="missing")
-        for field, value in (("eth_price_shock_bps", crash), ("stablecoin_depeg_bps", depeg), ("dex_liquidity_shock_bps", liquidity))
+        for field, value in (
+            ("eth_price_shock_bps", crash),
+            ("stablecoin_depeg_bps", depeg),
+            ("dex_liquidity_shock_bps", liquidity),
+        )
         if value is None
     ]
     scenario = StressScenario(

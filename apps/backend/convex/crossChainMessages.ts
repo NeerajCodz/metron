@@ -41,17 +41,23 @@ const transitions: Record<LifecycleState, readonly LifecycleState[]> = {
   recovery_required: ["message_sent"],
 };
 
-async function appendAudit(ctx: MutationCtx, message: {
-  messageId: string;
-  state: LifecycleState;
-  traceId: string;
-  positionId?: string;
-  intentId?: string;
-  failureCode?: string;
-  transactionHash?: string;
-}): Promise<void> {
+async function appendAudit(
+  ctx: MutationCtx,
+  message: {
+    messageId: string;
+    state: LifecycleState;
+    traceId: string;
+    positionId?: string;
+    intentId?: string;
+    failureCode?: string;
+    transactionHash?: string;
+  },
+): Promise<void> {
   const eventId = `cross-chain:${message.messageId}:${message.state}:${message.traceId}`;
-  const existing = await ctx.db.query("auditEvents").withIndex("by_event", (q) => q.eq("eventId", eventId)).unique();
+  const existing = await ctx.db
+    .query("auditEvents")
+    .withIndex("by_event", (q) => q.eq("eventId", eventId))
+    .unique();
   if (existing) return;
   let ownerAddress = "internal";
   if (message.positionId !== undefined) {
@@ -75,7 +81,9 @@ async function appendAudit(ctx: MutationCtx, message: {
     detailsJson: JSON.stringify({
       messageId: message.messageId,
       ...(message.failureCode === undefined ? {} : { failureCode: message.failureCode }),
-      ...(message.transactionHash === undefined ? {} : { transactionHash: message.transactionHash }),
+      ...(message.transactionHash === undefined
+        ? {}
+        : { transactionHash: message.transactionHash }),
     }),
   });
 }
@@ -97,8 +105,12 @@ export const create = internalMutation({
     traceId: v.string(),
   },
   handler: async (ctx, args) => {
-    if (!args.messageId.trim() || !args.payloadHash.trim() || args.expiry <= 0) throw new Error("invalid cross-chain message");
-    const existing = await ctx.db.query("crossChainMessages").withIndex("by_message", (q) => q.eq("messageId", args.messageId)).unique();
+    if (!args.messageId.trim() || !args.payloadHash.trim() || args.expiry <= 0)
+      throw new Error("invalid cross-chain message");
+    const existing = await ctx.db
+      .query("crossChainMessages")
+      .withIndex("by_message", (q) => q.eq("messageId", args.messageId))
+      .unique();
     if (existing) {
       const comparable = {
         messageId: args.messageId,
@@ -130,12 +142,23 @@ export const create = internalMutation({
         expiry: existing.expiry,
         traceId: existing.traceId,
       };
-      if (JSON.stringify(current) !== JSON.stringify(comparable)) throw new Error("message ID conflicts with existing payload");
+      if (JSON.stringify(current) !== JSON.stringify(comparable))
+        throw new Error("message ID conflicts with existing payload");
       return existing._id;
     }
     const updatedAt = Date.now();
-    const messageId = await ctx.db.insert("crossChainMessages", { ...args, state: "created", updatedAt });
-    await appendAudit(ctx, { messageId: args.messageId, state: "created", traceId: args.traceId, ...(args.positionId === undefined ? {} : { positionId: String(args.positionId) }), ...(args.intentId === undefined ? {} : { intentId: String(args.intentId) }) });
+    const messageId = await ctx.db.insert("crossChainMessages", {
+      ...args,
+      state: "created",
+      updatedAt,
+    });
+    await appendAudit(ctx, {
+      messageId: args.messageId,
+      state: "created",
+      traceId: args.traceId,
+      ...(args.positionId === undefined ? {} : { positionId: String(args.positionId) }),
+      ...(args.intentId === undefined ? {} : { intentId: String(args.intentId) }),
+    });
     return messageId;
   },
 });
@@ -149,17 +172,27 @@ export const transition = internalMutation({
     failureCode: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const message = await ctx.db.query("crossChainMessages").withIndex("by_message", (q) => q.eq("messageId", args.messageId)).unique();
+    const message = await ctx.db
+      .query("crossChainMessages")
+      .withIndex("by_message", (q) => q.eq("messageId", args.messageId))
+      .unique();
     if (!message) throw new Error("cross-chain message not found");
-    if (!transitions[message.state].includes(args.to)) throw new Error(`illegal cross-chain transition ${message.state} -> ${args.to}`);
-    if ((args.to === "failed" || args.to === "recovery_required") && !args.failureCode && !message.failureCode) {
+    if (!transitions[message.state].includes(args.to))
+      throw new Error(`illegal cross-chain transition ${message.state} -> ${args.to}`);
+    if (
+      (args.to === "failed" || args.to === "recovery_required") &&
+      !args.failureCode &&
+      !message.failureCode
+    ) {
       throw new Error("failure and recovery states require a failure code");
     }
     const updatedAt = Date.now();
     await ctx.db.patch(message._id, {
       state: args.to,
       updatedAt,
-      ...(args.transactionHash === undefined ? {} : { destinationTransactionHash: args.transactionHash }),
+      ...(args.transactionHash === undefined
+        ? {}
+        : { destinationTransactionHash: args.transactionHash }),
       ...(args.failureCode === undefined ? {} : { failureCode: args.failureCode }),
     });
     await appendAudit(ctx, {
@@ -178,18 +211,38 @@ export const transition = internalMutation({
 export const retry = internalMutation({
   args: { messageId: v.string(), payloadHash: v.string(), traceId: v.string() },
   handler: async (ctx, args) => {
-    const message = await ctx.db.query("crossChainMessages").withIndex("by_message", (q) => q.eq("messageId", args.messageId)).unique();
-    if (!message || message.state !== "recovery_required") throw new Error("message is not recovery-required");
+    const message = await ctx.db
+      .query("crossChainMessages")
+      .withIndex("by_message", (q) => q.eq("messageId", args.messageId))
+      .unique();
+    if (!message || message.state !== "recovery_required")
+      throw new Error("message is not recovery-required");
     if (message.payloadHash !== args.payloadHash) throw new Error("retry payload hash mismatch");
-    await ctx.db.patch(message._id, { state: "message_sent", updatedAt: Date.now(), failureCode: undefined });
-    await appendAudit(ctx, { messageId: args.messageId, state: "message_sent", traceId: args.traceId, ...(message.positionId === undefined ? {} : { positionId: String(message.positionId) }), ...(message.intentId === undefined ? {} : { intentId: String(message.intentId) }) });
+    await ctx.db.patch(message._id, {
+      state: "message_sent",
+      updatedAt: Date.now(),
+      failureCode: undefined,
+    });
+    await appendAudit(ctx, {
+      messageId: args.messageId,
+      state: "message_sent",
+      traceId: args.traceId,
+      ...(message.positionId === undefined ? {} : { positionId: String(message.positionId) }),
+      ...(message.intentId === undefined ? {} : { intentId: String(message.intentId) }),
+    });
     return message._id;
   },
 });
 
-async function ownedMessage(ctx: QueryCtx, message: { intentId?: Id<"intents">; positionId?: Id<"positions"> }) {
+async function ownedMessage(
+  ctx: QueryCtx,
+  message: { intentId?: Id<"intents">; positionId?: Id<"positions"> },
+) {
   const { user } = await requireUser(ctx);
-  const wallets = await ctx.db.query("wallets").withIndex("by_user", (q) => q.eq("userId", user._id)).collect();
+  const wallets = await ctx.db
+    .query("wallets")
+    .withIndex("by_user", (q) => q.eq("userId", user._id))
+    .collect();
   if (message.positionId !== undefined) {
     const position = await ctx.db.get(message.positionId);
     return Boolean(position && wallets.some((wallet) => wallet.address === position.ownerAddress));
@@ -204,7 +257,10 @@ async function ownedMessage(ctx: QueryCtx, message: { intentId?: Id<"intents">; 
 export const get = query({
   args: { messageId: v.string() },
   handler: async (ctx, args) => {
-    const message = await ctx.db.query("crossChainMessages").withIndex("by_message", (q) => q.eq("messageId", args.messageId)).unique();
+    const message = await ctx.db
+      .query("crossChainMessages")
+      .withIndex("by_message", (q) => q.eq("messageId", args.messageId))
+      .unique();
     return message && (await ownedMessage(ctx, message)) ? message : null;
   },
 });
@@ -213,18 +269,32 @@ export const listMine = query({
   args: { limit: v.optional(v.number()) },
   handler: async (ctx, args) => {
     const { user } = await requireUser(ctx);
-    const wallets = await ctx.db.query("wallets").withIndex("by_user", (q) => q.eq("userId", user._id)).collect();
+    const wallets = await ctx.db
+      .query("wallets")
+      .withIndex("by_user", (q) => q.eq("userId", user._id))
+      .collect();
     const addresses = new Set(wallets.map((wallet) => wallet.address));
     const [intents, positions] = await Promise.all([
       ctx.db.query("intents").withIndex("by_owner").collect(),
       ctx.db.query("positions").withIndex("by_owner").collect(),
     ]);
-    const intentIds = new Set(intents.filter((intent) => addresses.has(intent.ownerAddress)).map((intent) => intent._id));
-    const positionIds = new Set(positions.filter((position) => addresses.has(position.ownerAddress)).map((position) => position._id));
+    const intentIds = new Set(
+      intents.filter((intent) => addresses.has(intent.ownerAddress)).map((intent) => intent._id),
+    );
+    const positionIds = new Set(
+      positions
+        .filter((position) => addresses.has(position.ownerAddress))
+        .map((position) => position._id),
+    );
     const limit = args.limit ?? 50;
-    if (!Number.isInteger(limit) || limit < 1 || limit > 200) throw new Error("limit must be between 1 and 200");
+    if (!Number.isInteger(limit) || limit < 1 || limit > 200)
+      throw new Error("limit must be between 1 and 200");
     return (await ctx.db.query("crossChainMessages").collect())
-      .filter((message) => (message.positionId !== undefined && positionIds.has(message.positionId)) || (message.intentId !== undefined && intentIds.has(message.intentId)))
+      .filter(
+        (message) =>
+          (message.positionId !== undefined && positionIds.has(message.positionId)) ||
+          (message.intentId !== undefined && intentIds.has(message.intentId)),
+      )
       .sort((left, right) => right.updatedAt - left.updatedAt)
       .slice(0, limit);
   },
@@ -233,11 +303,15 @@ export const listMine = query({
 export const listRecoveryRequired = query({
   args: { limit: v.optional(v.number()) },
   handler: async (ctx, args) => {
-    const messages = await ctx.db.query("crossChainMessages").withIndex("by_state", (q) => q.eq("state", "recovery_required")).collect();
+    const messages = await ctx.db
+      .query("crossChainMessages")
+      .withIndex("by_state", (q) => q.eq("state", "recovery_required"))
+      .collect();
     const result = [];
     for (const message of messages) if (await ownedMessage(ctx, message)) result.push(message);
     const limit = args.limit ?? 50;
-    if (!Number.isInteger(limit) || limit < 1 || limit > 200) throw new Error("limit must be between 1 and 200");
+    if (!Number.isInteger(limit) || limit < 1 || limit > 200)
+      throw new Error("limit must be between 1 and 200");
     return result.sort((left, right) => right.updatedAt - left.updatedAt).slice(0, limit);
   },
 });

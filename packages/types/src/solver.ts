@@ -63,9 +63,12 @@ export interface SolverRoute extends VersionedPayload {
   validityDeadline: UnixSeconds;
   scoreVersion: string;
 }
+export type StrategyStage =
+  "discovery" | "quote" | "approval" | "execution" | "settlement" | "recovery";
 
 export interface StrategyGraphNode {
   nodeId: string;
+  stage: StrategyStage;
   action: RouteAction;
   dependsOn: string[];
 }

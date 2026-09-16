@@ -37,8 +37,9 @@ from metron_ai.models import (
     ThresholdRequest,
     ThresholdResponse,
 )
-from metron_ai.simulator import run_simulation
 from metron_ai.optimization import estimate_liquidity, optimize_allocation
+from metron_ai.orchestration import run_simulation_turn, run_solver
+from metron_ai.providers import ProviderCatalog
 from metron_ai.recommendations import (
     parse_intent_draft,
     parse_scenario_draft,
@@ -47,8 +48,6 @@ from metron_ai.recommendations import (
 )
 from metron_ai.recovery import rank_recovery
 from metron_ai.risk_model import model_status, predict_liquidation, predict_regime
-from metron_ai.orchestration import run_simulation_turn, run_solver
-from metron_ai.providers import ProviderCatalog
 from metron_ai.runtime_models import (
     ProviderCatalogResponse,
     SimulationTurnRequest,
@@ -56,6 +55,7 @@ from metron_ai.runtime_models import (
     SolverRequest,
 )
 from metron_ai.settings import get_settings
+from metron_ai.simulator import run_simulation
 
 logger = structlog.get_logger()
 
@@ -97,6 +97,7 @@ async def health() -> HealthResponse:
     settings = get_settings()
     return HealthResponse(status="ok", service="metron-ai", environment=settings.environment)
 
+
 @app.get("/model-status", tags=["operations"])
 async def model_status_endpoint() -> dict[str, object]:
     return model_status()
@@ -107,7 +108,9 @@ async def ready() -> JSONResponse:
     status = model_status()
     settings = get_settings()
     ready_for_policy = status["status"] == "models_loaded" or not settings.require_models
-    return JSONResponse(status_code=200 if ready_for_policy else 503, content={**status, "ready": ready_for_policy})
+    return JSONResponse(
+        status_code=200 if ready_for_policy else 503, content={**status, "ready": ready_for_policy}
+    )
 
 
 @app.post("/v1/liquidation/predict", response_model=LiquidationPrediction, tags=["risk"])

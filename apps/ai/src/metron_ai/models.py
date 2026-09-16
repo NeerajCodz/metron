@@ -69,6 +69,8 @@ class LiquidationRequest(BaseModel):
         if len(set(values)) != len(values):
             raise ValueError("horizons must contain unique supported values")
         return values
+
+
 class LiquidationPrediction(BaseModel):
     schema_version: Literal["1.0.0"] = RISK_SCHEMA_VERSION
     trace_id: str
@@ -81,7 +83,9 @@ class LiquidationPrediction(BaseModel):
     artifact_version: str | None = None
     fallback_reason: str | None = None
     prediction_source: Literal["model", "deterministic", "mixed"] = "deterministic"
-    source_by_horizon: dict[Horizon, Literal["model", "deterministic"]] = Field(default_factory=dict)
+    source_by_horizon: dict[Horizon, Literal["model", "deterministic"]] = Field(
+        default_factory=dict
+    )
     generated_at: int
     horizons: dict[Horizon, int]
     confidence_bps: int = Field(ge=0, le=10_000)
@@ -109,6 +113,7 @@ class RegimePrediction(BaseModel):
     fallback_reason: str | None = None
     fallback_used: bool
 
+
 class StressScenario(BaseModel):
     schema_version: Literal["1.0.0"] = RISK_SCHEMA_VERSION
     scenario_id: str = "scenario"
@@ -118,6 +123,7 @@ class StressScenario(BaseModel):
     volatility_multiplier_bps: int = Field(ge=0, le=1_000_000)
     gas_multiplier_bps: int = Field(ge=0, le=1_000_000)
     lending_utilization_shock_bps: int = Field(ge=-10_000, le=10_000)
+
 
 class ObservationReference(BaseModel):
     observation_id: str = Field(min_length=1)
@@ -146,6 +152,7 @@ class ComponentEffect(BaseModel):
     before_delta_wad: int
     after_delta_wad: int
     failure_reason: str | None = None
+
 
 class SimulationRequest(BaseModel):
     position_id: str = Field(min_length=1)
@@ -211,9 +218,16 @@ class ExplanationResponse(BaseModel):
     scenario_assumptions: list[str] = Field(default_factory=list)
     evidence: list[ExplanationEvidence] = Field(default_factory=list)
     missing_evidence_ids: list[str] = Field(default_factory=list)
-    refusal_code: Literal[
-        "unsupported_answer_kind", "missing_evidence", "stale_evidence", "conflicting_evidence", "untrusted_source"
-    ] | None = None
+    refusal_code: (
+        Literal[
+            "unsupported_answer_kind",
+            "missing_evidence",
+            "stale_evidence",
+            "conflicting_evidence",
+            "untrusted_source",
+        ]
+        | None
+    ) = None
 
 
 class RecoveryPolicy(BaseModel):
@@ -308,7 +322,9 @@ class CascadeResponse(BaseModel):
     rounds: int
     round_records: list[CascadeRound] = Field(default_factory=list)
     unresolved_selling_usd: Decimal = Decimal("0")
-    termination_reason: Literal["fixed_point", "depth_exhausted", "max_rounds", "no_selling"] = "fixed_point"
+    termination_reason: Literal["fixed_point", "depth_exhausted", "max_rounds", "no_selling"] = (
+        "fixed_point"
+    )
     converged: bool
 
 
@@ -324,6 +340,7 @@ class RecommendationResponse(BaseModel):
     trace_id: str
     recommended_action_type: str
     rationale: list[str] = Field(min_length=1)
+
 
 class IntentDraftRequest(BaseModel):
     trace_id: str = Field(min_length=1)
@@ -345,6 +362,7 @@ class IntentDraftResponse(BaseModel):
     evidence: list[ExtractionEvidence] = Field(default_factory=list)
     source_text: str
     requires_approval: bool = True
+
 
 class ThresholdRequest(BaseModel):
     trace_id: str = Field(min_length=1)
@@ -376,6 +394,7 @@ class ThresholdResponse(BaseModel):
     selected_cap_bps: int = Field(ge=0, le=10_000)
     validity_window_ms: int = Field(default=300_000, ge=0)
     fallback_reason: str | None = None
+
 
 class LiquidityEstimateRequest(BaseModel):
     trace_id: str = Field(min_length=1)

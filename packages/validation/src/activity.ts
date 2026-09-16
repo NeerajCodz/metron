@@ -9,7 +9,10 @@ import {
   unixMillisecondsSchema,
 } from "./primitives.js";
 
-const detailsSchema = z.record(z.string(), z.union([z.string(), z.number(), z.boolean(), z.null()]));
+const detailsSchema = z.record(
+  z.string(),
+  z.union([z.string(), z.number(), z.boolean(), z.null()]),
+);
 const base = {
   eventId: nonEmptyIdSchema,
   schemaVersion: z.literal(AUDIT_EVENT_SCHEMA_VERSION),
@@ -27,7 +30,15 @@ export const intentAuditEventSchema = z.strictObject({
   ...base,
   eventType: z.literal("intent"),
   intentId: nonEmptyIdSchema,
-  status: z.enum(["draft", "published", "authorized", "auctioning", "settled", "cancelled", "expired"]),
+  status: z.enum([
+    "draft",
+    "published",
+    "authorized",
+    "auctioning",
+    "settled",
+    "cancelled",
+    "expired",
+  ]),
 });
 export const solverAuditEventSchema = z.strictObject({
   ...base,

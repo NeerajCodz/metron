@@ -21,7 +21,6 @@ async function ownedPosition(ctx: QueryCtx, positionId: Id<"positions">) {
   return position && wallets.some((wallet) => wallet.address === position.ownerAddress)
     ? position
     : null;
-
 }
 export const getByKey = query({
   args: { executionKey: v.string() },
@@ -31,11 +30,15 @@ export const getByKey = query({
       .withIndex("by_execution_key", (query) => query.eq("executionKey", args.executionKey))
       .unique();
     if (!execution) return null;
-    if (execution.positionId !== undefined && !(await ownedPosition(ctx, execution.positionId))) return null;
+    if (execution.positionId !== undefined && !(await ownedPosition(ctx, execution.positionId)))
+      return null;
     const intent = await ctx.db.get(execution.intentId);
     if (!intent) return null;
     const { user } = await requireUser(ctx);
-    const wallets = await ctx.db.query("wallets").withIndex("by_user", (query) => query.eq("userId", user._id)).collect();
+    const wallets = await ctx.db
+      .query("wallets")
+      .withIndex("by_user", (query) => query.eq("userId", user._id))
+      .collect();
     return wallets.some((wallet) => wallet.address === intent.ownerAddress) ? execution : null;
   },
 });
@@ -50,13 +53,15 @@ export const listByPosition = query({
   handler: async (ctx, args) => {
     if (!(await ownedPosition(ctx, args.positionId))) return null;
     const limit = args.limit ?? 50;
-    if (!Number.isInteger(limit) || limit < 1 || limit > 200) throw new Error("limit must be between 1 and 200");
+    if (!Number.isInteger(limit) || limit < 1 || limit > 200)
+      throw new Error("limit must be between 1 and 200");
     const all = await ctx.db
       .query("executions")
       .withIndex("by_position", (query) => query.eq("positionId", args.positionId))
       .order("desc")
       .collect();
-    const filtered = args.status === undefined ? all : all.filter((execution) => execution.status === args.status);
+    const filtered =
+      args.status === undefined ? all : all.filter((execution) => execution.status === args.status);
     const offset = args.cursor === undefined ? 0 : Number.parseInt(args.cursor, 10);
     if (!Number.isSafeInteger(offset) || offset < 0) throw new Error("invalid execution cursor");
     const page = filtered.slice(offset, offset + limit);
@@ -73,21 +78,35 @@ export const listMine = query({
   },
   handler: async (ctx, args) => {
     const { user } = await requireUser(ctx);
-    const wallets = await ctx.db.query("wallets").withIndex("by_user", (query) => query.eq("userId", user._id)).collect();
+    const wallets = await ctx.db
+      .query("wallets")
+      .withIndex("by_user", (query) => query.eq("userId", user._id))
+      .collect();
     const addresses = new Set(wallets.map((wallet) => wallet.address));
     const [intents, positions] = await Promise.all([
       ctx.db.query("intents").withIndex("by_owner").collect(),
       ctx.db.query("positions").withIndex("by_owner").collect(),
     ]);
-    const intentIds = new Set(intents.filter((intent) => addresses.has(intent.ownerAddress)).map((intent) => intent._id));
-    const positionIds = new Set(positions.filter((position) => addresses.has(position.ownerAddress)).map((position) => position._id));
+    const intentIds = new Set(
+      intents.filter((intent) => addresses.has(intent.ownerAddress)).map((intent) => intent._id),
+    );
+    const positionIds = new Set(
+      positions
+        .filter((position) => addresses.has(position.ownerAddress))
+        .map((position) => position._id),
+    );
     const all = await ctx.db.query("executions").collect();
     const filtered = all
-      .filter((execution) => intentIds.has(execution.intentId) || (execution.positionId !== undefined && positionIds.has(execution.positionId)))
+      .filter(
+        (execution) =>
+          intentIds.has(execution.intentId) ||
+          (execution.positionId !== undefined && positionIds.has(execution.positionId)),
+      )
       .filter((execution) => args.status === undefined || execution.status === args.status)
       .sort((left, right) => right.updatedAt - left.updatedAt);
     const limit = args.limit ?? 50;
-    if (!Number.isInteger(limit) || limit < 1 || limit > 200) throw new Error("limit must be between 1 and 200");
+    if (!Number.isInteger(limit) || limit < 1 || limit > 200)
+      throw new Error("limit must be between 1 and 200");
     const offset = args.cursor === undefined ? 0 : Number.parseInt(args.cursor, 10);
     if (!Number.isSafeInteger(offset) || offset < 0) throw new Error("invalid execution cursor");
     const page = filtered.slice(offset, offset + limit);

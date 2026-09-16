@@ -9,7 +9,13 @@ import {
 } from "./primitives.js";
 
 export const observationQualitySchema = z.enum(["valid", "stale", "invalid"]);
-export const observationSourceSchema = z.enum(["indexer", "adapter", "oracle", "provider", "simulation"]);
+export const observationSourceSchema = z.enum([
+  "indexer",
+  "adapter",
+  "oracle",
+  "provider",
+  "simulation",
+]);
 
 export const marketObservationSchema = z.strictObject({
   observationId: nonEmptyIdSchema,

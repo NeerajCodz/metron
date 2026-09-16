@@ -2,16 +2,21 @@ from __future__ import annotations
 
 import json
 import re
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
-from typing import Any, Mapping, Sequence
+from typing import Any
 from urllib.parse import quote
 
 import httpx
 from pydantic import SecretStr
 
-from metron_ai.runtime_models import BYOKCredentials, ModelSelection, ProviderDescriptor, ProviderKind
+from metron_ai.runtime_models import (
+    BYOKCredentials,
+    ModelSelection,
+    ProviderDescriptor,
+    ProviderKind,
+)
 from metron_ai.settings import Settings, get_settings
-
 
 _MODEL_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:/-]{0,127}$")
 
@@ -92,8 +97,15 @@ class ProviderCatalog:
                 id="gemini",
                 kind="gemini",
                 label="Google Gemini",
-                default_model=self.settings.default_model if self.settings.default_provider == "gemini" else "gemini-2.5-flash",
-                models=("gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.0-flash", "gemini-1.5-flash"),
+                default_model=self.settings.default_model
+                if self.settings.default_provider == "gemini"
+                else "gemini-2.5-flash",
+                models=(
+                    "gemini-2.5-flash",
+                    "gemini-2.5-pro",
+                    "gemini-2.0-flash",
+                    "gemini-1.5-flash",
+                ),
                 base_url=str(self.settings.gemini_base_url).rstrip("/"),
                 env_key="gemini_api_key",
             ),
@@ -111,7 +123,11 @@ class ProviderCatalog:
                 kind="anthropic_compatible",
                 label="Anthropic-compatible",
                 default_model="claude-3-5-haiku-latest",
-                models=("claude-3-5-haiku-latest", "claude-3-5-sonnet-latest", "claude-3-7-sonnet-latest"),
+                models=(
+                    "claude-3-5-haiku-latest",
+                    "claude-3-5-sonnet-latest",
+                    "claude-3-7-sonnet-latest",
+                ),
                 base_url="https://api.anthropic.com/v1",
                 env_key="anthropic_api_key",
             ),
@@ -141,16 +157,18 @@ class ProviderCatalog:
             )
         ]
 
-
     def default_selection(self) -> ModelSelection:
         provider = self.settings.default_provider.casefold().replace("_", "-")
-        provider = {"openai-compatible": "openai", "anthropic-compatible": "anthropic"}.get(provider, provider)
+        provider = {"openai-compatible": "openai", "anthropic-compatible": "anthropic"}.get(
+            provider, provider
+        )
         config = self._configs.get(provider)
         if config is None:
             provider = "gemini"
             config = self._configs[provider]
         model = self.settings.default_model if provider == "gemini" else config.default_model
         return ModelSelection(provider=provider, model=model)
+
     def _configured_key(self, config: _ProviderConfig) -> bool:
         if config.env_key is None:
             return False
@@ -169,9 +187,13 @@ class ProviderCatalog:
         }
         provider_id = aliases.get(provider_id, provider_id)
         config = self._configs.get(provider_id)
-        if provider_id == "custom" or (config is None and credentials is not None and credentials.endpoint is not None):
+        if provider_id == "custom" or (
+            config is None and credentials is not None and credentials.endpoint is not None
+        ):
             if credentials is None or credentials.endpoint is None:
-                raise ProviderConfigurationError("custom provider requires request-scoped endpoint and api_key")
+                raise ProviderConfigurationError(
+                    "custom provider requires request-scoped endpoint and api_key"
+                )
             model = selection.model or "custom-model"
             self._validate_model(model)
             dynamic_id = provider_id if provider_id != "custom" else "custom"
@@ -194,7 +216,11 @@ class ProviderCatalog:
             raise ProviderConfigurationError("provider is not permitted")
         model = selection.model or config.default_model
         self._validate_model(model)
-        if credentials is None and model not in config.models and model != self.settings.default_model:
+        if (
+            credentials is None
+            and model not in config.models
+            and model != self.settings.default_model
+        ):
             raise ProviderConfigurationError("model is not permitted")
         # Known providers use only their pinned endpoint. Custom endpoints must be selected
         # explicitly so a caller cannot silently redirect an environment credential.
@@ -211,7 +237,9 @@ class ProviderCatalog:
             model=model,
             endpoint=config.base_url,
             api_key=api_key,
-            protocol="gemini" if config.kind == "gemini" else ("anthropic" if config.kind == "anthropic_compatible" else "openai"),
+            protocol="gemini"
+            if config.kind == "gemini"
+            else ("anthropic" if config.kind == "anthropic_compatible" else "openai"),
         )
 
     @staticmethod
@@ -238,7 +266,9 @@ class ModelRuntime:
         fallback_text: str = "Model unavailable; deterministic advisory fallback applied.",
     ) -> RuntimeCompletion:
         settings = self.catalog.settings
-        timeout = min(timeout_seconds or settings.request_timeout_seconds, settings.request_timeout_seconds)
+        timeout = min(
+            timeout_seconds or settings.request_timeout_seconds, settings.request_timeout_seconds
+        )
         output_limit = min(max_output_chars or settings.max_output_chars, settings.max_output_chars)
         try:
             resolved = self.catalog.resolve(selection, credentials)
@@ -277,27 +307,33 @@ class ModelRuntime:
         provider: _ResolvedProvider,
         prompt: str,
         tools: Sequence[ToolDefinition],
-        timeout: float,
+        request_timeout: float,
     ) -> ProviderCompletion:
         if not prompt.strip():
             raise ProviderCallError("empty prompt")
         if provider.protocol == "gemini":
-            return await self._gemini(provider, prompt, tools, timeout)
+            return await self._gemini(provider, prompt, tools, request_timeout)
         if provider.protocol == "anthropic":
-            return await self._anthropic(provider, prompt, tools, timeout)
-        return await self._openai(provider, prompt, tools, timeout)
+            return await self._anthropic(provider, prompt, tools, request_timeout)
+        return await self._openai(provider, prompt, tools, request_timeout)
 
     async def _gemini(
-        self, provider: _ResolvedProvider, prompt: str, tools: Sequence[ToolDefinition], timeout: float
+        self,
+        provider: _ResolvedProvider,
+        prompt: str,
+        tools: Sequence[ToolDefinition],
+        request_timeout: float,
     ) -> ProviderCompletion:
-        endpoint = f"{provider.endpoint}/v1beta/models/{quote(provider.model, safe='')}:generateContent"
+        endpoint = (
+            f"{provider.endpoint}/v1beta/models/{quote(provider.model, safe='')}:generateContent"
+        )
         body: dict[str, Any] = {
             "contents": [{"role": "user", "parts": [{"text": prompt}]}],
             "generationConfig": {"maxOutputTokens": max(32, min(8192, len(prompt) // 2 + 512))},
         }
         if tools:
             body["tools"] = [{"function_declarations": [self._gemini_tool(tool) for tool in tools]}]
-        async with httpx.AsyncClient(timeout=timeout, follow_redirects=False) as client:
+        async with httpx.AsyncClient(timeout=request_timeout, follow_redirects=False) as client:
             # Keep the key out of the URL: URLs are commonly retained by proxies and access logs.
             response = await client.post(
                 endpoint,
@@ -313,11 +349,21 @@ class ModelRuntime:
         except (KeyError, IndexError, TypeError, json.JSONDecodeError) as exc:
             raise ProviderCallError("invalid gemini response") from exc
         text = "".join(part.get("text", "") for part in parts if isinstance(part, dict))
-        calls = tuple(self._tool_call(part, index) for index, part in enumerate(parts) if isinstance(part, dict) and isinstance(part.get("functionCall"), dict))
-        return ProviderCompletion(text=text, provider=provider.config.id, model=provider.model, tool_calls=calls)
+        calls = tuple(
+            self._tool_call(part, index)
+            for index, part in enumerate(parts)
+            if isinstance(part, dict) and isinstance(part.get("functionCall"), dict)
+        )
+        return ProviderCompletion(
+            text=text, provider=provider.config.id, model=provider.model, tool_calls=calls
+        )
 
     async def _openai(
-        self, provider: _ResolvedProvider, prompt: str, tools: Sequence[ToolDefinition], timeout: float
+        self,
+        provider: _ResolvedProvider,
+        prompt: str,
+        tools: Sequence[ToolDefinition],
+        request_timeout: float,
     ) -> ProviderCompletion:
         endpoint = (
             provider.endpoint
@@ -330,9 +376,14 @@ class ModelRuntime:
             "max_tokens": max(32, min(8192, len(prompt) // 2 + 512)),
         }
         if tools:
-            body["tools"] = [{"type": "function", "function": self._openai_tool(tool)} for tool in tools]
-        headers = {"Authorization": f"Bearer {provider.api_key}", "Content-Type": "application/json"}
-        async with httpx.AsyncClient(timeout=timeout, follow_redirects=False) as client:
+            body["tools"] = [
+                {"type": "function", "function": self._openai_tool(tool)} for tool in tools
+            ]
+        headers = {
+            "Authorization": f"Bearer {provider.api_key}",
+            "Content-Type": "application/json",
+        }
+        async with httpx.AsyncClient(timeout=request_timeout, follow_redirects=False) as client:
             response = await client.post(endpoint, headers=headers, json=body)
         if response.status_code >= 400:
             raise ProviderCallError("openai-compatible request failed")
@@ -353,15 +404,27 @@ class ModelRuntime:
             text = ""
         calls = tuple(
             self._openai_call(call, index)
-            for index, call in enumerate(message.get("tool_calls", []) if isinstance(message, Mapping) else [])
+            for index, call in enumerate(
+                message.get("tool_calls", []) if isinstance(message, Mapping) else []
+            )
             if isinstance(call, Mapping)
         )
-        return ProviderCompletion(text=text, provider=provider.config.id, model=provider.model, tool_calls=calls)
+        return ProviderCompletion(
+            text=text, provider=provider.config.id, model=provider.model, tool_calls=calls
+        )
 
     async def _anthropic(
-        self, provider: _ResolvedProvider, prompt: str, tools: Sequence[ToolDefinition], timeout: float
+        self,
+        provider: _ResolvedProvider,
+        prompt: str,
+        tools: Sequence[ToolDefinition],
+        request_timeout: float,
     ) -> ProviderCompletion:
-        endpoint = provider.endpoint if provider.endpoint.endswith("/messages") else f"{provider.endpoint}/messages"
+        endpoint = (
+            provider.endpoint
+            if provider.endpoint.endswith("/messages")
+            else f"{provider.endpoint}/messages"
+        )
         body: dict[str, Any] = {
             "model": provider.model,
             "max_tokens": max(32, min(8192, len(prompt) // 2 + 512)),
@@ -369,7 +432,11 @@ class ModelRuntime:
         }
         if tools:
             body["tools"] = [
-                {"name": tool.name, "description": tool.description, "input_schema": dict(tool.parameters)}
+                {
+                    "name": tool.name,
+                    "description": tool.description,
+                    "input_schema": dict(tool.parameters),
+                }
                 for tool in tools
             ]
         headers = {
@@ -377,7 +444,7 @@ class ModelRuntime:
             "anthropic-version": "2023-06-01",
             "Content-Type": "application/json",
         }
-        async with httpx.AsyncClient(timeout=timeout, follow_redirects=False) as client:
+        async with httpx.AsyncClient(timeout=request_timeout, follow_redirects=False) as client:
             response = await client.post(endpoint, headers=headers, json=body)
         if response.status_code >= 400:
             raise ProviderCallError("anthropic-compatible request failed")
@@ -385,13 +452,32 @@ class ModelRuntime:
             content = response.json()["content"]
         except (KeyError, TypeError, json.JSONDecodeError) as exc:
             raise ProviderCallError("invalid anthropic-compatible response") from exc
-        text = "".join(block.get("text", "") for block in content if isinstance(block, dict) and isinstance(block.get("text"), str))
-        calls = tuple(self._anthropic_call(block, index) for index, block in enumerate(content) if isinstance(block, dict) and block.get("type") == "tool_use")
-        return ProviderCompletion(text=text, provider=provider.config.id, model=provider.model, tool_calls=calls)
+        text = "".join(
+            block.get("text", "")
+            for block in content
+            if isinstance(block, dict) and isinstance(block.get("text"), str)
+        )
+        calls = tuple(
+            self._anthropic_call(block, index)
+            for index, block in enumerate(content)
+            if isinstance(block, dict) and block.get("type") == "tool_use"
+        )
+        return ProviderCompletion(
+            text=text, provider=provider.config.id, model=provider.model, tool_calls=calls
+        )
 
     @staticmethod
     def _gemini_schema(value: Mapping[str, Any]) -> dict[str, Any]:
-        allowed = {"type", "format", "description", "nullable", "enum", "items", "properties", "required"}
+        allowed = {
+            "type",
+            "format",
+            "description",
+            "nullable",
+            "enum",
+            "items",
+            "properties",
+            "required",
+        }
         sanitized: dict[str, Any] = {}
         for key, item in value.items():
             if key not in allowed:
@@ -418,7 +504,11 @@ class ModelRuntime:
 
     @staticmethod
     def _openai_tool(tool: ToolDefinition) -> dict[str, Any]:
-        return {"name": tool.name, "description": tool.description, "parameters": dict(tool.parameters)}
+        return {
+            "name": tool.name,
+            "description": tool.description,
+            "parameters": dict(tool.parameters),
+        }
 
     @staticmethod
     def _safe_tool_arguments(args: Any) -> dict[str, Any]:
@@ -440,7 +530,9 @@ class ModelRuntime:
         function = part.get("functionCall", {})
         args = function.get("args", {}) if isinstance(function, Mapping) else {}
         safe_args = ModelRuntime._safe_tool_arguments(args)
-        return ToolCall(call_id=f"gemini-{index}", name=str(function.get("name", ""))[:128], arguments=safe_args)
+        return ToolCall(
+            call_id=f"gemini-{index}", name=str(function.get("name", ""))[:128], arguments=safe_args
+        )
 
     @staticmethod
     def _openai_call(call: Mapping[str, Any], index: int) -> ToolCall:
