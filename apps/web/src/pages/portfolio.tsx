@@ -52,7 +52,7 @@ const chainData: Record<Exclude<Chain, "All chains">, { value: number; pnl: numb
   Base: { value: 22415.09, pnl: 338.02, positions: 2, supplied: "$16,790", borrowed: "$2,140", color: "#9b1730" },
   Solana: { value: 16090.72, pnl: -118.9, positions: 2, supplied: "$10,880", borrowed: "$1,220", color: "#7c9e8d" },
 };
-
+const positions: Position[] = [
   { id: "eth-aave", asset: "Ethereum", symbol: "ETH", protocol: "Aave v3", chain: "Ethereum", type: "Supply", balance: "18.42 ETH", value: 59184.32, pnl: 1842.2, apy: "3.84%", health: "Healthy", healthTone: "success", icon: <Coins size={14} /> },
   { id: "usdc-morpho", asset: "USD Coin", symbol: "USDC", protocol: "Morpho Blue", chain: "Ethereum", type: "Lend", balance: "21,400 USDC", value: 21400, pnl: 318.12, apy: "8.21%", health: "Healthy", healthTone: "success", icon: <CircleDollarSign size={14} /> },
   { id: "arb-gmx", asset: "ETH / USDC", symbol: "LP", protocol: "GMX", chain: "Arbitrum", type: "Liquidity", balance: "0.84 LP", value: 16280.55, pnl: 720.14, apy: "14.62%", health: "Healthy", healthTone: "success", icon: <Layers3 size={14} /> },
@@ -61,7 +61,6 @@ const chainData: Record<Exclude<Chain, "All chains">, { value: number; pnl: numb
   { id: "base-usdc", asset: "USD Coin", symbol: "USDC", protocol: "Moonwell", chain: "Base", type: "Supply", balance: "10,000 USDC", value: 10000, pnl: 39.2, apy: "5.74%", health: "Healthy", healthTone: "success", icon: <CircleDollarSign size={14} /> },
   { id: "sol-jup", asset: "SOL / USDC", symbol: "LP", protocol: "Jupiter", chain: "Solana", type: "Liquidity", balance: "42.8 LP", value: 10790.72, pnl: -84.2, apy: "11.20%", health: "Watch", healthTone: "warning", icon: <Layers3 size={14} /> },
   { id: "sol-sol", asset: "Solana", symbol: "SOL", protocol: "Marinade", chain: "Solana", type: "Stake", balance: "29.4 SOL", value: 5300, pnl: -34.7, apy: "7.18%", health: "Healthy", healthTone: "success", icon: <Network size={14} /> },
-  { id: "sol-sol", asset: "Solana", symbol: "SOL", protocol: "Marinade", chain: "Solana", type: "Stake", balance: "29.4 SOL", value: 5300, pnl: -34.7, apy: "7.18%", health: "Healthy", healthTone: "success", icon: "S" },
 ];
 
 const assetMix = [
