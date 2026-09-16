@@ -31,7 +31,7 @@ import {
 } from "@metron/ui";
 
 type Horizon = "24h" | "7d" | "30d";
-type SimulationState = "idle" | "running" | "complete";
+type SimulationState = "idle" | "running" | "complete" | "error";
 type MarketRegime = "constructive" | "choppy" | "risk-off";
 
 type StressScenario = {
@@ -1185,12 +1185,29 @@ export function RiskCenterPage() {
   const [marketRegime, setMarketRegime] = useState<MarketRegime>("choppy");
   const [simulationState, setSimulationState] = useState<SimulationState>("idle");
   const [protections, setProtections] = useState(protectionDefaults);
+  const [protectionState, setProtectionState] = useState<
+    "idle" | "saving" | "saved" | "error"
+  >("idle");
+  const [protectionMessage, setProtectionMessage] = useState<string | null>(null);
+  const [reviewOpen, setReviewOpen] = useState(false);
+  const [controlsConfirmed, setControlsConfirmed] = useState(false);
 
   useEffect(() => {
     if (simulationState !== "running") return undefined;
-    const timer = window.setTimeout(() => setSimulationState("complete"), 720);
+    const timer = window.setTimeout(() => {
+      setSimulationState(marketRegime === "risk-off" && !protections.circuitBreaker ? "error" : "complete");
+    }, 720);
     return () => window.clearTimeout(timer);
-  }, [simulationState]);
+  }, [marketRegime, protections.circuitBreaker, simulationState]);
+
+  useEffect(() => {
+    if (protectionState !== "saving") return undefined;
+    const timer = window.setTimeout(() => {
+      setProtectionState("saved");
+      setProtectionMessage("Protection controls saved locally and applied to the next simulation.");
+    }, 560);
+    return () => window.clearTimeout(timer);
+  }, [protectionState]);
 
   const selectedScenario =
     stressScenarios.find((scenario) => scenario.id === selectedScenarioId) ?? stressScenarios[0]!;
@@ -1230,11 +1247,32 @@ export function RiskCenterPage() {
     setPriceShock(scenario.shock);
     setMarketRegime(scenario.regime);
     setSimulationState("idle");
+    setProtectionMessage(null);
   };
 
   const updateProtection = (key: keyof typeof protections, enabled: boolean) => {
-    setProtections((current) => ({ ...current, [key]: enabled }));
+    const next = { ...protections, [key]: enabled };
+    if (!Object.values(next).some(Boolean)) {
+      setProtectionState("error");
+      setProtectionMessage("Keep at least one protection enabled before saving controls.");
+      return;
+    }
+    setProtections(next);
+    setControlsConfirmed(false);
+    setProtectionState("saving");
+    setProtectionMessage("Saving protection controls…");
     setSimulationState("idle");
+  };
+
+  const applyProtectionControls = () => {
+    if (!currentProtectionCount) {
+      setProtectionState("error");
+      setProtectionMessage("At least one protection is required.");
+      return;
+    }
+    setProtectionState("saving");
+    setProtectionMessage("Saving protection controls…");
+    setControlsConfirmed(false);
   };
 
   return (
@@ -1617,10 +1655,11 @@ export function RiskCenterPage() {
                   size="sm"
                   loading={simulationState === "running"}
                   loadingLabel="Simulating"
+                  disabled={simulationState === "running"}
                   leadingIcon={<RefreshCw size={15} strokeWidth={1.9} />}
                   onClick={() => setSimulationState("running")}
                 >
-                  Run simulation
+                  {simulationState === "error" ? "Retry simulation" : "Run simulation"}
                 </Button>
               </div>
             </GlassCard>
@@ -1648,6 +1687,15 @@ export function RiskCenterPage() {
                     <p>Tracing collateral across 3 venues</p>
                   </div>
                 </div>
+              ) : simulationState === "error" ? (
+                <InlineAlert
+                  variant="error"
+                  title="Simulation could not complete"
+                  icon={<AlertTriangle size={17} strokeWidth={1.8} />}
+                >
+                  The risk-off scenario has no oracle circuit breaker enabled. Enable the breaker
+                  or choose another regime, then retry.
+                </InlineAlert>
               ) : (
                 <div>
                   <div className="web-page-risk-result-topline">
@@ -1784,17 +1832,98 @@ export function RiskCenterPage() {
               </div>
             </div>
             <div className="web-page-risk-protection-footer">
-              <p>Changes affect the next simulation and require confirmation before execution.</p>
+              <div>
+                <p>Changes affect the next simulation and require confirmation before execution.</p>
+                {protectionMessage ? (
+                  <span
+                    role="status"
+                    aria-live="polite"
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 6,
+                      color:
+                        protectionState === "error"
+                          ? "var(--web-page-risk-crimson)"
+                          : protectionState === "saved"
+                            ? "var(--web-page-risk-green)"
+                            : "var(--web-page-risk-muted)",
+                      fontSize: 12,
+                    }}
+                  >
+                    {protectionState === "saving" ? <RefreshCw size={12} className="spin" /> : null}
+                    {protectionState === "saved" ? <Check size={12} /> : null}
+                    {protectionMessage}
+                  </span>
+                ) : null}
+              </div>
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
                 trailingIcon={<ChevronRight size={15} strokeWidth={1.8} />}
+                onClick={() => setReviewOpen((open) => !open)}
               >
-                Review controls
+                {reviewOpen ? "Close review" : "Review controls"}
               </Button>
             </div>
-          </GlassCard>
+            {reviewOpen ? (
+              <div
+                role="alertdialog"
+                aria-label="Confirm protection controls"
+                style={{
+                  display: "grid",
+                  gap: 12,
+                  marginTop: 12,
+                  padding: 14,
+                  border: "1px solid var(--web-page-risk-border-strong)",
+                  background: "var(--web-page-risk-surface-raised)",
+                }}
+              >
+                <strong style={{ color: "var(--web-page-risk-pearl)", fontSize: 13 }}>
+                  Confirm protection posture
+                </strong>
+                <span style={{ color: "var(--web-page-risk-muted)", fontSize: 12 }}>
+                  {currentProtectionCount} of 3 safeguards will be active for the next execution
+                  cycle.
+                </span>
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                  <Button
+                    type="button"
+                    variant="crimson"
+                    size="sm"
+                    loading={protectionState === "saving"}
+                    loadingLabel="Applying"
+                    disabled={protectionState === "saving"}
+                    leadingIcon={protectionState === "saving" ? undefined : <ShieldCheck size={14} />}
+                    onClick={() => {
+                      applyProtectionControls();
+                      setControlsConfirmed(true);
+                    }}
+                  >
+                    Confirm controls
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="quiet"
+                    size="sm"
+                    onClick={() => setReviewOpen(false)}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+                {controlsConfirmed && protectionState === "saved" ? (
+                  <InlineAlert
+                    variant="success"
+                    title="Controls confirmed"
+                    icon={<Check size={15} />}
+                  >
+                    The selected safeguards are ready for the next execution review.
+                  </InlineAlert>
+                ) : null}
+              </div>
+            ) : null}
+            </GlassCard>
         </section>
 
         <p className="web-page-risk-footer-note">

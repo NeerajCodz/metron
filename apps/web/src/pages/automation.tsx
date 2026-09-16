@@ -169,6 +169,7 @@ export function AutomationPage() {
   });
   const [isSaving, setIsSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [globalPaused, setGlobalPaused] = useState(false);
 
   const runningCount = useMemo(
@@ -224,12 +225,36 @@ export function AutomationPage() {
   };
 
   const saveAutomation = () => {
+    const limits = {
+      maxDrawdown: Number(policy.maxDrawdown),
+      maxLeverage: Number(policy.maxLeverage),
+      reserve: Number(policy.reserve),
+      approvalThreshold: Number(policy.approvalThreshold),
+    };
+    const invalid =
+      !Number.isFinite(limits.maxDrawdown) ||
+      limits.maxDrawdown <= 0 ||
+      limits.maxDrawdown > 100 ||
+      !Number.isFinite(limits.maxLeverage) ||
+      limits.maxLeverage < 1 ||
+      limits.maxLeverage > 10 ||
+      !Number.isFinite(limits.reserve) ||
+      limits.reserve < 0 ||
+      limits.reserve > 100 ||
+      !Number.isFinite(limits.approvalThreshold) ||
+      limits.approvalThreshold < 0;
+    if (invalid) {
+      setSaved(false);
+      setSaveError("Check policy limits: drawdown must be 1–100%, leverage 1–10x, and values cannot be negative.");
+      return;
+    }
     setIsSaving(true);
     setSaved(false);
+    setSaveError(null);
     window.setTimeout(() => {
       setIsSaving(false);
       setSaved(true);
-    }, 500);
+    }, 650);
   };
 
   return (
@@ -306,6 +331,15 @@ export function AutomationPage() {
       {saved ? (
         <InlineAlert variant="success" icon={<Check size={16} />} title="Automation settings saved">
           New rules and permissions are active for the next evaluation cycle.
+        </InlineAlert>
+      ) : null}
+      {saveError ? (
+        <InlineAlert
+          variant="error"
+          icon={<CircleAlert size={16} />}
+          title="Automation was not saved"
+        >
+          {saveError}
         </InlineAlert>
       ) : null}
 

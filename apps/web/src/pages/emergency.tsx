@@ -370,28 +370,57 @@ export function EmergencyPage() {
   const [pauseEntries, setPauseEntries] = useState(true);
   const [limitLeverage, setLimitLeverage] = useState(true);
   const [freezeAutomation, setFreezeAutomation] = useState(false);
+  const [modeBusy, setModeBusy] = useState(false);
+  const [recoveryNotice, setRecoveryNotice] = useState<string | null>(null);
   const [flashConfirmOpen, setFlashConfirmOpen] = useState(false);
   const [flashQueued, setFlashQueued] = useState(false);
+  const [flashStatus, setFlashStatus] = useState<"idle" | "running" | "success" | "error">("idle");
+  const [systemCheckState, setSystemCheckState] = useState<"idle" | "running" | "success">("idle");
 
   const activeRecovery = recoveryOptions.find((option) => option.id === recoveryPlan);
   const isEmergency = systemMode === "emergency";
 
   function handleModeChange(mode: SystemMode) {
-    setSystemMode(mode);
-    if (mode === "emergency") {
-      setPauseEntries(true);
-      setLimitLeverage(true);
-      setFreezeAutomation(true);
-    }
+    if (modeBusy || mode === systemMode) return;
+    setModeBusy(true);
+    setRecoveryNotice(`Applying ${mode} mode…`);
+    window.setTimeout(() => {
+      setSystemMode(mode);
+      setModeBusy(false);
+      if (mode === "emergency") {
+        setPauseEntries(true);
+        setLimitLeverage(true);
+        setFreezeAutomation(true);
+      }
+      setRecoveryNotice(`${mode[0]!.toUpperCase()}${mode.slice(1)} mode is active.`);
+    }, 480);
+  }
+
+  function handleRecoveryChange(plan: RecoveryPlan) {
+    setRecoveryPlan(plan);
+    const option = recoveryOptions.find((candidate) => candidate.id === plan);
+    setRecoveryNotice(`${option?.name ?? "Recovery plan"} selected. Approve an action when ready.`);
   }
 
   function confirmFlashUnwind() {
     setFlashConfirmOpen(false);
-    setFlashQueued(true);
+    setFlashStatus("running");
+    setRecoveryNotice("Flash unwind is routing exits across all active positions…");
     setSystemMode("emergency");
     setPauseEntries(true);
     setLimitLeverage(true);
     setFreezeAutomation(true);
+    window.setTimeout(() => {
+      setFlashStatus("success");
+      setFlashQueued(true);
+      setRecoveryNotice("Flash unwind queued. Monitor fills from the execution center.");
+    }, 980);
+  }
+
+  function recheckSystems() {
+    if (systemCheckState === "running") return;
+    setSystemCheckState("running");
+    window.setTimeout(() => setSystemCheckState("success"), 700);
   }
 
   return (
@@ -449,6 +478,11 @@ export function EmergencyPage() {
               {isEmergency ? "Execution locked" : "Guardrails active"}
             </Badge>
           </div>
+          {modeBusy ? (
+            <div style={styles.footerStatus} role="status" aria-live="polite">
+              <RefreshCcw size={13} aria-hidden="true" /> Applying system mode…
+            </div>
+          ) : null}
           <div
             className="web-page-emergency__mode-grid"
             style={styles.modeGrid}
@@ -465,6 +499,7 @@ export function EmergencyPage() {
                   className="web-page-emergency__mode-button"
                   style={{ ...styles.modeButton, ...(selected ? styles.modeButtonSelected : {}) }}
                   aria-pressed={selected}
+                  disabled={modeBusy}
                   onClick={() => handleModeChange(mode.id)}
                 >
                   <span style={styles.modeLabel}>
@@ -507,13 +542,12 @@ export function EmergencyPage() {
                     }}
                     aria-checked={selected}
                     role="radio"
-                    onClick={() => setRecoveryPlan(option.id)}
+                    onClick={() => handleRecoveryChange(option.id)}
                   >
                     <span style={{ ...styles.iconTile, color: option.accent }}>
                       <RecoveryIcon size={20} strokeWidth={1.7} aria-hidden="true" />
                     </span>
                     <h3 style={styles.recoveryName}>{option.name}</h3>
-                    <p style={styles.recoveryDescription}>{option.description}</p>
                     <span style={styles.recoveryMeta}>
                       <span>{option.eta}</span>
                       <span>{option.risk}</span>
@@ -525,6 +559,11 @@ export function EmergencyPage() {
             <div style={styles.footerStatus} aria-live="polite">
               <CircleCheck size={14} color="#34d399" aria-hidden="true" />
               {activeRecovery?.name} selected. No action has been submitted.
+            {recoveryNotice ? (
+              <span style={{ color: "var(--metron-pearl-dim, rgba(242,241,237,.55))", fontSize: 12 }}>
+                {recoveryNotice}
+              </span>
+            ) : null}
             </div>
           </GlassCard>
 
@@ -607,27 +646,33 @@ export function EmergencyPage() {
             description="Exit all active positions at the best available route, then revoke strategy execution."
             action={
               <Badge
-                variant={flashQueued ? "success" : "warning"}
-                leadingIcon={flashQueued ? <CircleCheck size={12} /> : <Zap size={12} />}
+                variant={flashQueued ? "success" : flashStatus === "running" ? "neutral" : "warning"}
+                leadingIcon={
+                  flashQueued ? <CircleCheck size={12} /> : flashStatus === "running" ? <RefreshCcw size={12} /> : <Zap size={12} />
+                }
               >
-                {flashQueued ? "Queued" : "Requires confirmation"}
+                {flashQueued ? "Queued" : flashStatus === "running" ? "Routing exits" : "Requires confirmation"}
               </Badge>
             }
           >
             <div style={styles.divider} />
             <Progress
               label="Estimated unwind coverage"
-              value={flashQueued ? 100 : 74}
-              valueLabel={flashQueued ? "Queued" : "74% routable now"}
+              value={flashQueued ? 100 : flashStatus === "running" ? 88 : 74}
+              valueLabel={
+                flashQueued ? "Queued" : flashStatus === "running" ? "Routing 88%" : "74% routable now"
+              }
               helperText={
                 flashQueued
                   ? "Execution lock is active across all strategies."
-                  : "Two assets may route with elevated slippage."
+                  : flashStatus === "running"
+                    ? "Submitting exits and cancelling pending orders."
+                    : "Two assets may route with elevated slippage."
               }
-              tone={flashQueued ? "success" : "warning"}
+              tone={flashQueued ? "success" : flashStatus === "running" ? "accent" : "warning"}
               size="sm"
             />
-            {!flashConfirmOpen && !flashQueued ? (
+            {!flashConfirmOpen && !flashQueued && flashStatus !== "running" ? (
               <Button
                 variant="danger"
                 size="lg"
@@ -639,6 +684,11 @@ export function EmergencyPage() {
               >
                 Review flash unwind
               </Button>
+            ) : null}
+            {flashStatus === "running" ? (
+              <div style={styles.footerStatus} role="status" aria-live="polite">
+                <RefreshCcw size={14} aria-hidden="true" /> Routing exits across 6 positions…
+              </div>
             ) : null}
             {flashConfirmOpen ? (
               <div
@@ -658,8 +708,11 @@ export function EmergencyPage() {
                 <div style={styles.flashActions}>
                   <Button
                     variant="danger"
-                    leadingIcon={<Zap size={15} />}
+                    loading={flashStatus === "running"}
+                    loadingLabel="Routing"
+                    leadingIcon={flashStatus === "running" ? undefined : <Zap size={15} />}
                     onClick={confirmFlashUnwind}
+                    disabled={flashStatus === "running"}
                   >
                     Confirm unwind
                   </Button>
@@ -721,11 +774,25 @@ export function EmergencyPage() {
             <Button
               variant="outline"
               fullWidth
-              leadingIcon={<RefreshCcw size={15} />}
+              loading={systemCheckState === "running"}
+              loadingLabel="Checking"
+              leadingIcon={systemCheckState === "running" ? undefined : <RefreshCcw size={15} />}
+              onClick={recheckSystems}
+              disabled={systemCheckState === "running"}
               style={{ marginTop: "1rem" }}
             >
-              Recheck systems
+              {systemCheckState === "success" ? "Systems rechecked" : "Recheck systems"}
             </Button>
+            {systemCheckState === "success" ? (
+              <InlineAlert
+                variant="success"
+                icon={<CircleCheck size={15} />}
+                title="Systems checked"
+                style={{ marginTop: "0.85rem" }}
+              >
+                Risk engine and collateral sync are responding. Venue heartbeat remains degraded.
+              </InlineAlert>
+            ) : null}
           </GlassCard>
         </div>
 

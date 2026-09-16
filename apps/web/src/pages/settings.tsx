@@ -318,7 +318,10 @@ export function SettingsPage() {
   const [settings, setSettings] = useState<SettingsState>(initialSettings);
   const [dirty, setDirty] = useState(false);
   const [savedAt, setSavedAt] = useState<string | null>(null);
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "success" | "error">("idle");
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [walletConnected, setWalletConnected] = useState(true);
+  const [walletAction, setWalletAction] = useState<"idle" | "running">("idle");
   const [copied, setCopied] = useState(false);
   const [walletFeedback, setWalletFeedback] = useState<string | null>(null);
   const [actionNotice, setActionNotice] = useState<string | null>(null);
@@ -327,6 +330,8 @@ export function SettingsPage() {
     setSettings((current) => ({ ...current, [key]: value }));
     setDirty(true);
     setSavedAt(null);
+    setSaveState("idle");
+    setSaveError(null);
   };
 
   const toggleSetting = (key: BooleanSetting) => {
@@ -334,28 +339,49 @@ export function SettingsPage() {
   };
 
   const handleSave = () => {
-    setDirty(false);
-    setSavedAt("just now");
+    const slippage = Number(settings.defaultSlippage);
+    const gas = Number(settings.maxGas);
+    if (!settings.walletLabel.trim() || !Number.isFinite(slippage) || slippage < 0 || slippage > 100 || !Number.isFinite(gas) || gas < 0) {
+      setSaveState("error");
+      setSaveError("Enter a wallet label and valid non-negative slippage and gas limits before saving.");
+      return;
+    }
+    setSaveState("saving");
+    setSaveError(null);
+    setSavedAt(null);
+    window.setTimeout(() => {
+      setSaveState("success");
+      setDirty(false);
+      setSavedAt("just now");
+    }, 650);
   };
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText("0x7A31...9D42");
       setCopied(true);
+      setActionNotice("Wallet address copied to your clipboard.");
       window.setTimeout(() => setCopied(false), 1800);
     } catch {
       setCopied(false);
+      setActionNotice("Clipboard access was unavailable. Copy the address manually.");
     }
   };
 
   const handleWalletAction = () => {
-    if (walletConnected) {
-      setWalletConnected(false);
-      setWalletFeedback("Wallet disconnected. Local preferences are still available.");
-    } else {
-      setWalletConnected(true);
-      setWalletFeedback("Wallet connected: 0x7A31...9D42");
-    }
+    if (walletAction === "running") return;
+    const nextConnected = !walletConnected;
+    setWalletAction("running");
+    setWalletFeedback(null);
+    window.setTimeout(() => {
+      setWalletConnected(nextConnected);
+      setWalletFeedback(
+        nextConnected
+          ? "Wallet connected: 0x7A31...9D42"
+          : "Wallet disconnected. Local preferences are still available.",
+      );
+      setWalletAction("idle");
+    }, 520);
   };
 
   const renderGeneral = () => (
@@ -518,8 +544,11 @@ export function SettingsPage() {
               <Button
                 variant="danger"
                 size="sm"
-                leadingIcon={<LogOut size={15} />}
+                loading={walletAction === "running"}
+                loadingLabel="Disconnecting"
+                leadingIcon={walletAction === "running" ? undefined : <LogOut size={15} />}
                 onClick={handleWalletAction}
+                disabled={walletAction === "running"}
               >
                 Disconnect
               </Button>
@@ -540,8 +569,11 @@ export function SettingsPage() {
             <Button
               variant="crimson"
               size="sm"
-              leadingIcon={<Wallet size={15} />}
+              loading={walletAction === "running"}
+              loadingLabel="Connecting"
+              leadingIcon={walletAction === "running" ? undefined : <Wallet size={15} />}
               onClick={handleWalletAction}
+              disabled={walletAction === "running"}
             >
               Connect wallet
             </Button>
@@ -1162,8 +1194,19 @@ export function SettingsPage() {
           <span
             className={`web-page-settings__save-state ${dirty ? "web-page-settings__save-state--dirty" : ""}`}
             role="status"
+            aria-live="polite"
           >
-            {dirty ? (
+            {saveState === "saving" ? (
+              <>
+                <RefreshCw size={14} className="web-page-settings__save-spin" />
+                Saving changes…
+              </>
+            ) : saveState === "error" ? (
+              <>
+                <CircleAlert size={14} />
+                Save needs attention
+              </>
+            ) : dirty ? (
               <>
                 <span className="web-page-settings__save-dot" />
                 Unsaved changes
@@ -1180,12 +1223,19 @@ export function SettingsPage() {
               </>
             )}
           </span>
+          {saveError ? (
+            <InlineAlert variant="error" icon={<CircleAlert size={15} />} title="Review settings">
+              {saveError}
+            </InlineAlert>
+          ) : null}
           <Button
             variant="crimson"
             size="md"
-            leadingIcon={<Save size={16} />}
+            loading={saveState === "saving"}
+            loadingLabel="Saving"
+            leadingIcon={saveState === "saving" ? undefined : <Save size={16} />}
             onClick={handleSave}
-            disabled={!dirty}
+            disabled={!dirty || saveState === "saving"}
           >
             Save changes
           </Button>

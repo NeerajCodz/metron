@@ -1,4 +1,4 @@
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   Activity,
   AlertTriangle,
@@ -412,8 +412,14 @@ export function ActivityPage() {
     });
   }, [category, query, status]);
 
+  useEffect(() => {
+    if (filteredEvents.length > 0 && !filteredEvents.some((event) => event.id === selectedId)) {
+      setSelectedId(filteredEvents[0]!.id);
+    }
+  }, [filteredEvents, selectedId]);
+
   const selectedEvent: AuditEvent =
-    events.find((event) => event.id === selectedId) ?? filteredEvents[0] ?? defaultEvent;
+    filteredEvents.find((event) => event.id === selectedId) ?? filteredEvents[0] ?? defaultEvent;
   const prediction = selectedEvent.prediction;
   const transaction = selectedEvent.transaction;
   const hasFilters = query.length > 0 || category !== "All categories" || status !== "All statuses";
