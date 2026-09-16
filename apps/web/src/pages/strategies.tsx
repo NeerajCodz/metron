@@ -341,7 +341,11 @@ function StrategyCard({
           loading={busy === "inspect"}
           loadingLabel="Inspecting"
           leadingIcon={
-            busy === "inspect" ? undefined : inspected ? <X size={14} /> : <ExternalLink size={14} />
+            busy === "inspect" ? undefined : inspected ? (
+              <X size={14} />
+            ) : (
+              <ExternalLink size={14} />
+            )
           }
           onClick={onInspect}
           aria-expanded={inspected}
@@ -378,7 +382,7 @@ export function StrategiesPage() {
   const [showAll, setShowAll] = useState(false);
   const [action, setAction] = useState<{
     kind: "inspect" | "select" | "reset" | "show";
-    strategyId?: string;
+    strategyId: string | undefined;
     status: "running" | "success" | "error";
     message: string;
   } | null>(null);
@@ -407,7 +411,12 @@ export function StrategiesPage() {
 
   const selectStrategy = (strategyId: string) => {
     if (selectedId === strategyId) {
-      setAction({ kind: "select", strategyId, status: "success", message: "Strategy is already selected." });
+      setAction({
+        kind: "select",
+        strategyId,
+        status: "success",
+        message: "Strategy is already selected.",
+      });
       return;
     }
     const strategy = strategies.find((candidate) => candidate.id === strategyId);
@@ -736,7 +745,11 @@ export function StrategiesPage() {
               fontSize: "12px",
             }}
           >
-            {action.status === "running" ? <RefreshCw className="web-page-strategies__spin" size={14} /> : <Check size={14} />}
+            {action.status === "running" ? (
+              <RefreshCw className="web-page-strategies__spin" size={14} />
+            ) : (
+              <Check size={14} />
+            )}
             {action.message}
           </div>
         ) : null}
@@ -1139,7 +1152,11 @@ export function StrategiesPage() {
             <Button
               variant="crimson"
               size="md"
-              loading={action?.kind === "inspect" && action.status === "running" && action.strategyId === selectedStrategy.id}
+              loading={
+                action?.kind === "inspect" &&
+                action.status === "running" &&
+                action.strategyId === selectedStrategy.id
+              }
               loadingLabel="Inspecting"
               trailingIcon={action?.status === "running" ? undefined : <ArrowRight size={15} />}
               onClick={() => inspectStrategy(selectedStrategy.id)}

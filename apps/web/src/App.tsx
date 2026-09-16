@@ -7,7 +7,6 @@ import {
   Check,
   ChevronRight,
   Command,
-  Gauge,
   LayoutDashboard,
   Layers3,
   Menu,
@@ -21,7 +20,15 @@ import {
   XCircle,
   type LucideIcon,
 } from "lucide-react";
-import { BrowserRouter, Link, Navigate, NavLink, Route, Routes, useLocation } from "react-router-dom";
+import {
+  BrowserRouter,
+  Link,
+  Navigate,
+  NavLink,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
 import { ActivityPage } from "./pages/activity";
 import { AutomationPage } from "./pages/automation";
 import { DashboardPage } from "./pages/dashboard";
@@ -34,6 +41,7 @@ import { SettingsPage } from "./pages/settings";
 import { StrategiesPage } from "./pages/strategies";
 import { StrategyDetailPage } from "./pages/strategy-detail";
 import { MetronStateProvider, useMetronState } from "./state/metron-state";
+import { BackgroundLayout, Badge } from "@metron/ui";
 
 const DevScreenGallery = import.meta.env.DEV
   ? lazy(() => import("./dev/ScreenGallery").then((module) => ({ default: module.ScreenGallery })))
@@ -112,7 +120,9 @@ function AppRoutes() {
 function ShellFeedback() {
   const { notifications, jobs, dismissNotification } = useMetronState();
   const activeJob = jobs.find((job) => job.status === "running");
-  const recentNotifications = notifications.filter((notification) => !notification.read).slice(0, 3);
+  const recentNotifications = notifications
+    .filter((notification) => !notification.read)
+    .slice(0, 3);
 
   if (!activeJob && recentNotifications.length === 0) return null;
 
@@ -138,7 +148,11 @@ function ShellFeedback() {
             <Check size={15} aria-hidden="true" />
           )}
           <span>{notification.message}</span>
-          <button type="button" aria-label="Dismiss notification" onClick={() => dismissNotification(notification.id)}>
+          <button
+            type="button"
+            aria-label="Dismiss notification"
+            onClick={() => dismissNotification(notification.id)}
+          >
             <X size={14} aria-hidden="true" />
           </button>
         </div>
@@ -151,7 +165,8 @@ function RouterShell() {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { wallet, connectWallet } = useMetronState();
-  const currentLabel = routeLabels.find(({ match }) => match(location.pathname))?.label ?? "Control room";
+  const currentLabel =
+    routeLabels.find(({ match }) => match(location.pathname))?.label ?? "Control room";
 
   useEffect(() => {
     setSidebarOpen(false);
@@ -182,13 +197,20 @@ function RouterShell() {
           aria-label="Close navigation"
           onClick={() => setSidebarOpen(false)}
         />
-        <aside className={`app-sidebar${sidebarOpen ? " is-open" : ""}`} aria-label="Primary navigation">
+        <aside
+          className={`app-sidebar${sidebarOpen ? " is-open" : ""}`}
+          aria-label="Primary navigation"
+        >
           <div className="app-sidebar__top">
             <Link className="wordmark" to="/dashboard" aria-label="Metron home">
               <span className="wordmark-mark" aria-hidden="true" />
               <span>METRON</span>
             </Link>
-            <button className="app-sidebar__close" aria-label="Close navigation" onClick={() => setSidebarOpen(false)}>
+            <button
+              className="app-sidebar__close"
+              aria-label="Close navigation"
+              onClick={() => setSidebarOpen(false)}
+            >
               <X size={17} aria-hidden="true" />
             </button>
           </div>
@@ -211,7 +233,12 @@ function RouterShell() {
                     to={to}
                     end={to === "/dashboard" || to === "/intent/new"}
                     className={({ isActive }) => `app-nav__item${isActive ? " is-active" : ""}`}
-                    aria-current={location.pathname === to || (to !== "/dashboard" && location.pathname.startsWith(`${to}/`)) ? "page" : undefined}
+                    aria-current={
+                      location.pathname === to ||
+                      (to !== "/dashboard" && location.pathname.startsWith(`${to}/`))
+                        ? "page"
+                        : undefined
+                    }
                   >
                     <Icon size={17} strokeWidth={1.8} aria-hidden="true" />
                     <span>{label}</span>
@@ -237,7 +264,11 @@ function RouterShell() {
 
         <div className="app-main">
           <header className="app-topbar">
-            <button className="app-menu-toggle" aria-label="Open navigation" onClick={() => setSidebarOpen(true)}>
+            <button
+              className="app-menu-toggle"
+              aria-label="Open navigation"
+              onClick={() => setSidebarOpen(true)}
+            >
               <Menu size={20} aria-hidden="true" />
             </button>
             <div className="app-breadcrumb" aria-label="Current location">
@@ -253,14 +284,23 @@ function RouterShell() {
                   <Command size={11} aria-hidden="true" /> K
                 </kbd>
               </button>
-              <Badge className="network-status" variant="success" leadingIcon={<span className="status-dot" aria-hidden="true" />}>
+              <Badge
+                className="network-status"
+                variant="success"
+                leadingIcon={<span className="status-dot" aria-hidden="true" />}
+              >
                 Mainnet connected
               </Badge>
               <button className="topbar-icon-button" aria-label="View notifications" type="button">
                 <Bell size={17} aria-hidden="true" />
                 <span className="notification-dot" aria-hidden="true" />
               </button>
-              <button className="wallet-button" aria-label="Open wallet menu" type="button" onClick={() => connectWallet()}>
+              <button
+                className="wallet-button"
+                aria-label="Open wallet menu"
+                type="button"
+                onClick={() => connectWallet()}
+              >
                 <span className="wallet-button__avatar">0x</span>
                 <span>{wallet.connected ? wallet.address : "Connect wallet"}</span>
                 <ChevronRight size={14} aria-hidden="true" />
@@ -273,7 +313,8 @@ function RouterShell() {
               <AlertTriangle size={16} aria-hidden="true" />
             </span>
             <span>
-              <strong>Two conditions need review.</strong> Stablecoin utilization is approaching its guardrail.
+              <strong>Two conditions need review.</strong> Stablecoin utilization is approaching its
+              guardrail.
             </span>
             <span className="app-risk-banner__link">
               Open emergency controls <ChevronRight size={14} aria-hidden="true" />

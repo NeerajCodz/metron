@@ -32,7 +32,8 @@ type StyleMap = CSSProperties;
 const panelStyle: StyleMap = {
   border: "1px solid color-mix(in srgb, var(--metron-crimson-bright, #f04b5f) 38%, transparent)",
   borderRadius: "12px",
-  background: "color-mix(in srgb, var(--metron-black, #08090b) 92%, var(--metron-crimson, #710014) 8%)",
+  background:
+    "color-mix(in srgb, var(--metron-black, #08090b) 92%, var(--metron-crimson, #710014) 8%)",
   color: "var(--metron-pearl, #f2f1ed)",
   boxShadow: "0 18px 46px -16px rgb(0 0 0 / 85%), 0 0 0 1px rgb(255 255 255 / 3%)",
   backdropFilter: "blur(18px)",
@@ -139,7 +140,7 @@ export function ScreenGallery() {
 
       cancelPending();
       if (delay === 0) {
-        navigate(target);
+        void navigate(target);
         return;
       }
 
@@ -153,7 +154,7 @@ export function ScreenGallery() {
           return;
         }
         setPendingPath(null);
-        navigate(target);
+        void navigate(target);
       }, delay);
     },
     [cancelPending, delay, navigate],
@@ -165,7 +166,7 @@ export function ScreenGallery() {
     // The gallery never mounts a duplicate fixture: live means the current
     // router-rendered app. Replacing the current URL also clears a stale
     // pending transition without adding a history entry.
-    navigate(`${location.pathname}${location.search}${location.hash}`, { replace: true });
+    void navigate(`${location.pathname}${location.search}${location.hash}`, { replace: true });
   }, [cancelPending, location.hash, location.pathname, location.search, navigate]);
 
   const active = useMemo(
@@ -174,9 +175,14 @@ export function ScreenGallery() {
   );
   const activeIndex = active ? GALLERY_SCREENS.indexOf(active) : -1;
   const previous = activeIndex > 0 ? GALLERY_SCREENS[activeIndex - 1] : null;
-  const next = activeIndex >= 0 && activeIndex < GALLERY_SCREENS.length - 1 ? GALLERY_SCREENS[activeIndex + 1] : null;
+  const next =
+    activeIndex >= 0 && activeIndex < GALLERY_SCREENS.length - 1
+      ? GALLERY_SCREENS[activeIndex + 1]
+      : null;
   const pending = pendingPath
-    ? GALLERY_SCREENS.find((screen) => normalizePath(screen.target) === normalizePath(pendingPath)) ?? null
+    ? (GALLERY_SCREENS.find(
+        (screen) => normalizePath(screen.target) === normalizePath(pendingPath),
+      ) ?? null)
     : null;
   const matches = useMemo(() => {
     const needle = query.trim().toLowerCase();
@@ -195,7 +201,9 @@ export function ScreenGallery() {
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       const target = event.target;
-      const typing = target instanceof HTMLElement && target.closest("input, textarea, [contenteditable='true']");
+      const typing =
+        target instanceof HTMLElement &&
+        target.closest("input, textarea, [contenteditable='true']");
 
       if (event.key === "Escape") {
         if (open || pendingPath) {
@@ -235,7 +243,8 @@ export function ScreenGallery() {
       maxWidth: root.style.maxWidth,
       marginInline: root.style.marginInline,
     };
-    const width = WIDTHS.find((option) => option.id === widthId)?.width;
+    const viewport = WIDTHS.find((option) => option.id === widthId);
+    const width = viewport && "width" in viewport ? viewport.width : undefined;
     if (!width) return;
 
     root.style.width = `${width}px`;
@@ -248,7 +257,7 @@ export function ScreenGallery() {
     };
   }, [widthId]);
 
-  const activeLabel = pending ? `Loading ${pending.label}` : active?.label ?? "Live app";
+  const activeLabel = pending ? `Loading ${pending.label}` : (active?.label ?? "Live app");
   const selectedWidth = WIDTHS.find((option) => option.id === widthId) ?? WIDTHS[0];
 
   return (
@@ -292,10 +301,19 @@ export function ScreenGallery() {
             <LoaderCircle
               size={22}
               aria-hidden="true"
-              style={{ animation: "metron-gallery-spin .9s linear infinite", color: "var(--metron-crimson-bright, #f04b5f)" }}
+              style={{
+                animation: "metron-gallery-spin .9s linear infinite",
+                color: "var(--metron-crimson-bright, #f04b5f)",
+              }}
             />
             <strong style={{ fontSize: "12px", fontWeight: 600 }}>Loading route</strong>
-            <span style={{ color: "var(--metron-pearl-dim, #77746f)", fontFamily: "var(--metron-font-mono, monospace)", fontSize: "9px" }}>
+            <span
+              style={{
+                color: "var(--metron-pearl-dim, #77746f)",
+                fontFamily: "var(--metron-font-mono, monospace)",
+                fontSize: "9px",
+              }}
+            >
               {pending.path}
             </span>
           </div>
@@ -322,17 +340,51 @@ export function ScreenGallery() {
             aria-label="Development route gallery"
             style={{ ...panelStyle, width: "286px", marginBottom: "8px", overflow: "hidden" }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", padding: "9px", borderBottom: "1px solid var(--metron-border, rgb(255 255 255 / 10%))" }}>
-              <Search size={14} aria-hidden="true" style={{ flex: "0 0 auto", color: "var(--metron-pearl-dim, #77746f)" }} />
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                padding: "9px",
+                borderBottom: "1px solid var(--metron-border, rgb(255 255 255 / 10%))",
+              }}
+            >
+              <Search
+                size={14}
+                aria-hidden="true"
+                style={{ flex: "0 0 auto", color: "var(--metron-pearl-dim, #77746f)" }}
+              />
               <input
                 ref={searchRef}
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Find a route"
                 aria-label="Find a route"
-                style={{ width: "100%", minWidth: 0, height: "28px", padding: "0 2px", border: 0, outline: 0, background: "transparent", color: "var(--metron-pearl, #f2f1ed)", fontSize: "11px" }}
+                style={{
+                  width: "100%",
+                  minWidth: 0,
+                  height: "28px",
+                  padding: "0 2px",
+                  border: 0,
+                  outline: 0,
+                  background: "transparent",
+                  color: "var(--metron-pearl, #f2f1ed)",
+                  fontSize: "11px",
+                }}
               />
-              <kbd style={{ flex: "0 0 auto", padding: "2px 4px", border: "1px solid var(--metron-border, rgb(255 255 255 / 10%))", borderRadius: "4px", color: "var(--metron-pearl-dim, #77746f)", fontFamily: "var(--metron-font-mono, monospace)", fontSize: "9px" }}>Esc</kbd>
+              <kbd
+                style={{
+                  flex: "0 0 auto",
+                  padding: "2px 4px",
+                  border: "1px solid var(--metron-border, rgb(255 255 255 / 10%))",
+                  borderRadius: "4px",
+                  color: "var(--metron-pearl-dim, #77746f)",
+                  fontFamily: "var(--metron-font-mono, monospace)",
+                  fontSize: "9px",
+                }}
+              >
+                Esc
+              </kbd>
             </div>
 
             <div style={{ maxHeight: "48vh", overflowY: "auto", padding: "5px" }}>
@@ -340,13 +392,27 @@ export function ScreenGallery() {
                 type="button"
                 onClick={leaveGallery}
                 aria-current={!active && !pending ? "page" : undefined}
-                style={{ ...itemStyle, color: !active && !pending ? "var(--metron-sand-bright, #d4b18a)" : itemStyle.color }}
+                style={{
+                  ...itemStyle,
+                  color:
+                    !active && !pending ? "var(--metron-sand-bright, #d4b18a)" : itemStyle.color,
+                }}
               >
-                <span style={{ display: "inline-flex", alignItems: "center", gap: "8px", minWidth: 0 }}>
+                <span
+                  style={{ display: "inline-flex", alignItems: "center", gap: "8px", minWidth: 0 }}
+                >
                   <Radio size={14} aria-hidden="true" />
                   <span>Live app</span>
                 </span>
-                <span style={{ color: "var(--metron-pearl-dim, #77746f)", fontFamily: "var(--metron-font-mono, monospace)", fontSize: "9px" }}>current</span>
+                <span
+                  style={{
+                    color: "var(--metron-pearl-dim, #77746f)",
+                    fontFamily: "var(--metron-font-mono, monospace)",
+                    fontSize: "9px",
+                  }}
+                >
+                  current
+                </span>
               </button>
 
               {matches.length > 0 ? (
@@ -355,43 +421,195 @@ export function ScreenGallery() {
                   const isActive = active?.id === screen.id && !pendingPath;
                   return (
                     <div key={screen.id}>
-                      {showGroup ? <div style={{ padding: index === 0 ? "8px 10px 4px" : "12px 10px 4px", color: "var(--metron-pearl-dim, #77746f)", fontFamily: "var(--metron-font-mono, monospace)", fontSize: "8px", letterSpacing: "0.1em", textTransform: "uppercase" }}>{screen.group}</div> : null}
+                      {showGroup ? (
+                        <div
+                          style={{
+                            padding: index === 0 ? "8px 10px 4px" : "12px 10px 4px",
+                            color: "var(--metron-pearl-dim, #77746f)",
+                            fontFamily: "var(--metron-font-mono, monospace)",
+                            fontSize: "8px",
+                            letterSpacing: "0.1em",
+                            textTransform: "uppercase",
+                          }}
+                        >
+                          {screen.group}
+                        </div>
+                      ) : null}
                       <button
                         type="button"
                         disabled={pendingPath !== null}
                         onClick={() => showScreen(screen)}
                         aria-current={isActive ? "page" : undefined}
                         aria-label={`Open ${screen.label} at ${displayTarget(screen)}`}
-                        style={{ ...itemStyle, background: isActive ? "rgb(180 34 57 / 15%)" : "transparent", color: isActive ? "var(--metron-sand-bright, #d4b18a)" : itemStyle.color, borderLeft: isActive ? "2px solid var(--metron-crimson-bright, #f04b5f)" : "2px solid transparent", paddingLeft: "9px" }}
+                        style={{
+                          ...itemStyle,
+                          background: isActive ? "rgb(180 34 57 / 15%)" : "transparent",
+                          color: isActive ? "var(--metron-sand-bright, #d4b18a)" : itemStyle.color,
+                          borderLeft: isActive
+                            ? "2px solid var(--metron-crimson-bright, #f04b5f)"
+                            : "2px solid transparent",
+                          paddingLeft: "9px",
+                        }}
                       >
-                        <span style={{ display: "flex", minWidth: 0, flexDirection: "column", gap: "3px" }}>
-                          <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontSize: "11px" }}>{screen.label}</span>
-                          <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: "var(--metron-pearl-dim, #77746f)", fontFamily: "var(--metron-font-mono, monospace)", fontSize: "8px" }}>{screen.path}</span>
+                        <span
+                          style={{
+                            display: "flex",
+                            minWidth: 0,
+                            flexDirection: "column",
+                            gap: "3px",
+                          }}
+                        >
+                          <span
+                            style={{
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                              fontSize: "11px",
+                            }}
+                          >
+                            {screen.label}
+                          </span>
+                          <span
+                            style={{
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                              color: "var(--metron-pearl-dim, #77746f)",
+                              fontFamily: "var(--metron-font-mono, monospace)",
+                              fontSize: "8px",
+                            }}
+                          >
+                            {screen.path}
+                          </span>
                         </span>
-                        {isActive ? <CircleDot size={13} aria-hidden="true" /> : <Route size={12} aria-hidden="true" style={{ color: "var(--metron-pearl-dim, #77746f)" }} />}
+                        {isActive ? (
+                          <CircleDot size={13} aria-hidden="true" />
+                        ) : (
+                          <Route
+                            size={12}
+                            aria-hidden="true"
+                            style={{ color: "var(--metron-pearl-dim, #77746f)" }}
+                          />
+                        )}
                       </button>
                     </div>
                   );
                 })
               ) : (
-                <p style={{ margin: "8px 10px", color: "var(--metron-pearl-dim, #77746f)", fontSize: "11px" }}>No routes match.</p>
+                <p
+                  style={{
+                    margin: "8px 10px",
+                    color: "var(--metron-pearl-dim, #77746f)",
+                    fontSize: "11px",
+                  }}
+                >
+                  No routes match.
+                </p>
               )}
             </div>
 
-            <div style={{ display: "grid", gap: "7px", padding: "9px", borderTop: "1px solid var(--metron-border, rgb(255 255 255 / 10%))" }}>
+            <div
+              style={{
+                display: "grid",
+                gap: "7px",
+                padding: "9px",
+                borderTop: "1px solid var(--metron-border, rgb(255 255 255 / 10%))",
+              }}
+            >
               <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: "5px", marginRight: "auto", paddingLeft: "2px", color: "var(--metron-pearl-dim, #77746f)", fontFamily: "var(--metron-font-mono, monospace)", fontSize: "9px" }}><Monitor size={11} aria-hidden="true" /> width</span>
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "5px",
+                    marginRight: "auto",
+                    paddingLeft: "2px",
+                    color: "var(--metron-pearl-dim, #77746f)",
+                    fontFamily: "var(--metron-font-mono, monospace)",
+                    fontSize: "9px",
+                  }}
+                >
+                  <Monitor size={11} aria-hidden="true" /> width
+                </span>
                 {WIDTHS.map((option) => {
                   const Icon = option.icon;
-                  return <button key={option.id} type="button" onClick={() => setWidthId(option.id)} aria-pressed={widthId === option.id} style={{ ...chipStyle, ...(widthId === option.id ? { borderColor: "var(--metron-crimson-glow, #710014)", background: "var(--metron-crimson, #710014)", color: "var(--metron-pearl, #f2f1ed)" } : {}) }}><Icon size={11} aria-hidden="true" />{option.label}</button>;
+                  return (
+                    <button
+                      key={option.id}
+                      type="button"
+                      onClick={() => setWidthId(option.id)}
+                      aria-pressed={widthId === option.id}
+                      style={{
+                        ...chipStyle,
+                        ...(widthId === option.id
+                          ? {
+                              borderColor: "var(--metron-crimson-glow, #710014)",
+                              background: "var(--metron-crimson, #710014)",
+                              color: "var(--metron-pearl, #f2f1ed)",
+                            }
+                          : {}),
+                      }}
+                    >
+                      <Icon size={11} aria-hidden="true" />
+                      {option.label}
+                    </button>
+                  );
                 })}
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: "5px", marginRight: "auto", paddingLeft: "2px", color: "var(--metron-pearl-dim, #77746f)", fontFamily: "var(--metron-font-mono, monospace)", fontSize: "9px" }}><Timer size={11} aria-hidden="true" /> delay</span>
-                {([0, 1200] as const).map((option) => <button key={option} type="button" onClick={() => setDelay(option)} aria-pressed={delay === option} style={{ ...chipStyle, ...(delay === option ? { borderColor: "var(--metron-crimson-glow, #710014)", background: "var(--metron-crimson, #710014)", color: "var(--metron-pearl, #f2f1ed)" } : {}) }}>{option === 0 ? "off" : "1.2s"}</button>)}
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "5px",
+                    marginRight: "auto",
+                    paddingLeft: "2px",
+                    color: "var(--metron-pearl-dim, #77746f)",
+                    fontFamily: "var(--metron-font-mono, monospace)",
+                    fontSize: "9px",
+                  }}
+                >
+                  <Timer size={11} aria-hidden="true" /> delay
+                </span>
+                {([0, 1200] as const).map((option) => (
+                  <button
+                    key={option}
+                    type="button"
+                    onClick={() => setDelay(option)}
+                    aria-pressed={delay === option}
+                    style={{
+                      ...chipStyle,
+                      ...(delay === option
+                        ? {
+                            borderColor: "var(--metron-crimson-glow, #710014)",
+                            background: "var(--metron-crimson, #710014)",
+                            color: "var(--metron-pearl, #f2f1ed)",
+                          }
+                        : {}),
+                    }}
+                  >
+                    {option === 0 ? "off" : "1.2s"}
+                  </button>
+                ))}
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "5px", padding: "2px", color: "var(--metron-pearl-dim, #77746f)", fontFamily: "var(--metron-font-mono, monospace)", fontSize: "9px" }}><PanelLeft size={11} aria-hidden="true" /> <span><kbd>[</kbd> previous&nbsp;&nbsp;<kbd>]</kbd> next</span></div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "5px",
+                  padding: "2px",
+                  color: "var(--metron-pearl-dim, #77746f)",
+                  fontFamily: "var(--metron-font-mono, monospace)",
+                  fontSize: "9px",
+                }}
+              >
+                <PanelLeft size={11} aria-hidden="true" />{" "}
+                <span>
+                  <kbd>[</kbd> previous&nbsp;&nbsp;<kbd>]</kbd> next
+                </span>
+              </div>
             </div>
+          </div>
         ) : null}
 
         <div style={{ ...panelStyle, display: "flex", alignItems: "center", gap: "2px" }}>
@@ -405,12 +623,48 @@ export function ScreenGallery() {
             <PanelLeft size={14} aria-hidden="true" />
             <span>{pending ? `Loading ${pending.label}` : activeLabel}</span>
           </button>
-          {open ? <button type="button" onClick={() => setOpen(false)} aria-label="Close route gallery" style={{ ...compactButtonStyle, padding: "6px 7px" }}><X size={14} aria-hidden="true" /></button> : null}
-          {active && !pending ? <span style={{ padding: "0 8px 0 2px", color: "var(--metron-pearl-dim, #77746f)", fontFamily: "var(--metron-font-mono, monospace)", fontSize: "9px" }}>{selectedWidth.label}</span> : null}
+          {open ? (
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              aria-label="Close route gallery"
+              style={{ ...compactButtonStyle, padding: "6px 7px" }}
+            >
+              <X size={14} aria-hidden="true" />
+            </button>
+          ) : null}
+          {active && !pending ? (
+            <span
+              style={{
+                padding: "0 8px 0 2px",
+                color: "var(--metron-pearl-dim, #77746f)",
+                fontFamily: "var(--metron-font-mono, monospace)",
+                fontSize: "9px",
+              }}
+            >
+              {selectedWidth.label}
+            </span>
+          ) : null}
           {active && !pending ? (
             <>
-              <button type="button" disabled={!previous} onClick={() => previous && showScreen(previous)} aria-label="Previous route" style={{ ...compactButtonStyle, padding: "6px 6px" }}><ChevronLeft size={14} aria-hidden="true" /></button>
-              <button type="button" disabled={!next} onClick={() => next && showScreen(next)} aria-label="Next route" style={{ ...compactButtonStyle, padding: "6px 6px" }}><ChevronRight size={14} aria-hidden="true" /></button>
+              <button
+                type="button"
+                disabled={!previous}
+                onClick={() => previous && showScreen(previous)}
+                aria-label="Previous route"
+                style={{ ...compactButtonStyle, padding: "6px 6px" }}
+              >
+                <ChevronLeft size={14} aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                disabled={!next}
+                onClick={() => next && showScreen(next)}
+                aria-label="Next route"
+                style={{ ...compactButtonStyle, padding: "6px 6px" }}
+              >
+                <ChevronRight size={14} aria-hidden="true" />
+              </button>
             </>
           ) : null}
         </div>
