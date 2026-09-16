@@ -20,6 +20,8 @@
     "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build",
     "check:env": "node scripts/check-env.mjs",
     "check:abi": "node scripts/check-abi.mjs",
+    "deploy:web3": "node scripts/deploy-web3.mjs",
+    "validate:deployment": "node scripts/validate-deployment.mjs",
     "generate:abi": "node scripts/generate-abi.mjs",
     "sync:addresses": "node scripts/sync-addresses.mjs"
   },

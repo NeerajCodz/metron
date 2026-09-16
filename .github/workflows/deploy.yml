@@ -1,0 +1,49 @@
+name: deploy-web3
+
+on:
+  workflow_dispatch:
+    inputs:
+      chain:
+        description: Supported chain key
+        required: true
+        type: choice
+        options:
+          - ethereumSepolia
+          - arbitrumSepolia
+          - baseSepolia
+          - optimismSepolia
+      confirm:
+        description: Type I_UNDERSTAND to deploy
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+env:
+  DEPLOYMENT_ENV: production
+  DEPLOY_CONFIRM: ${{ inputs.confirm }}
+
+jobs:
+  deploy:
+    environment: production
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @metron/config build
+      - run: node scripts/deploy-web3.mjs "${{ inputs.chain }}"
+        env:
+          ETHEREUM_SEPOLIA_RPC_URL: ${{ secrets.ETHEREUM_SEPOLIA_RPC_URL }}
+          ARBITRUM_SEPOLIA_RPC_URL: ${{ secrets.ARBITRUM_SEPOLIA_RPC_URL }}
+          BASE_SEPOLIA_RPC_URL: ${{ secrets.BASE_SEPOLIA_RPC_URL }}
+          OPTIMISM_SEPOLIA_RPC_URL: ${{ secrets.OPTIMISM_SEPOLIA_RPC_URL }}
+          DEPLOYER_PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
+          EXPECTED_ADMIN_ADDRESS: ${{ secrets.EXPECTED_ADMIN_ADDRESS }}

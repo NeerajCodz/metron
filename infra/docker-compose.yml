@@ -9,7 +9,13 @@ services:
     ports:
       - "8000:8000"
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')"]
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')",
+        ]
       interval: 10s
       timeout: 3s
       retries: 5
@@ -25,7 +31,13 @@ services:
     ports:
       - "8787:8787"
     healthcheck:
-      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8787/health').then(r=>{if(!r.ok)process.exit(1)})"]
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:8787/health').then(r=>{if(!r.ok)process.exit(1)})",
+        ]
       interval: 10s
       timeout: 3s
       retries: 5
@@ -42,7 +54,13 @@ services:
       - "8788:8788"
     command: ["sh", "-c", "PORT=8788 node apps/web3/dist/runtime/server.js"]
     healthcheck:
-      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8788/health').then(r=>{if(!r.ok)process.exit(1)})"]
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:8788/health').then(r=>{if(!r.ok)process.exit(1)})",
+        ]
       interval: 10s
       timeout: 3s
       retries: 5
