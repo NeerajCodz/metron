@@ -1,30 +1,17 @@
 import {
   ArrowRight,
   Bell,
-  CalendarBlank,
-  CaretDown,
-  CheckCircle,
-  ChatCircleDots,
-  Clock,
   Command as CommandIcon,
-  Copy,
-  CurrencyDollar,
-  Database,
   DotsThree,
   FileCode,
-  FileText,
   Gear,
-  Info,
   Lightning,
   LockKey,
   MagnifyingGlass,
   Paperclip,
   ShieldCheck,
-  SlidersHorizontal,
   Sparkle,
   TrendUp,
-  User,
-  Warning,
 } from "@phosphor-icons/react";
 import { StrictMode, useState } from "react";
 import { createRoot } from "react-dom/client";
@@ -199,9 +186,6 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  type BackgroundGlow,
-  type BackgroundMask,
-  type BackgroundPatternVariant,
   SelectValue,
   Separator,
   Sheet,
@@ -248,6 +232,9 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
+  type BackgroundGlow,
+  type BackgroundMask,
+  type BackgroundPatternVariant,
 } from "../src/index.js";
 import "../src/styles.css";
 import "./preview.css";
@@ -256,9 +243,9 @@ const navItems = [
   { id: "overview", label: "Overview", href: "#overview" },
   { id: "surfaces", label: "Surfaces", href: "#surfaces" },
   { id: "controls", label: "Controls", href: "#controls" },
-  { id: "overlays", label: "Navigation & Overlays", href: "#overlays" },
-  { id: "data", label: "Data & Charts", href: "#data" },
-  { id: "ai", label: "AI & Chat", href: "#ai" },
+  { id: "overlays", label: "Overlays", href: "#overlays" },
+  { id: "data", label: "Data", href: "#data" },
+  { id: "ai", label: "AI Chat", href: "#ai" },
 ] as const;
 
 const tableDemoData = [
@@ -267,24 +254,20 @@ const tableDemoData = [
   { id: "TX-9014", route: "Base → Avalanche", volume: "$320K", solver: "Metron-ZK", status: "Settled" },
   { id: "TX-9015", route: "Polygon → Arbitrum", volume: "$650K", solver: "HyperRoute", status: "Pending" },
   { id: "TX-9016", route: "Optimism → Base", volume: "$2.10M", solver: "Metron-ZK", status: "Settled" },
-  { id: "TX-9017", route: "Ethereum → Base", volume: "$510K", solver: "AaveV3-Relay", status: "Settled" },
 ];
 
 const comboboxItems = [
   { value: "arb-zk", label: "Arbitrum One ZK Solver" },
   { value: "base-opt", label: "Base Fast Settlement" },
   { value: "eth-main", label: "Ethereum L1 Security Vault" },
-  { value: "op-pool", label: "Optimism Liquidity Mesh" },
 ];
 
 function App() {
-  // Background configuration state
   const [bgPattern, setBgPattern] = useState<BackgroundPatternVariant>("dots");
   const [bgGlow, setBgGlow] = useState<BackgroundGlow>("dual");
   const [bgMask, setBgMask] = useState<BackgroundMask>("radial");
   const [bgSize, setBgSize] = useState<number>(28);
 
-  // UI Interactive States
   const [dialogOpen, setDialogOpen] = useState(false);
   const [alertOpen, setAlertOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -298,7 +281,6 @@ function App() {
   const [dateValue, setDateValue] = useState<Date | undefined>(new Date());
   const [toastVisible, setToastVisible] = useState(true);
 
-  // AI chat simulator messages
   const [chatMessages, setChatMessages] = useState<Array<{ role: "user" | "assistant"; text: string; time: string }>>([
     {
       role: "user",
@@ -354,6 +336,13 @@ function App() {
                 >
                   ⌘K Search
                 </Button>
+                <DropdownMenu
+                  indicator={<DotsThree size={18} weight="bold" />}
+                  label="More menu"
+                >
+                  <DropdownMenuItem icon={<FileCode size={16} />}>Export ABI</DropdownMenuItem>
+                  <DropdownMenuItem icon={<Gear size={16} />}>Settings</DropdownMenuItem>
+                </DropdownMenu>
                 <IconButton
                   accessibleLabel="Notifications"
                   icon={<Bell size={18} weight="bold" />}
@@ -486,18 +475,25 @@ function App() {
           </div>
         </div>
 
-        {/* Global Toast Preview */}
-        {toastVisible && (
-          <div style={{ marginBottom: "1.5rem" }}>
+        {/* Global Alert & Toast Banner */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "1rem", marginBottom: "1.5rem" }}>
+          <Alert variant="liquid-glass">
+            <AlertTitle>Liquid Glass Active</AlertTitle>
+            <AlertDescription>
+              Every component uses carbon black materials with pure black (#000000) backdrop isolation.
+            </AlertDescription>
+          </Alert>
+
+          {toastVisible && (
             <Toast
               action={{ label: "Dismiss", onClick: () => setToastVisible(false) }}
-              title="Liquid glass system operational"
+              title="Matrix layout configured"
               variant="success"
             >
-              Background switched to pure black #000000 with interactive matrix configuration.
+              Background pattern is set to {bgPattern} with {bgGlow} ambient glow.
             </Toast>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Main Component Showcase Tabs */}
         <div className="showcase__tabs-container">
@@ -558,7 +554,9 @@ function App() {
                       </div>
                     </CardContent>
                     <CardFooter>
-                      <Button fullWidth size="sm" variant="secondary">Manage Vault</Button>
+                      <CardAction>
+                        <Button fullWidth size="sm" variant="secondary">Manage Vault</Button>
+                      </CardAction>
                     </CardFooter>
                   </Card>
                 </div>
@@ -590,6 +588,81 @@ function App() {
                   </div>
                 </div>
 
+                {/* Liquid Glass Primitive & Aspect Ratio */}
+                <div className="showcase__cell">
+                  <Card variant="carbon">
+                    <CardHeader>
+                      <CardTitle>Liquid Glass Core Material</CardTitle>
+                      <CardDescription>Interactive refraction with SVG turbulence and noise bend.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <LiquidGlass draggable expandable style={{ padding: "1rem" }}>
+                        <strong>Interactive Liquid Glass Primitive</strong>
+                        <P className="metron-typography-small metron-typography-muted">
+                          Click to expand or drag to verify 3D specular edge highlights.
+                        </P>
+                      </LiquidGlass>
+                      <div style={{ marginTop: "1rem" }}>
+                        <AspectRatio ratio={16 / 7}>
+                          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, rgba(113,0,20,0.3) 0%, rgba(14,14,18,0.8) 100%)", borderRadius: "0.5rem" }}>
+                            <span>16:7 Aspect Ratio Container</span>
+                          </div>
+                        </AspectRatio>
+                      </div>
+                      <DirectionContainer dir="ltr" style={{ marginTop: "0.75rem" }}>
+                        <Small className="metron-typography-muted">Direction Container: LTR Active</Small>
+                      </DirectionContainer>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Sidebar & ScrollArea Preview */}
+                <div className="showcase__cell showcase__cell--full">
+                  <Card variant="carbon">
+                    <CardHeader>
+                      <CardTitle>Sidebar & ScrollArea</CardTitle>
+                      <CardDescription>Collapsible sidebar layout with customized glass scrollbar.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div style={{ height: "180px", border: "1px solid var(--metron-carbon-border)", borderRadius: "0.75rem", overflow: "hidden" }}>
+                        <SidebarProvider>
+                          <Sidebar style={{ width: "13rem" }}>
+                            <SidebarHeader>
+                              <span style={{ fontSize: "0.85rem", fontWeight: 600 }}>METRON NODE</span>
+                              <SidebarTrigger />
+                            </SidebarHeader>
+                            <SidebarContent>
+                              <SidebarGroup>
+                                <SidebarGroupLabel>Menu</SidebarGroupLabel>
+                                <SidebarMenu>
+                                  <SidebarMenuItem>
+                                    <SidebarMenuButton isActive>Overview</SidebarMenuButton>
+                                  </SidebarMenuItem>
+                                  <SidebarMenuItem>
+                                    <SidebarMenuButton>Solvers</SidebarMenuButton>
+                                  </SidebarMenuItem>
+                                </SidebarMenu>
+                              </SidebarGroup>
+                            </SidebarContent>
+                            <SidebarFooter>
+                              <Small className="metron-typography-muted">v2.1.0-carbon</Small>
+                            </SidebarFooter>
+                          </Sidebar>
+                          <div style={{ flex: 1, height: "100%", overflow: "hidden" }}>
+                            <ScrollArea style={{ height: "100%", padding: "1rem" }}>
+                              <Large>Scroll Area Pane</Large>
+                              <P className="metron-typography-small">Custom scrollbar with auto-hiding glass thumb.</P>
+                              <div style={{ height: "260px", background: "rgba(242,241,237,0.02)", borderRadius: "0.5rem", padding: "1rem" }}>
+                                <P className="metron-typography-muted">Scroll down to verify smooth scrolling and glass scrollbars.</P>
+                              </div>
+                            </ScrollArea>
+                          </div>
+                        </SidebarProvider>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
                 {/* Collapsible, Resizable & Drawer preview */}
                 <div className="showcase__cell showcase__cell--wide">
                   <Card variant="carbon">
@@ -619,13 +692,17 @@ function App() {
                           </AlertDialogContent>
                         </AlertDialog>
 
-                        <Button onClick={() => setDrawerOpen(true)} variant="liquid-glass">
-                          Open Bottom Drawer
-                        </Button>
+                        <Drawer onOpenChange={setDrawerOpen} open={drawerOpen}>
+                          <DrawerTrigger>
+                            Open Bottom Drawer
+                          </DrawerTrigger>
+                        </Drawer>
 
-                        <Button onClick={() => setSheetOpen(true)} variant="glass">
-                          Open Slide Sheet
-                        </Button>
+                        <Sheet onOpenChange={setSheetOpen} open={sheetOpen}>
+                          <SheetTrigger>
+                            Open Slide Sheet
+                          </SheetTrigger>
+                        </Sheet>
 
                         <Collapsible>
                           <CollapsibleTrigger>
@@ -685,6 +762,7 @@ function App() {
                         <Button variant="danger">Destructive</Button>
                         <Button variant="link">Underline Link</Button>
                         <Button loading variant="solid">Loading</Button>
+                        <Spinner size="sm" />
                       </div>
 
                       <Separator style={{ margin: "1.25rem 0" }} />
@@ -726,7 +804,15 @@ function App() {
                     </CardHeader>
                     <CardContent>
                       <Field description="Enter solver verification code" label="One-Time Password (OTP)" required>
-                        <InputOTP maxLength={6} />
+                        <InputOTP maxLength={6}>
+                          <InputOTPGroup>
+                            <InputOTPSlot char="4" isActive={false} />
+                            <InputOTPSlot char="2" isActive={false} />
+                            <InputOTPSeparator />
+                            <InputOTPSlot char="9" isActive={true} />
+                            <InputOTPSlot char="" isActive={false} />
+                          </InputOTPGroup>
+                        </InputOTP>
                       </Field>
 
                       <div style={{ marginTop: "1rem" }}>
@@ -739,12 +825,46 @@ function App() {
                       </div>
 
                       <div style={{ marginTop: "1rem" }}>
+                        <Label>Composable Select</Label>
+                        <ComposableSelect defaultValue="zk">
+                          <SelectTrigger style={{ marginTop: "0.35rem" }}>
+                            <SelectValue placeholder="Select algorithm" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="zk">ZK-Proof Engine</SelectItem>
+                            <SelectItem value="flash">Flash Settlement</SelectItem>
+                            <SelectItem value="opt">Optimistic Rollup</SelectItem>
+                          </SelectContent>
+                        </ComposableSelect>
+                      </div>
+
+                      <div style={{ marginTop: "1rem" }}>
+                        <Label>Native Select</Label>
+                        <NativeSelect style={{ marginTop: "0.35rem" }}>
+                          <option value="1">Base Chain (Direct)</option>
+                          <option value="2">Arbitrum One</option>
+                        </NativeSelect>
+                      </div>
+
+                      <div style={{ marginTop: "1rem" }}>
                         <Label>Combobox Searchable Select</Label>
                         <Combobox
                           items={comboboxItems}
                           onValueChange={setSelectedCombobox}
                           value={selectedCombobox}
                         />
+                      </div>
+
+                      <div style={{ marginTop: "1rem" }}>
+                        <Label>Textarea</Label>
+                        <Textarea placeholder="Paste raw ZK transaction payload..." style={{ marginTop: "0.35rem" }} />
+                      </div>
+
+                      <div style={{ marginTop: "1rem" }}>
+                        <Label>Inline Command Search</Label>
+                        <Command style={{ marginTop: "0.35rem" }}>
+                          <CommandInput placeholder="Filter intents..." />
+                        </Command>
                       </div>
                     </CardContent>
                   </Card>
@@ -853,6 +973,24 @@ function App() {
                         </MenubarMenu>
                       </Menubar>
 
+                      {/* Navigation Menu */}
+                      <NavigationMenu style={{ marginBottom: "1.5rem" }}>
+                        <NavigationMenuList>
+                          <NavigationMenuItem>
+                            <NavigationMenuTrigger>Components</NavigationMenuTrigger>
+                            <NavigationMenuContent>
+                              <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
+                                <NavigationMenuLink href="#surfaces">Liquid Glass Cards</NavigationMenuLink>
+                                <NavigationMenuLink href="#controls">Form Controls</NavigationMenuLink>
+                              </div>
+                            </NavigationMenuContent>
+                          </NavigationMenuItem>
+                          <NavigationMenuItem>
+                            <NavigationMenuLink href="#data">Data Tables</NavigationMenuLink>
+                          </NavigationMenuItem>
+                        </NavigationMenuList>
+                      </NavigationMenu>
+
                       <div style={{ display: "flex", flexWrap: "wrap", gap: "1.5rem", alignItems: "center" }}>
                         {/* Popover */}
                         <Popover>
@@ -869,9 +1007,14 @@ function App() {
                         </Popover>
 
                         {/* Tooltip */}
-                        <Tooltip content="Deterministic ZK Intent Verifier">
-                          <Button variant="outline">Hover for Tooltip</Button>
-                        </Tooltip>
+                        <TooltipProvider>
+                          <Tooltip content="Deterministic ZK Intent Verifier">
+                            <TooltipTrigger>
+                              <Button variant="outline">Hover for Tooltip</Button>
+                            </TooltipTrigger>
+                            <TooltipContent>Verified Intent</TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
 
                         {/* Hover Card */}
                         <HoverCard>
@@ -953,8 +1096,71 @@ function App() {
                           },
                         ]}
                         data={tableDemoData}
-                        pageSize={4}
+                        pageSize={3}
                       />
+
+                      <Separator style={{ margin: "1.5rem 0" }} />
+
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <Small className="metron-typography-muted">Showing page 1 of 5</Small>
+                        <Pagination>
+                          <PaginationContent>
+                            <PaginationItem><PaginationPrevious href="#data" /></PaginationItem>
+                            <PaginationItem><PaginationLink href="#data" isActive>1</PaginationLink></PaginationItem>
+                            <PaginationItem><PaginationLink href="#data">2</PaginationLink></PaginationItem>
+                            <PaginationItem><PaginationNext href="#data" /></PaginationItem>
+                          </PaginationContent>
+                        </Pagination>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Standalone Table & Avatar Group */}
+                <div className="showcase__cell">
+                  <Card variant="carbon">
+                    <CardHeader>
+                      <CardTitle>Native Table & Avatars</CardTitle>
+                      <CardDescription>Basic table structure with status markers.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "1rem" }}>
+                        <AvatarGroup>
+                          <Avatar size="sm"><AvatarFallback>US</AvatarFallback></Avatar>
+                          <Avatar size="sm"><AvatarFallback>EU</AvatarFallback></Avatar>
+                          <Avatar size="sm"><AvatarImage alt="Avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=64&h=64&fit=crop" /><AvatarFallback>OP</AvatarFallback></Avatar>
+                        </AvatarGroup>
+                        <KbdGroup>
+                          <Kbd>⌘</Kbd>
+                          <Kbd>SHIFT</Kbd>
+                          <Kbd>P</Kbd>
+                        </KbdGroup>
+                        <Marker tone="success" />
+                      </div>
+
+                      <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", marginBottom: "1rem" }}>
+                        <Skeleton style={{ height: "0.875rem", width: "65%" }} />
+                        <Skeleton style={{ height: "1.75rem", width: "100%" }} />
+                      </div>
+
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Asset</TableHead>
+                            <TableHead>APY</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          <TableRow>
+                            <TableCell>WETH-USDC</TableCell>
+                            <TableCell>8.4%</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell>cbBTC-USDC</TableCell>
+                            <TableCell>12.1%</TableCell>
+                          </TableRow>
+                        </TableBody>
+                      </Table>
                     </CardContent>
                   </Card>
                 </div>
@@ -967,18 +1173,22 @@ function App() {
                       <CardDescription>Clean SVG visualizations with carbon glass borders.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <BarChart
-                        data={[
-                          { label: "Mon", value: 34 },
-                          { label: "Tue", value: 58 },
-                          { label: "Wed", value: 72 },
-                          { label: "Thu", value: 89 },
-                          { label: "Fri", value: 64 },
-                          { label: "Sat", value: 92 },
-                          { label: "Sun", value: 110 },
-                        ]}
-                        height={140}
-                      />
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                        <BarChart
+                          data={[
+                            { label: "Mon", value: 34 },
+                            { label: "Tue", value: 58 },
+                            { label: "Wed", value: 72 },
+                            { label: "Thu", value: 89 },
+                            { label: "Fri", value: 64 },
+                          ]}
+                          height={120}
+                        />
+                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.25rem" }}>
+                          <DonutChart value={84} />
+                          <Small>84% Capacity</Small>
+                        </div>
+                      </div>
                     </CardContent>
                   </Card>
                 </div>
@@ -999,12 +1209,12 @@ function App() {
                   </Card>
                 </div>
 
-                {/* Carousel & Badges */}
+                {/* Empty State & Carousel */}
                 <div className="showcase__cell showcase__cell--wide">
                   <Card variant="carbon">
                     <CardHeader>
-                      <CardTitle>Carousel & Component Gallery</CardTitle>
-                      <CardDescription>Smooth scroll snap carousel with carbon glass item chips.</CardDescription>
+                      <CardTitle>Items & Empty State</CardTitle>
+                      <CardDescription>Media items and fallback empty states.</CardDescription>
                     </CardHeader>
                     <CardContent>
                       <Carousel>
@@ -1015,33 +1225,40 @@ function App() {
                         <CarouselContent>
                           <CarouselItem style={{ flex: "0 0 45%" }}>
                             <Item>
-                              <ItemMedia><LockKey size={24} color="var(--metron-sand)" /></ItemMedia>
+                              <ItemMedia><LockKey color="var(--metron-sand)" size={24} /></ItemMedia>
                               <ItemContent>
                                 <ItemTitle>Zero-Knowledge Rollup</ItemTitle>
                                 <ItemDescription>ZK validity verified on L1 mainnet.</ItemDescription>
                               </ItemContent>
+                              <ItemActions>
+                                <Button size="sm" variant="quiet">Details</Button>
+                              </ItemActions>
                             </Item>
                           </CarouselItem>
                           <CarouselItem style={{ flex: "0 0 45%" }}>
                             <Item>
-                              <ItemMedia><Lightning size={24} color="var(--metron-crimson-bright)" /></ItemMedia>
+                              <ItemMedia><Lightning color="var(--metron-crimson-bright)" size={24} /></ItemMedia>
                               <ItemContent>
                                 <ItemTitle>Flash Solver Relay</ItemTitle>
                                 <ItemDescription>Sub-second cross-chain intent clearing.</ItemDescription>
                               </ItemContent>
-                            </Item>
-                          </CarouselItem>
-                          <CarouselItem style={{ flex: "0 0 45%" }}>
-                            <Item>
-                              <ItemMedia><ShieldCheck size={24} color="var(--metron-pearl)" /></ItemMedia>
-                              <ItemContent>
-                                <ItemTitle>Vault Invariance</ItemTitle>
-                                <ItemDescription>Mathematical balance guarantees.</ItemDescription>
-                              </ItemContent>
+                              <ItemActions>
+                                <Button size="sm" variant="quiet">Details</Button>
+                              </ItemActions>
                             </Item>
                           </CarouselItem>
                         </CarouselContent>
                       </Carousel>
+
+                      <Separator style={{ margin: "1rem 0" }} />
+
+                      <Empty icon={<ShieldCheck color="var(--metron-sand)" size={32} />}>
+                        <EmptyTitle>No Disputed Intents</EmptyTitle>
+                        <EmptyDescription>All cross-chain state proofs have reconciled successfully.</EmptyDescription>
+                        <EmptyAction>
+                          <Button size="sm" variant="secondary">View Verification Logs</Button>
+                        </EmptyAction>
+                      </Empty>
                     </CardContent>
                   </Card>
                 </div>
@@ -1091,6 +1308,9 @@ function App() {
                               <Bubble variant={msg.role === "assistant" ? "liquid-glass" : "user"}>
                                 {msg.text}
                               </Bubble>
+                              <MessageActions>
+                                <Button size="sm" variant="quiet">Copy</Button>
+                              </MessageActions>
                             </Message>
                           ))}
                         </MessageScroller>
@@ -1141,10 +1361,31 @@ function App() {
                   <div style={{ marginTop: "1rem" }}>
                     <Attachment
                       action={<Button size="sm" variant="quiet">View</Button>}
+                      icon={<Paperclip size={18} />}
                       name="intent-commitment-0x9a8f.zk"
                       size="42.8 KB"
                     />
                   </div>
+                </div>
+
+                {/* Typography Showcase */}
+                <div className="showcase__cell showcase__cell--full">
+                  <Card variant="carbon">
+                    <CardHeader>
+                      <CardTitle>Typography System</CardTitle>
+                      <CardDescription>Editorial typography with pure black and pearl scale.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <H2>Heading Level 2</H2>
+                      <H3>Heading Level 3</H3>
+                      <H4>Heading Level 4</H4>
+                      <P>Standard body paragraph with <InlineCode>monospace tokens</InlineCode> and inline accents.</P>
+                      <Blockquote>
+                        “Liquid depth reflects the underlying liquidity pool state with pure mathematical certainty.”
+                      </Blockquote>
+                      <Muted>Small muted secondary label text.</Muted>
+                    </CardContent>
+                  </Card>
                 </div>
               </div>
             </TabsContent>
@@ -1163,14 +1404,14 @@ function App() {
               </SheetHeader>
               <div style={{ padding: "1.5rem 0", display: "flex", flexDirection: "column", gap: "1rem" }}>
                 <Item>
-                  <ItemMedia><FileCode size={20} color="var(--metron-sand)" /></ItemMedia>
+                  <ItemMedia><FileCode color="var(--metron-sand)" size={20} /></ItemMedia>
                   <ItemContent>
                     <ItemTitle>Registry Manifest</ItemTitle>
                     <ItemDescription>64 Shadcn components with Liquid Glass.</ItemDescription>
                   </ItemContent>
                 </Item>
                 <Item>
-                  <ItemMedia><Gear size={20} color="var(--metron-pearl)" /></ItemMedia>
+                  <ItemMedia><Gear color="var(--metron-pearl)" size={20} /></ItemMedia>
                   <ItemContent>
                     <ItemTitle>Theme Settings</ItemTitle>
                     <ItemDescription>Pure Black background active.</ItemDescription>
@@ -1239,9 +1480,15 @@ function App() {
             open={dialogOpen}
             title="Liquid Glass Specification"
           >
+            <DialogHeader>
+              <DialogTitle>Liquid Glass Specification</DialogTitle>
+              <DialogDescription>
+                This dialog uses the transparent liquid glass material, refractive rim, and carbon black surface tokens.
+              </DialogDescription>
+            </DialogHeader>
             <DialogBody>
               <P>
-                This dialog uses the transparent liquid glass material, refractive rim, and carbon black surface tokens.
+                Dynamic displacement turbulence map simulates refractive liquid glass materials across high-contrast OLED black surfaces.
               </P>
               <div style={{ display: "flex", gap: "0.5rem", marginTop: "1rem" }}>
                 <Kbd>ESC</Kbd>
@@ -1249,9 +1496,7 @@ function App() {
               </div>
             </DialogBody>
             <DialogFooter>
-              <Button onClick={() => setDialogOpen(false)} variant="glass">
-                Close
-              </Button>
+              <DialogClose>Close</DialogClose>
               <Button onClick={() => setDialogOpen(false)} variant="solid">
                 Confirm
               </Button>
