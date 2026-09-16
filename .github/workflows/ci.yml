@@ -25,7 +25,17 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
+      - uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: v1.8.3
       - run: pnpm install --frozen-lockfile
+      - run: node ../../scripts/forge.mjs install foundry-rs/forge-std --no-commit
+        working-directory: apps/web3
+      - run: node ../../scripts/forge.mjs install OpenZeppelin/openzeppelin-contracts --no-commit
+        working-directory: apps/web3
+      - run: node ../../scripts/forge.mjs build
+        working-directory: apps/web3
+      - run: pnpm generate:abi
       - run: pnpm format:check
       - run: pnpm turbo run lint --filter='!@metron/ui' --filter='!@metron/web' --filter='!@metron/ai'
       - run: pnpm turbo run typecheck --filter='!@metron/ui' --filter='!@metron/web' --filter='!@metron/ai'
@@ -56,6 +66,10 @@ jobs:
       - uses: foundry-rs/foundry-toolchain@v1
         with:
           version: v1.8.3
+      - run: node ../../scripts/forge.mjs install foundry-rs/forge-std --no-commit
+        working-directory: apps/web3
+      - run: node ../../scripts/forge.mjs install OpenZeppelin/openzeppelin-contracts --no-commit
+        working-directory: apps/web3
       - run: node ../../scripts/forge.mjs build
         working-directory: apps/web3
       - run: node ../../scripts/forge.mjs test
