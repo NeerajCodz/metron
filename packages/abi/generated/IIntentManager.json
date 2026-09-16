@@ -1,0 +1,115 @@
+[
+  {
+    "type": "function",
+    "name": "getIntent",
+    "inputs": [
+      {
+        "name": "intentId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct MetronTypes.IntentAuthorization",
+        "components": [
+          {
+            "name": "owner",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "traceId",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "commitment",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "policyHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "nonce",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "expiresAt",
+            "type": "uint64",
+            "internalType": "uint64"
+          },
+          {
+            "name": "targetDeltaWad",
+            "type": "int256",
+            "internalType": "int256"
+          },
+          {
+            "name": "deltaToleranceWad",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "status",
+            "type": "uint8",
+            "internalType": "enum MetronTypes.IntentStatus"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "isExecutionAuthorized",
+    "inputs": [
+      {
+        "name": "intentId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "chainId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "protocolId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "asset",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "settleIntent",
+    "inputs": [
+      {
+        "name": "intentId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  }
+]

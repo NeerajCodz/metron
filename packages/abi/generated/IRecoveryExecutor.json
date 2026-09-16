@@ -1,0 +1,125 @@
+[
+  {
+    "type": "function",
+    "name": "recoverPosition",
+    "inputs": [
+      {
+        "name": "positionId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "actions",
+        "type": "tuple[]",
+        "internalType": "struct MetronTypes.StrategyAction[]",
+        "components": [
+          {
+            "name": "adapter",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "asset",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "outputAsset",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "protocolId",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "reservationId",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "amount",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "minimumOutput",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "data",
+            "type": "bytes",
+            "internalType": "bytes"
+          },
+          {
+            "name": "constraints",
+            "type": "tuple",
+            "internalType": "struct MetronTypes.ExecutionConstraints",
+            "components": [
+              {
+                "name": "slippageBps",
+                "type": "uint16",
+                "internalType": "uint16"
+              },
+              {
+                "name": "capitalMoveBps",
+                "type": "uint16",
+                "internalType": "uint16"
+              },
+              {
+                "name": "collateralSaleBps",
+                "type": "uint16",
+                "internalType": "uint16"
+              },
+              {
+                "name": "repaymentAmount",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "resultingHealthFactorWad",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "gasFeeWei",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "actionRisk",
+                "type": "uint8",
+                "internalType": "enum MetronTypes.ActionRisk"
+              },
+              {
+                "name": "automationKind",
+                "type": "uint8",
+                "internalType": "enum MetronTypes.AutomationKind"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "deadline",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "finalStatus",
+        "type": "uint8",
+        "internalType": "enum MetronTypes.PositionStatus"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "recoveryId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  }
+]

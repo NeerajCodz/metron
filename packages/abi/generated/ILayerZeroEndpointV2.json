@@ -1,0 +1,131 @@
+[
+  {
+    "type": "function",
+    "name": "quote",
+    "inputs": [
+      {
+        "name": "params",
+        "type": "tuple",
+        "internalType": "struct LzMessagingParams",
+        "components": [
+          {
+            "name": "dstEid",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "receiver",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "message",
+            "type": "bytes",
+            "internalType": "bytes"
+          },
+          {
+            "name": "options",
+            "type": "bytes",
+            "internalType": "bytes"
+          },
+          {
+            "name": "payInLzToken",
+            "type": "bool",
+            "internalType": "bool"
+          }
+        ]
+      },
+      {
+        "name": "sender",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "nativeFee",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "lzTokenFee",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "send",
+    "inputs": [
+      {
+        "name": "params",
+        "type": "tuple",
+        "internalType": "struct LzMessagingParams",
+        "components": [
+          {
+            "name": "dstEid",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "receiver",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "message",
+            "type": "bytes",
+            "internalType": "bytes"
+          },
+          {
+            "name": "options",
+            "type": "bytes",
+            "internalType": "bytes"
+          },
+          {
+            "name": "payInLzToken",
+            "type": "bool",
+            "internalType": "bool"
+          }
+        ]
+      },
+      {
+        "name": "refundAddress",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "receipt",
+        "type": "tuple",
+        "internalType": "struct LzMessagingReceipt",
+        "components": [
+          {
+            "name": "guid",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "nonce",
+            "type": "uint64",
+            "internalType": "uint64"
+          },
+          {
+            "name": "nativeFee",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "lzTokenFee",
+            "type": "uint256",
+            "internalType": "uint256"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "payable"
+  }
+]

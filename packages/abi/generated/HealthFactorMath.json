@@ -1,0 +1,13 @@
+[
+  {
+    "type": "error",
+    "name": "InvalidLiquidationThreshold",
+    "inputs": [
+      {
+        "name": "value",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  }
+]

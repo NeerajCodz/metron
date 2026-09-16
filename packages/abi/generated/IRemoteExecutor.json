@@ -1,0 +1,31 @@
+[
+  {
+    "type": "function",
+    "name": "executeRemote",
+    "inputs": [
+      {
+        "name": "srcEid",
+        "type": "uint32",
+        "internalType": "uint32"
+      },
+      {
+        "name": "guid",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "message",
+        "type": "bytes",
+        "internalType": "bytes"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "success",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  }
+]

@@ -1,0 +1,68 @@
+[
+  {
+    "type": "function",
+    "name": "validateExecution",
+    "inputs": [
+      {
+        "name": "",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct MetronTypes.ExecutionConstraints",
+        "components": [
+          {
+            "name": "slippageBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "capitalMoveBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "collateralSaleBps",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "repaymentAmount",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "resultingHealthFactorWad",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "gasFeeWei",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "actionRisk",
+            "type": "uint8",
+            "internalType": "enum MetronTypes.ActionRisk"
+          },
+          {
+            "name": "automationKind",
+            "type": "uint8",
+            "internalType": "enum MetronTypes.AutomationKind"
+          }
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "pure"
+  }
+]

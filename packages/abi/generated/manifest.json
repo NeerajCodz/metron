@@ -1,0 +1,606 @@
+{
+  "AaveV3Adapter": {
+    "abi": "AaveV3Adapter.json",
+    "source": "apps/web3/out/AaveV3Adapter.sol/AaveV3Adapter.json"
+  },
+  "AccessControl": {
+    "abi": "AccessControl.json",
+    "source": "apps/web3/out/AccessControl.sol/AccessControl.json"
+  },
+  "ChainlinkOracle": {
+    "abi": "ChainlinkOracle.json",
+    "source": "apps/web3/out/ChainlinkOracle.sol/ChainlinkOracle.json"
+  },
+  "AggregatorMock": {
+    "abi": "AggregatorMock.json",
+    "source": "apps/web3/out/ChainlinkOracle.t.sol/AggregatorMock.json"
+  },
+  "ChainlinkOracleTest": {
+    "abi": "ChainlinkOracleTest.json",
+    "source": "apps/web3/out/ChainlinkOracle.t.sol/ChainlinkOracleTest.json"
+  },
+  "PriceObserverMock": {
+    "abi": "PriceObserverMock.json",
+    "source": "apps/web3/out/ChainlinkOracle.t.sol/PriceObserverMock.json"
+  },
+  "CircuitBreaker": {
+    "abi": "CircuitBreaker.json",
+    "source": "apps/web3/out/CircuitBreaker.sol/CircuitBreaker.json"
+  },
+  "CrossChainRouter": {
+    "abi": "CrossChainRouter.json",
+    "source": "apps/web3/out/CrossChainRouter.sol/CrossChainRouter.json"
+  },
+  "DeltaMath": {
+    "abi": "DeltaMath.json",
+    "source": "apps/web3/out/DeltaMath.sol/DeltaMath.json"
+  },
+  "DeltaMathHarness": {
+    "abi": "DeltaMathHarness.json",
+    "source": "apps/web3/out/DeltaMath.t.sol/DeltaMathHarness.json"
+  },
+  "DeltaMathTest": {
+    "abi": "DeltaMathTest.json",
+    "source": "apps/web3/out/DeltaMath.t.sol/DeltaMathTest.json"
+  },
+  "ECDSA": {
+    "abi": "ECDSA.json",
+    "source": "apps/web3/out/ECDSA.sol/ECDSA.json"
+  },
+  "EIP712": {
+    "abi": "EIP712.json",
+    "source": "apps/web3/out/EIP712.sol/EIP712.json"
+  },
+  "ERC165": {
+    "abi": "ERC165.json",
+    "source": "apps/web3/out/ERC165.sol/ERC165.json"
+  },
+  "ERC20": {
+    "abi": "ERC20.json",
+    "source": "apps/web3/out/ERC20.sol/ERC20.json"
+  },
+  "EmergencyAutomation": {
+    "abi": "EmergencyAutomation.json",
+    "source": "apps/web3/out/EmergencyAutomation.sol/EmergencyAutomation.json"
+  },
+  "EmergencyControlsTest": {
+    "abi": "EmergencyControlsTest.json",
+    "source": "apps/web3/out/EmergencyControls.t.sol/EmergencyControlsTest.json"
+  },
+  "MockInsuranceToken": {
+    "abi": "MockInsuranceToken.json",
+    "source": "apps/web3/out/EmergencyControls.t.sol/MockInsuranceToken.json"
+  },
+  "VmContractHelper43": {
+    "abi": "VmContractHelper43.json",
+    "source": "apps/web3/out/EmergencyControls.t.sol/VmContractHelper43.json"
+  },
+  "EmergencyUnwind": {
+    "abi": "EmergencyUnwind.json",
+    "source": "apps/web3/out/EmergencyUnwind.sol/EmergencyUnwind.json"
+  },
+  "IFlashCallback": {
+    "abi": "IFlashCallback.json",
+    "source": "apps/web3/out/EmergencyUnwind.sol/IFlashCallback.json"
+  },
+  "EmergencyUnwindTest": {
+    "abi": "EmergencyUnwindTest.json",
+    "source": "apps/web3/out/EmergencyUnwind.t.sol/EmergencyUnwindTest.json"
+  },
+  "MockFlashProvider": {
+    "abi": "MockFlashProvider.json",
+    "source": "apps/web3/out/EmergencyUnwind.t.sol/MockFlashProvider.json"
+  },
+  "MockRecoveryExecutor": {
+    "abi": "MockRecoveryExecutor.json",
+    "source": "apps/web3/out/EmergencyUnwind.t.sol/MockRecoveryExecutor.json"
+  },
+  "UnwindToken": {
+    "abi": "UnwindToken.json",
+    "source": "apps/web3/out/EmergencyUnwind.t.sol/UnwindToken.json"
+  },
+  "HealthFactorMath": {
+    "abi": "HealthFactorMath.json",
+    "source": "apps/web3/out/HealthFactorMath.sol/HealthFactorMath.json"
+  },
+  "HealthFactorMathHarness": {
+    "abi": "HealthFactorMathHarness.json",
+    "source": "apps/web3/out/HealthFactorMath.t.sol/HealthFactorMathHarness.json"
+  },
+  "HealthFactorMathTest": {
+    "abi": "HealthFactorMathTest.json",
+    "source": "apps/web3/out/HealthFactorMath.t.sol/HealthFactorMathTest.json"
+  },
+  "HedgeManager": {
+    "abi": "HedgeManager.json",
+    "source": "apps/web3/out/HedgeManager.sol/HedgeManager.json"
+  },
+  "HedgeAdapterMock": {
+    "abi": "HedgeAdapterMock.json",
+    "source": "apps/web3/out/HedgeManager.t.sol/HedgeAdapterMock.json"
+  },
+  "HedgeManagerTest": {
+    "abi": "HedgeManagerTest.json",
+    "source": "apps/web3/out/HedgeManager.t.sol/HedgeManagerTest.json"
+  },
+  "HedgePositionMock": {
+    "abi": "HedgePositionMock.json",
+    "source": "apps/web3/out/HedgeManager.t.sol/HedgePositionMock.json"
+  },
+  "HedgeRiskMock": {
+    "abi": "HedgeRiskMock.json",
+    "source": "apps/web3/out/HedgeManager.t.sol/HedgeRiskMock.json"
+  },
+  "HedgeTokenMock": {
+    "abi": "HedgeTokenMock.json",
+    "source": "apps/web3/out/HedgeManager.t.sol/HedgeTokenMock.json"
+  },
+  "HedgeVaultMock": {
+    "abi": "HedgeVaultMock.json",
+    "source": "apps/web3/out/HedgeManager.t.sol/HedgeVaultMock.json"
+  },
+  "IAaveV3Adapter": {
+    "abi": "IAaveV3Adapter.json",
+    "source": "apps/web3/out/IAaveV3Adapter.sol/IAaveV3Adapter.json"
+  },
+  "IAaveV3Pool": {
+    "abi": "IAaveV3Pool.json",
+    "source": "apps/web3/out/IAaveV3Pool.sol/IAaveV3Pool.json"
+  },
+  "IAccessControl": {
+    "abi": "IAccessControl.json",
+    "source": "apps/web3/out/IAccessControl.sol/IAccessControl.json"
+  },
+  "IChainlinkAggregatorV3": {
+    "abi": "IChainlinkAggregatorV3.json",
+    "source": "apps/web3/out/IChainlinkAggregatorV3.sol/IChainlinkAggregatorV3.json"
+  },
+  "IERC1363": {
+    "abi": "IERC1363.json",
+    "source": "apps/web3/out/IERC1363.sol/IERC1363.json"
+  },
+  "IERC165": {
+    "abi": "IERC165.json",
+    "source": "apps/web3/out/IERC165.sol/IERC165.json"
+  },
+  "IERC20": {
+    "abi": "IERC20.json",
+    "source": "apps/web3/out/IERC20.sol/IERC20.json"
+  },
+  "IERC20Metadata": {
+    "abi": "IERC20Metadata.json",
+    "source": "apps/web3/out/IERC20Metadata.sol/IERC20Metadata.json"
+  },
+  "IERC5267": {
+    "abi": "IERC5267.json",
+    "source": "apps/web3/out/IERC5267.sol/IERC5267.json"
+  },
+  "IFlashLiquidityProvider": {
+    "abi": "IFlashLiquidityProvider.json",
+    "source": "apps/web3/out/IFlashLiquidityProvider.sol/IFlashLiquidityProvider.json"
+  },
+  "IIntentManager": {
+    "abi": "IIntentManager.json",
+    "source": "apps/web3/out/IIntentManager.sol/IIntentManager.json"
+  },
+  "ILayerZeroAdapter": {
+    "abi": "ILayerZeroAdapter.json",
+    "source": "apps/web3/out/ILayerZeroAdapter.sol/ILayerZeroAdapter.json"
+  },
+  "ILayerZeroEndpointV2": {
+    "abi": "ILayerZeroEndpointV2.json",
+    "source": "apps/web3/out/ILayerZeroEndpointV2.sol/ILayerZeroEndpointV2.json"
+  },
+  "IMulticall3": {
+    "abi": "IMulticall3.json",
+    "source": "apps/web3/out/IMulticall3.sol/IMulticall3.json"
+  },
+  "IOracleAdapter": {
+    "abi": "IOracleAdapter.json",
+    "source": "apps/web3/out/IOracleAdapter.sol/IOracleAdapter.json"
+  },
+  "IPositionManager": {
+    "abi": "IPositionManager.json",
+    "source": "apps/web3/out/IPositionManager.sol/IPositionManager.json"
+  },
+  "IPriceObserver": {
+    "abi": "IPriceObserver.json",
+    "source": "apps/web3/out/IPriceObserver.sol/IPriceObserver.json"
+  },
+  "IRecoveryExecutor": {
+    "abi": "IRecoveryExecutor.json",
+    "source": "apps/web3/out/IRecoveryExecutor.sol/IRecoveryExecutor.json"
+  },
+  "IRemoteExecutor": {
+    "abi": "IRemoteExecutor.json",
+    "source": "apps/web3/out/IRemoteExecutor.sol/IRemoteExecutor.json"
+  },
+  "IRiskController": {
+    "abi": "IRiskController.json",
+    "source": "apps/web3/out/IRiskController.sol/IRiskController.json"
+  },
+  "IStrategyAdapter": {
+    "abi": "IStrategyAdapter.json",
+    "source": "apps/web3/out/IStrategyAdapter.sol/IStrategyAdapter.json"
+  },
+  "IUniswapV4Adapter": {
+    "abi": "IUniswapV4Adapter.json",
+    "source": "apps/web3/out/IUniswapV4Adapter.sol/IUniswapV4Adapter.json"
+  },
+  "IUniswapV4Hook": {
+    "abi": "IUniswapV4Hook.json",
+    "source": "apps/web3/out/IUniswapV4Hook.sol/IUniswapV4Hook.json"
+  },
+  "IUniswapV4PoolManager": {
+    "abi": "IUniswapV4PoolManager.json",
+    "source": "apps/web3/out/IUniswapV4PoolManager.sol/IUniswapV4PoolManager.json"
+  },
+  "IVault": {
+    "abi": "IVault.json",
+    "source": "apps/web3/out/IVault.sol/IVault.json"
+  },
+  "InsuranceReserve": {
+    "abi": "InsuranceReserve.json",
+    "source": "apps/web3/out/InsuranceReserve.sol/InsuranceReserve.json"
+  },
+  "IntentManager": {
+    "abi": "IntentManager.json",
+    "source": "apps/web3/out/IntentManager.sol/IntentManager.json"
+  },
+  "IntentManagerTest": {
+    "abi": "IntentManagerTest.json",
+    "source": "apps/web3/out/IntentManager.t.sol/IntentManagerTest.json"
+  },
+  "VmContractHelper44": {
+    "abi": "VmContractHelper44.json",
+    "source": "apps/web3/out/IntentManager.t.sol/VmContractHelper44.json"
+  },
+  "VmContractHelper61": {
+    "abi": "VmContractHelper61.json",
+    "source": "apps/web3/out/IntentManager.t.sol/VmContractHelper61.json"
+  },
+  "VmContractHelper64": {
+    "abi": "VmContractHelper64.json",
+    "source": "apps/web3/out/IntentManager.t.sol/VmContractHelper64.json"
+  },
+  "VmContractHelper72": {
+    "abi": "VmContractHelper72.json",
+    "source": "apps/web3/out/IntentManager.t.sol/VmContractHelper72.json"
+  },
+  "VmContractHelper86": {
+    "abi": "VmContractHelper86.json",
+    "source": "apps/web3/out/IntentManager.t.sol/VmContractHelper86.json"
+  },
+  "IntentSettlement": {
+    "abi": "IntentSettlement.json",
+    "source": "apps/web3/out/IntentSettlement.sol/IntentSettlement.json"
+  },
+  "LayerZeroAdapter": {
+    "abi": "LayerZeroAdapter.json",
+    "source": "apps/web3/out/LayerZeroAdapter.sol/LayerZeroAdapter.json"
+  },
+  "LayerZeroAdapterTest": {
+    "abi": "LayerZeroAdapterTest.json",
+    "source": "apps/web3/out/LayerZeroAdapter.t.sol/LayerZeroAdapterTest.json"
+  },
+  "MockLayerZeroEndpoint": {
+    "abi": "MockLayerZeroEndpoint.json",
+    "source": "apps/web3/out/LayerZeroAdapter.t.sol/MockLayerZeroEndpoint.json"
+  },
+  "MockRemoteTarget": {
+    "abi": "MockRemoteTarget.json",
+    "source": "apps/web3/out/LayerZeroAdapter.t.sol/MockRemoteTarget.json"
+  },
+  "LendingManager": {
+    "abi": "LendingManager.json",
+    "source": "apps/web3/out/LendingManager.sol/LendingManager.json"
+  },
+  "AavePoolMock": {
+    "abi": "AavePoolMock.json",
+    "source": "apps/web3/out/LendingManager.t.sol/AavePoolMock.json"
+  },
+  "LendingManagerTest": {
+    "abi": "LendingManagerTest.json",
+    "source": "apps/web3/out/LendingManager.t.sol/LendingManagerTest.json"
+  },
+  "LendingToken": {
+    "abi": "LendingToken.json",
+    "source": "apps/web3/out/LendingManager.t.sol/LendingToken.json"
+  },
+  "LiquidityManager": {
+    "abi": "LiquidityManager.json",
+    "source": "apps/web3/out/LiquidityManager.sol/LiquidityManager.json"
+  },
+  "LiquidityManagerTest": {
+    "abi": "LiquidityManagerTest.json",
+    "source": "apps/web3/out/LiquidityManager.t.sol/LiquidityManagerTest.json"
+  },
+  "LiquidityPoolManagerMock": {
+    "abi": "LiquidityPoolManagerMock.json",
+    "source": "apps/web3/out/LiquidityManager.t.sol/LiquidityPoolManagerMock.json"
+  },
+  "LiquidityToken": {
+    "abi": "LiquidityToken.json",
+    "source": "apps/web3/out/LiquidityManager.t.sol/LiquidityToken.json"
+  },
+  "MessageHashUtils": {
+    "abi": "MessageHashUtils.json",
+    "source": "apps/web3/out/MessageHashUtils.sol/MessageHashUtils.json"
+  },
+  "Pausable": {
+    "abi": "Pausable.json",
+    "source": "apps/web3/out/Pausable.sol/Pausable.json"
+  },
+  "PositionAutomation": {
+    "abi": "PositionAutomation.json",
+    "source": "apps/web3/out/PositionAutomation.sol/PositionAutomation.json"
+  },
+  "PositionManager": {
+    "abi": "PositionManager.json",
+    "source": "apps/web3/out/PositionManager.sol/PositionManager.json"
+  },
+  "PositionManagerTest": {
+    "abi": "PositionManagerTest.json",
+    "source": "apps/web3/out/PositionManager.t.sol/PositionManagerTest.json"
+  },
+  "VmContractHelper46": {
+    "abi": "VmContractHelper46.json",
+    "source": "apps/web3/out/PositionManager.t.sol/VmContractHelper46.json"
+  },
+  "VmContractHelper62": {
+    "abi": "VmContractHelper62.json",
+    "source": "apps/web3/out/PositionManager.t.sol/VmContractHelper62.json"
+  },
+  "VmContractHelper65": {
+    "abi": "VmContractHelper65.json",
+    "source": "apps/web3/out/PositionManager.t.sol/VmContractHelper65.json"
+  },
+  "VmContractHelper79": {
+    "abi": "VmContractHelper79.json",
+    "source": "apps/web3/out/PositionManager.t.sol/VmContractHelper79.json"
+  },
+  "VmContractHelper90": {
+    "abi": "VmContractHelper90.json",
+    "source": "apps/web3/out/PositionManager.t.sol/VmContractHelper90.json"
+  },
+  "RebalanceAutomation": {
+    "abi": "RebalanceAutomation.json",
+    "source": "apps/web3/out/RebalanceAutomation.sol/RebalanceAutomation.json"
+  },
+  "RecoveryExecutor": {
+    "abi": "RecoveryExecutor.json",
+    "source": "apps/web3/out/RecoveryExecutor.sol/RecoveryExecutor.json"
+  },
+  "RecoveryAdapterMock": {
+    "abi": "RecoveryAdapterMock.json",
+    "source": "apps/web3/out/RecoveryExecutor.t.sol/RecoveryAdapterMock.json"
+  },
+  "RecoveryExecutorTest": {
+    "abi": "RecoveryExecutorTest.json",
+    "source": "apps/web3/out/RecoveryExecutor.t.sol/RecoveryExecutorTest.json"
+  },
+  "RecoveryToken": {
+    "abi": "RecoveryToken.json",
+    "source": "apps/web3/out/RecoveryExecutor.t.sol/RecoveryToken.json"
+  },
+  "ReentrancyGuard": {
+    "abi": "ReentrancyGuard.json",
+    "source": "apps/web3/out/ReentrancyGuard.sol/ReentrancyGuard.json"
+  },
+  "RemoteExecutor": {
+    "abi": "RemoteExecutor.json",
+    "source": "apps/web3/out/RemoteExecutor.sol/RemoteExecutor.json"
+  },
+  "RiskController": {
+    "abi": "RiskController.json",
+    "source": "apps/web3/out/RiskController.sol/RiskController.json"
+  },
+  "RiskControllerTest": {
+    "abi": "RiskControllerTest.json",
+    "source": "apps/web3/out/RiskController.t.sol/RiskControllerTest.json"
+  },
+  "VmContractHelper45": {
+    "abi": "VmContractHelper45.json",
+    "source": "apps/web3/out/RiskController.t.sol/VmContractHelper45.json"
+  },
+  "VmContractHelper63": {
+    "abi": "VmContractHelper63.json",
+    "source": "apps/web3/out/RiskController.t.sol/VmContractHelper63.json"
+  },
+  "VmContractHelper69": {
+    "abi": "VmContractHelper69.json",
+    "source": "apps/web3/out/RiskController.t.sol/VmContractHelper69.json"
+  },
+  "VmContractHelper83": {
+    "abi": "VmContractHelper83.json",
+    "source": "apps/web3/out/RiskController.t.sol/VmContractHelper83.json"
+  },
+  "VmContractHelper94": {
+    "abi": "VmContractHelper94.json",
+    "source": "apps/web3/out/RiskController.t.sol/VmContractHelper94.json"
+  },
+  "RiskLimitHook": {
+    "abi": "RiskLimitHook.json",
+    "source": "apps/web3/out/RiskLimitHook.sol/RiskLimitHook.json"
+  },
+  "RiskLimitHookTest": {
+    "abi": "RiskLimitHookTest.json",
+    "source": "apps/web3/out/RiskLimitHook.t.sol/RiskLimitHookTest.json"
+  },
+  "VmContractHelper32": {
+    "abi": "VmContractHelper32.json",
+    "source": "apps/web3/out/RiskLimitHook.t.sol/VmContractHelper32.json"
+  },
+  "RiskMath": {
+    "abi": "RiskMath.json",
+    "source": "apps/web3/out/RiskMath.sol/RiskMath.json"
+  },
+  "RiskMathTest": {
+    "abi": "RiskMathTest.json",
+    "source": "apps/web3/out/RiskMath.t.sol/RiskMathTest.json"
+  },
+  "SafeCast": {
+    "abi": "SafeCast.json",
+    "source": "apps/web3/out/SafeCast.sol/SafeCast.json"
+  },
+  "SafeERC20": {
+    "abi": "SafeERC20.json",
+    "source": "apps/web3/out/SafeERC20.sol/SafeERC20.json"
+  },
+  "ShortStrings": {
+    "abi": "ShortStrings.json",
+    "source": "apps/web3/out/ShortStrings.sol/ShortStrings.json"
+  },
+  "SolverRegistry": {
+    "abi": "SolverRegistry.json",
+    "source": "apps/web3/out/SolverRegistry.sol/SolverRegistry.json"
+  },
+  "SolverSettlement": {
+    "abi": "SolverSettlement.json",
+    "source": "apps/web3/out/SolverSettlement.sol/SolverSettlement.json"
+  },
+  "SolverSettlementTest": {
+    "abi": "SolverSettlementTest.json",
+    "source": "apps/web3/out/SolverSettlement.t.sol/SolverSettlementTest.json"
+  },
+  "VmContractHelper47": {
+    "abi": "VmContractHelper47.json",
+    "source": "apps/web3/out/SolverSettlement.t.sol/VmContractHelper47.json"
+  },
+  "StdAssertions": {
+    "abi": "StdAssertions.json",
+    "source": "apps/web3/out/StdAssertions.sol/StdAssertions.json"
+  },
+  "stdError": {
+    "abi": "stdError.json",
+    "source": "apps/web3/out/StdError.sol/stdError.json"
+  },
+  "StdInvariant": {
+    "abi": "StdInvariant.json",
+    "source": "apps/web3/out/StdInvariant.sol/StdInvariant.json"
+  },
+  "stdStorageSafe": {
+    "abi": "stdStorageSafe.json",
+    "source": "apps/web3/out/StdStorage.sol/stdStorageSafe.json"
+  },
+  "StrategyExecutor": {
+    "abi": "StrategyExecutor.json",
+    "source": "apps/web3/out/StrategyExecutor.sol/StrategyExecutor.json"
+  },
+  "StrategyAdapterMock": {
+    "abi": "StrategyAdapterMock.json",
+    "source": "apps/web3/out/StrategyExecutor.t.sol/StrategyAdapterMock.json"
+  },
+  "StrategyExecutorTest": {
+    "abi": "StrategyExecutorTest.json",
+    "source": "apps/web3/out/StrategyExecutor.t.sol/StrategyExecutorTest.json"
+  },
+  "StrategyToken": {
+    "abi": "StrategyToken.json",
+    "source": "apps/web3/out/StrategyExecutor.t.sol/StrategyToken.json"
+  },
+  "Strings": {
+    "abi": "Strings.json",
+    "source": "apps/web3/out/Strings.sol/Strings.json"
+  },
+  "Test": {
+    "abi": "Test.json",
+    "source": "apps/web3/out/Test.sol/Test.json"
+  },
+  "UniswapV4Adapter": {
+    "abi": "UniswapV4Adapter.json",
+    "source": "apps/web3/out/UniswapV4Adapter.sol/UniswapV4Adapter.json"
+  },
+  "PoolManagerMock": {
+    "abi": "PoolManagerMock.json",
+    "source": "apps/web3/out/UniswapV4Adapter.t.sol/PoolManagerMock.json"
+  },
+  "UniswapToken": {
+    "abi": "UniswapToken.json",
+    "source": "apps/web3/out/UniswapV4Adapter.t.sol/UniswapToken.json"
+  },
+  "UniswapV4AdapterTest": {
+    "abi": "UniswapV4AdapterTest.json",
+    "source": "apps/web3/out/UniswapV4Adapter.t.sol/UniswapV4AdapterTest.json"
+  },
+  "Vault": {
+    "abi": "Vault.json",
+    "source": "apps/web3/out/Vault.sol/Vault.json"
+  },
+  "FeeToken": {
+    "abi": "FeeToken.json",
+    "source": "apps/web3/out/Vault.t.sol/FeeToken.json"
+  },
+  "MockToken": {
+    "abi": "MockToken.json",
+    "source": "apps/web3/out/Vault.t.sol/MockToken.json"
+  },
+  "VaultTest": {
+    "abi": "VaultTest.json",
+    "source": "apps/web3/out/Vault.t.sol/VaultTest.json"
+  },
+  "VmContractHelper104": {
+    "abi": "VmContractHelper104.json",
+    "source": "apps/web3/out/Vault.t.sol/VmContractHelper104.json"
+  },
+  "VmContractHelper55": {
+    "abi": "VmContractHelper55.json",
+    "source": "apps/web3/out/Vault.t.sol/VmContractHelper55.json"
+  },
+  "VmContractHelper66": {
+    "abi": "VmContractHelper66.json",
+    "source": "apps/web3/out/Vault.t.sol/VmContractHelper66.json"
+  },
+  "Vm": {
+    "abi": "Vm.json",
+    "source": "apps/web3/out/Vm.sol/Vm.json"
+  },
+  "VmSafe": {
+    "abi": "VmSafe.json",
+    "source": "apps/web3/out/Vm.sol/VmSafe.json"
+  },
+  "IZKCollateralProofVerifier": {
+    "abi": "IZKCollateralProofVerifier.json",
+    "source": "apps/web3/out/ZKCollateralVerifier.sol/IZKCollateralProofVerifier.json"
+  },
+  "ZKCollateralVerifier": {
+    "abi": "ZKCollateralVerifier.json",
+    "source": "apps/web3/out/ZKCollateralVerifier.sol/ZKCollateralVerifier.json"
+  },
+  "IZKIntentProofVerifier": {
+    "abi": "IZKIntentProofVerifier.json",
+    "source": "apps/web3/out/ZKIntentVerifier.sol/IZKIntentProofVerifier.json"
+  },
+  "ZKIntentVerifier": {
+    "abi": "ZKIntentVerifier.json",
+    "source": "apps/web3/out/ZKIntentVerifier.sol/ZKIntentVerifier.json"
+  },
+  "IZKOwnershipProofVerifier": {
+    "abi": "IZKOwnershipProofVerifier.json",
+    "source": "apps/web3/out/ZKOwnershipVerifier.sol/IZKOwnershipProofVerifier.json"
+  },
+  "ZKOwnershipVerifier": {
+    "abi": "ZKOwnershipVerifier.json",
+    "source": "apps/web3/out/ZKOwnershipVerifier.sol/ZKOwnershipVerifier.json"
+  },
+  "MockGeneratedVerifier": {
+    "abi": "MockGeneratedVerifier.json",
+    "source": "apps/web3/out/ZKVerifier.t.sol/MockGeneratedVerifier.json"
+  },
+  "ZKVerifierTest": {
+    "abi": "ZKVerifierTest.json",
+    "source": "apps/web3/out/ZKVerifier.t.sol/ZKVerifierTest.json"
+  },
+  "IERC1155Errors": {
+    "abi": "IERC1155Errors.json",
+    "source": "apps/web3/out/draft-IERC6093.sol/IERC1155Errors.json"
+  },
+  "IERC20Errors": {
+    "abi": "IERC20Errors.json",
+    "source": "apps/web3/out/draft-IERC6093.sol/IERC20Errors.json"
+  },
+  "IERC721Errors": {
+    "abi": "IERC721Errors.json",
+    "source": "apps/web3/out/draft-IERC6093.sol/IERC721Errors.json"
+  }
+}

@@ -1,0 +1,97 @@
+[
+  {
+    "type": "constructor",
+    "inputs": [
+      {
+        "name": "decimals_",
+        "type": "uint8",
+        "internalType": "uint8"
+      },
+      {
+        "name": "answer_",
+        "type": "int256",
+        "internalType": "int256"
+      },
+      {
+        "name": "updatedAt_",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "decimals",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint8",
+        "internalType": "uint8"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "latestRoundData",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint80",
+        "internalType": "uint80"
+      },
+      {
+        "name": "",
+        "type": "int256",
+        "internalType": "int256"
+      },
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "",
+        "type": "uint80",
+        "internalType": "uint80"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "setRound",
+    "inputs": [
+      {
+        "name": "roundId_",
+        "type": "uint80",
+        "internalType": "uint80"
+      },
+      {
+        "name": "answer_",
+        "type": "int256",
+        "internalType": "int256"
+      },
+      {
+        "name": "updatedAt_",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "answeredInRound_",
+        "type": "uint80",
+        "internalType": "uint80"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "type": "function",
+    "name": "calculate",
+    "inputs": [
+      {
+        "name": "collateralValue",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "liquidationThresholdBps",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "debtValue",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "pure"
+  },
+  {
+    "type": "error",
+    "name": "InvalidLiquidationThreshold",
+    "inputs": [
+      {
+        "name": "value",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  }
+]

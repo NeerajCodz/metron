@@ -1,0 +1,126 @@
+[
+  {
+    "type": "constructor",
+    "inputs": [
+      {
+        "name": "positionAutomation_",
+        "type": "address",
+        "internalType": "contract PositionAutomation"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "checkUpkeep",
+    "inputs": [
+      {
+        "name": "checkData",
+        "type": "bytes",
+        "internalType": "bytes"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "upkeepNeeded",
+        "type": "bool",
+        "internalType": "bool"
+      },
+      {
+        "name": "performData",
+        "type": "bytes",
+        "internalType": "bytes"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "performUpkeep",
+    "inputs": [
+      {
+        "name": "performData",
+        "type": "bytes",
+        "internalType": "bytes"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "positionAutomation",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract PositionAutomation"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "error",
+    "name": "GasPriceTooHigh",
+    "inputs": [
+      {
+        "name": "maximum",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "observed",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "InvalidTarget",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "LiquidityTooShallow",
+    "inputs": [
+      {
+        "name": "minimum",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "observed",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "NotEligible",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "SlippageTooHigh",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "VolatilityTooHigh",
+    "inputs": [
+      {
+        "name": "maximum",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "observed",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  }
+]
