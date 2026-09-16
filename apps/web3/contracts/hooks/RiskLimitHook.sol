@@ -90,7 +90,7 @@ contract RiskLimitHook is AccessControl, ReentrancyGuard, IUniswapV4Hook {
         bytes calldata hookData
     ) external returns (bytes4 selector, int256 hookDelta) {
         if (msg.sender != poolManager) revert UnauthorizedPoolManager(msg.sender);
-        bytes32 traceId;
+        bytes32 traceId = bytes32(0);
         if (hookData.length == 96) {
             (,, traceId) = abi.decode(hookData, (uint256, uint256, bytes32));
         }
