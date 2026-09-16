@@ -6,7 +6,7 @@
     "build": "uv run python -m compileall -q src",
     "clean": "uv run python -c \"import shutil; [shutil.rmtree(p, ignore_errors=True) for p in ('.mypy_cache','.pytest_cache','.ruff_cache')]\"",
     "dev": "uv run uvicorn metron_ai.main:app --reload --host 0.0.0.0 --port 8000",
-    "lint": "uv run ruff check .",
+    "lint": "uv run ruff check src tests",
     "test": "uv run pytest",
     "typecheck": "uv run mypy"
   }
