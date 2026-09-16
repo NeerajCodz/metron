@@ -60,7 +60,8 @@ export function ScreenDock({
 
       for (let offset = 0; offset < screens.length; offset += 1) {
         const nextIndex = (index + offset + screens.length) % screens.length;
-        if (!screens[nextIndex].disabled) {
+        const screen = screens[nextIndex];
+        if (screen && !screen.disabled) {
           buttonRefs.current[nextIndex]?.focus();
           return;
         }

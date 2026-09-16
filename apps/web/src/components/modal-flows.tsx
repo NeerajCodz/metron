@@ -272,8 +272,9 @@ export function RecoveryModal({
   children,
 }: RecoveryModalProps) {
   const availableActions = actions?.length ? actions : action ? [action] : [];
+  const firstAction = availableActions[0];
   const [internalSelectedId, setInternalSelectedId] = useState<string | undefined>(() =>
-    availableActions.length ? getActionKey(availableActions[0], 0) : undefined,
+    firstAction ? getActionKey(firstAction, 0) : undefined,
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionError, setSubmissionError] = useState<ReactNode>(null);

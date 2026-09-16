@@ -25,10 +25,8 @@ function normalizeSparklineData(data: readonly SparklineDatum[]): NormalizedSpar
       return { value: Number.isFinite(datum) ? datum : 0 };
     }
 
-    return {
-      label: datum.label,
-      value: Number.isFinite(datum.value) ? datum.value : 0,
-    };
+    const value = Number.isFinite(datum.value) ? datum.value : 0;
+    return datum.label === undefined ? { value } : { label: datum.label, value };
   });
 }
 
