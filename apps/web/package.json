@@ -11,7 +11,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fontsource-variable/manrope": "^5.3.0",
+    "@fontsource-variable/space-grotesk": "^5.3.0",
     "@metron/ui": "workspace:*",
+    "@phosphor-icons/react": "^2.1.10",
     "lucide-react": "^0.468.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",

@@ -9,6 +9,9 @@
 @import "./styles/overlays.css";
 @import "./styles/navigation.css";
 @import "./styles/ai.css";
+@import "./styles/landing.css";
+@import "./styles/landing-page.css";
+@import "./styles/landing-reveal.css";
 :root,
 .metron-theme {
   color-scheme: dark;

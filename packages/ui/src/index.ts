@@ -508,3 +508,17 @@ export {
   P,
   Small,
 } from "./components/typography.js";
+export {
+  LandingGlass,
+  LandingButton,
+  LandingLink,
+  LandingSectionHeading,
+  type LandingActionVariant,
+  type LandingButtonProps,
+  type LandingGlassDepth,
+  type LandingGlassProps,
+  type LandingLinkProps,
+  type LandingSectionHeadingProps,
+} from "./components/landing/primitives.js";
+export { LandingPrism, type LandingPrismProps } from "./components/landing/prism.js";
+export { ScrollReveal, type ScrollRevealProps } from "./components/landing/scroll-reveal.js";
