@@ -102,12 +102,15 @@ def _fallback_liquidation(
     request: LiquidationRequest,
 ) -> dict[str, int]:
     base = _base_probability(request)
-    horizons: dict[str, int] = {}
-    for horizon in request.horizons_days:
-        horizon_factor = Decimal(horizon).sqrt() / Decimal("3")
-        probability = _clamp(base * (Decimal("0.65") + horizon_factor), Decimal("0"), Decimal("1"))
-        horizons[str(horizon)] = int((probability * _BPS).to_integral_value())
-    return horizons
+    horizon_factor = {"1h": Decimal("0.65"), "6h": Decimal("0.92"), "24h": Decimal("1.25"), "7d": Decimal("1.65")}
+    return {
+        horizon: int(
+            (
+                _clamp(base * horizon_factor[horizon], Decimal("0"), Decimal("1")) * _BPS
+            ).to_integral_value()
+        )
+        for horizon in request.horizons
+    }
 
 
 def predict_liquidation(request: LiquidationRequest, generated_at: int) -> LiquidationPrediction:
@@ -119,34 +122,36 @@ def predict_liquidation(request: LiquidationRequest, generated_at: int) -> Liqui
         models = {}
 
     task_for_horizon = {
-        1: "liquidation_within_1h",
-        7: "liquidation_within_7d",
+        "1h": "liquidation_within_1h",
+        "6h": "liquidation_within_6h",
+        "24h": "liquidation_within_24h",
+        "7d": "liquidation_within_7d",
     }
+    fallback = _fallback_liquidation(request)
     horizons: dict[str, int] = {}
     fingerprints: set[str] = set()
-    used_ml = False
-    for horizon in request.horizons_days:
-        artifact = models.get(task_for_horizon.get(horizon, ""))
+    source_by_horizon: dict[str, str] = {}
+    for horizon in request.horizons:
+        artifact = models.get(task_for_horizon[horizon])
         if artifact is not None and in_distribution(artifact, features):
             try:
                 probability = predict_artifact(artifact, features).get("1", 0.0)
-                horizons[str(horizon)] = max(0, min(10_000, round(probability * 10_000)))
+                horizons[horizon] = max(0, min(10_000, round(probability * 10_000)))
                 fingerprints.add(artifact.dataset_fingerprint)
-                used_ml = True
+                source_by_horizon[horizon] = "model"
                 continue
             except (KeyError, TypeError, ValueError, OverflowError):
                 pass
-        horizons[str(horizon)] = _fallback_liquidation(request)[str(horizon)]
+        horizons[horizon] = fallback[horizon]
+        source_by_horizon[horizon] = "deterministic"
 
     confidence = 10_000 - min(
         8_000,
         request.features.volatility_bps // 2 + abs(request.features.stablecoin_deviation_bps) * 2,
     )
-    model_version = (
-        "risk-ml-v1+deterministic"
-        if used_ml and len(horizons) != len(request.horizons_days)
-        else ("risk-ml-v1" if used_ml else "risk-deterministic-v1")
-    )
+    used_ml = "model" in source_by_horizon.values()
+    mixed = used_ml and "deterministic" in source_by_horizon.values()
+    model_version = "risk-ml-v1+deterministic" if mixed else ("risk-ml-v1" if used_ml else "risk-deterministic-v1")
     return LiquidationPrediction(
         trace_id=request.trace_id,
         position_id=request.position_id,
@@ -155,8 +160,12 @@ def predict_liquidation(request: LiquidationRequest, generated_at: int) -> Liqui
         horizons=horizons,
         model_version=model_version,
         dataset_fingerprint=next(iter(fingerprints), None),
+        feature_fingerprint=feature_fingerprint(request),
+        source_by_horizon=source_by_horizon,
+        prediction_source="mixed" if mixed else ("model" if used_ml else "deterministic"),
+        fallback_reason="artifact_missing_or_out_of_distribution" if not used_ml else ("partial_artifact_coverage" if mixed else None),
         confidence_bps=max(1_000, confidence),
-        fallback_used=not used_ml or model_version.endswith("deterministic"),
+        fallback_used=not used_ml or mixed,
     )
 
 
@@ -222,7 +231,6 @@ def predict_regime(request: RegimeRequest, generated_at: int) -> RegimePredictio
             selected = max(probabilities, key=probabilities.__getitem__)
             model_version = "risk-deterministic-v1"
             fallback_used = True
-
     return RegimePrediction(
         trace_id=request.trace_id,
         position_id=request.position_id,
@@ -231,6 +239,9 @@ def predict_regime(request: RegimeRequest, generated_at: int) -> RegimePredictio
         selected_regime=cast(MarketRegime, selected),
         model_version=model_version,
         dataset_fingerprint=artifact.dataset_fingerprint if artifact is not None else None,
+        feature_fingerprint=feature_fingerprint(request),
+        prediction_source="model" if not fallback_used else "deterministic",
+        fallback_reason=None if not fallback_used else "artifact_missing_or_out_of_distribution",
         fallback_used=fallback_used,
     )
 
@@ -240,3 +251,30 @@ def feature_fingerprint(request: LiquidationRequest | RegimeRequest) -> str:
         request.model_dump(mode="json"), sort_keys=True, separators=(",", ":")
     ).encode()
     return sha256(payload).hexdigest()
+
+def model_status() -> dict[str, object]:
+    directory = Path(str(get_settings().model_artifact_directory))
+    tasks = (
+        "liquidation_within_1h",
+        "liquidation_within_6h",
+        "liquidation_within_24h",
+        "liquidation_within_7d",
+        "regime",
+    )
+    missing = [task for task in tasks if not (directory / f"{task}.json").exists()]
+    invalid: list[str] = []
+    for task in tasks:
+        path = directory / f"{task}.json"
+        if not path.exists():
+            continue
+        try:
+            load_artifact(path)
+        except (OSError, TypeError, ValueError, KeyError):
+            invalid.append(task)
+    if invalid:
+        status = "artifact_invalid"
+    elif missing:
+        status = "artifact_missing" if not directory.exists() else "deterministic_only"
+    else:
+        status = "models_loaded"
+    return {"status": status, "directory": str(directory), "missing": missing, "invalid": invalid, "horizons": list(tasks[:4])}

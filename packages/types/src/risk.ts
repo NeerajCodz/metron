@@ -5,20 +5,53 @@ import type {
   PositionId,
   PredictionId,
   TraceContext,
-  UnixSeconds,
+  UnixMilliseconds,
   VersionedPayload,
 } from "./primitives.js";
 
 export const RISK_SCHEMA_VERSION = "1.0.0" as const;
 
+export type Horizon = "1h" | "6h" | "24h" | "7d";
+export const RISK_HORIZONS: readonly Horizon[] = ["1h", "6h", "24h", "7d"];
+
 export type MarketRegime =
-  "stable" | "trending" | "high_volatility" | "liquidity_stress" | "flash_crash" | "recovery";
+  | "stable"
+  | "trending"
+  | "high_volatility"
+  | "liquidity_stress"
+  | "flash_crash"
+  | "recovery";
+
+export type EvidenceKind = "observation" | "calculation" | "prediction" | "scenario";
+export interface AiEvidence {
+  evidenceId: string;
+  kind: EvidenceKind;
+  sourceReference: string;
+  observedAtMs?: UnixMilliseconds;
+  traceId: string;
+  content: Record<string, string | number | boolean | null>;
+}
+
+export type ExplanationAnswerKind = "value" | "trend" | "driver" | "comparison" | "scenario_impact";
+export type ExplanationRefusalCode =
+  | "unsupported_answer_kind"
+  | "missing_evidence"
+  | "stale_evidence"
+  | "conflicting_evidence"
+  | "untrusted_source";
+
+export interface TypedExplanation {
+  answerKind: ExplanationAnswerKind;
+  answer: string;
+  evidence: AiEvidence[];
+  missingEvidenceIds: string[];
+  refusalCode?: ExplanationRefusalCode;
+}
 
 export interface LiquidationPrediction extends VersionedPayload, ModelMetadata, TraceContext {
   schemaVersion: typeof RISK_SCHEMA_VERSION;
   predictionId: PredictionId;
-  positionId: PositionId;
-  horizons: Record<string, PercentageBps>;
+  horizons: Partial<Record<Horizon, PercentageBps>>;
   confidenceBps: BasisPoints;
   fallbackUsed: boolean;
 }
@@ -41,10 +74,10 @@ export interface StressScenario extends VersionedPayload {
 }
 
 export interface RiskExplanation {
-  observedData: string[];
-  deterministicCalculations: string[];
-  modelPredictions: string[];
-  scenarioAssumptions: string[];
+  observedData: AiEvidence[];
+  deterministicCalculations: AiEvidence[];
+  modelPredictions: AiEvidence[];
+  scenarioAssumptions: AiEvidence[];
 }
 
 export interface RiskSnapshot {
@@ -57,5 +90,5 @@ export interface RiskSnapshot {
   stablecoinDeviationBps: number;
   protocolRiskBps: PercentageBps;
   explanation: RiskExplanation;
-  observedAt: UnixSeconds;
+  observedAtMs: UnixMilliseconds;
 }

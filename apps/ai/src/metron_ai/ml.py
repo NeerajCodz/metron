@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import json
+import math
+import os
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Final, cast
-
 import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, brier_score_loss, f1_score, log_loss
@@ -59,37 +61,95 @@ class ModelArtifact:
     def from_dict(cls, payload: dict[str, object]) -> ModelArtifact:
         if payload.get("schema_version") != MODEL_SCHEMA_VERSION:
             raise ValueError("unsupported model artifact schema")
-        feature_columns = cast(list[object], payload["feature_columns"])
-        means = cast(list[object], payload["means"])
-        scales = cast(list[object], payload["scales"])
-        classes = cast(list[object], payload["classes"])
-        coefficients = cast(list[object], payload["coefficients"])
-        intercepts = cast(list[object], payload["intercepts"])
-        metrics = cast(dict[str, object], payload["metrics"])
+        task = payload.get("task")
+        if not isinstance(task, str) or task not in {
+            "liquidation_within_1h",
+            "liquidation_within_6h",
+            "liquidation_within_24h",
+            "liquidation_within_7d",
+            "regime",
+        }:
+            raise ValueError("unsupported model task")
+        feature_columns_raw = payload.get("feature_columns")
+        if not isinstance(feature_columns_raw, list) or tuple(feature_columns_raw) != RISK_MODEL_FEATURE_COLUMNS:
+            raise ValueError("unsupported model feature schema")
+        feature_columns = tuple(str(item) for item in feature_columns_raw)
+
+        def numeric_list(name: str) -> tuple[float, ...]:
+            raw = payload.get(name)
+            if not isinstance(raw, list):
+                raise ValueError(f"{name} must be a list")
+            values = tuple(float(item) for item in raw if isinstance(item, (int, float)))
+            if len(values) != len(raw) or not all(math.isfinite(value) for value in values):
+                raise ValueError(f"{name} contains a non-finite or invalid value")
+            return values
+
+        def numeric_list_from_row(raw: object) -> tuple[float, ...]:
+            if not isinstance(raw, list):
+                raise ValueError("coefficient row must be a list")
+            values = tuple(float(item) for item in raw if isinstance(item, (int, float)))
+            if len(values) != len(raw) or not all(math.isfinite(value) for value in values):
+                raise ValueError("coefficient row contains an invalid value")
+            return values
+
+        means = numeric_list("means")
+        scales = numeric_list("scales")
+        intercepts = numeric_list("intercepts")
+        if len(means) != len(feature_columns) or len(scales) != len(feature_columns):
+            raise ValueError("artifact scaler shape does not match features")
+        if any(scale == 0 for scale in scales):
+            raise ValueError("artifact scales must be non-zero")
+        classes_raw = payload.get("classes")
+        if not isinstance(classes_raw, list) or not classes_raw or not all(isinstance(item, str) for item in classes_raw):
+            raise ValueError("artifact classes are invalid")
+        classes = tuple(cast(str, item) for item in classes_raw)
+        if len(set(classes)) != len(classes):
+            raise ValueError("artifact classes must be unique")
+        coefficients_raw = payload.get("coefficients")
+        if not isinstance(coefficients_raw, list):
+            raise ValueError("artifact coefficients are invalid")
+        coefficients = tuple(
+            numeric_list_from_row(row) for row in coefficients_raw
+        )
+        if len(coefficients) not in {1, len(classes)} or len(intercepts) != len(coefficients) or any(len(row) != len(feature_columns) for row in coefficients):
+            raise ValueError("artifact coefficient shape does not match classes and features")
+        metrics_raw = payload.get("metrics")
+        if not isinstance(metrics_raw, dict):
+            raise ValueError("artifact metrics are invalid")
+        metrics = {str(key): float(value) for key, value in metrics_raw.items() if isinstance(value, (int, float))}
+        if len(metrics) != len(metrics_raw) or not all(math.isfinite(value) for value in metrics.values()):
+            raise ValueError("artifact metrics contain non-finite values")
+        fingerprint = payload.get("dataset_fingerprint")
+        model_version = payload.get("model_version")
+        feature_schema_version = payload.get("feature_schema_version")
+        if (
+            not isinstance(fingerprint, str)
+            or not isinstance(model_version, str)
+            or not isinstance(feature_schema_version, str)
+            or feature_schema_version != FEATURE_SCHEMA_VERSION
+        ):
+            raise ValueError("artifact metadata is invalid")
+        seed = payload.get("seed")
+        calibration_raw = payload.get("calibration_offset", 0.0)
+        if not isinstance(calibration_raw, (int, float)) or isinstance(calibration_raw, bool):
+            raise ValueError("artifact calibration offset is invalid")
+        calibration_offset = float(calibration_raw)
+        if not math.isfinite(calibration_offset):
+            raise ValueError("artifact calibration offset is invalid")
         return cls(
-            task=str(payload["task"]),
-            model_version=str(payload["model_version"]),
-            feature_schema_version=str(payload["feature_schema_version"]),
-            feature_columns=tuple(str(item) for item in feature_columns),
-            means=tuple(float(cast(str | int | float, item)) for item in means),
-            scales=tuple(float(cast(str | int | float, item)) for item in scales),
-            classes=tuple(str(item) for item in classes),
-            coefficients=tuple(
-                tuple(float(cast(str | int | float, item)) for item in cast(list[object], row))
-                for row in coefficients
-            ),
-            intercepts=tuple(
-                float(cast(str | int | float, item)) for item in intercepts
-            ),
-            metrics={
-                str(key): float(cast(str | int | float, value))
-                for key, value in metrics.items()
-            },
-            dataset_fingerprint=str(payload["dataset_fingerprint"]),
-            seed=int(cast(str | int | float, payload["seed"])),
-            calibration_offset=float(
-                cast(str | int | float, payload.get("calibration_offset", 0.0))
-            ),
+            task=task,
+            model_version=model_version,
+            feature_schema_version=feature_schema_version,
+            feature_columns=feature_columns,
+            means=means,
+            scales=scales,
+            classes=classes,
+            coefficients=coefficients,
+            intercepts=intercepts,
+            metrics=metrics,
+            dataset_fingerprint=fingerprint,
+            seed=cast(int, seed),
+            calibration_offset=calibration_offset,
         )
 
 
@@ -260,24 +320,68 @@ def train_models(records: list[SyntheticRecord], seed: int = 7) -> dict[str, Mod
     return artifacts
 
 
+def evaluate_promotions(artifacts: dict[str, ModelArtifact]) -> dict[str, dict[str, object]]:
+    evaluations: dict[str, dict[str, object]] = {}
+    for task, artifact in sorted(artifacts.items()):
+        if task.startswith("liquidation"):
+            candidate = artifact.metrics.get("brier_score")
+            baseline = artifact.metrics.get("baseline_brier_score")
+            approved = candidate is not None and baseline is not None and candidate <= baseline
+            metric = "brier_score"
+        else:
+            candidate = artifact.metrics.get("accuracy")
+            baseline = artifact.metrics.get("baseline_accuracy")
+            approved = candidate is not None and baseline is not None and candidate >= baseline
+            metric = "accuracy"
+        evaluations[task] = {
+            "metric": metric,
+            "candidate": candidate,
+            "baseline": baseline,
+            "approved": approved,
+            "modelVersion": artifact.model_version,
+            "datasetFingerprint": artifact.dataset_fingerprint,
+        }
+    return evaluations
+
+
 def save_artifacts(artifacts: dict[str, ModelArtifact], directory: Path) -> dict[str, object]:
     directory.mkdir(parents=True, exist_ok=True)
-    for task, artifact in artifacts.items():
-        (directory / f"{task}.json").write_text(
-            json.dumps(artifact.as_dict(), sort_keys=True, indent=2) + "\n",
-            encoding="utf-8",
-        )
+    promotion_evaluation = evaluate_promotions(artifacts)
+    manifest_artifacts: dict[str, dict[str, object]] = {}
+    manifest: dict[str, object] = {
+        "model_schema_version": MODEL_SCHEMA_VERSION,
+        "feature_schema_version": FEATURE_SCHEMA_VERSION,
+        "artifacts": manifest_artifacts,
+    }
+    for task, artifact in sorted(artifacts.items()):
+        target = directory / f"{task}.json"
+        temporary = directory / f".{task}.json.tmp"
+        temporary.write_text(json.dumps(artifact.as_dict(), sort_keys=True, indent=2) + "\n", encoding="utf-8")
+        os.replace(temporary, target)
+        reloaded = load_artifact(target)
+        manifest_artifacts[task] = {
+            "modelVersion": reloaded.model_version,
+            "datasetFingerprint": reloaded.dataset_fingerprint,
+            "featureColumns": list(reloaded.feature_columns),
+            "promotionStatus": "approved" if promotion_evaluation[task]["approved"] else "rejected",
+        }
     report: dict[str, object] = {
         "model_schema_version": MODEL_SCHEMA_VERSION,
         "feature_schema_version": FEATURE_SCHEMA_VERSION,
-        "models": {task: artifact.metrics for task, artifact in artifacts.items()},
-        "dataset_fingerprints": sorted(
-            {artifact.dataset_fingerprint for artifact in artifacts.values()}
-        ),
+        "models": {task: artifact.metrics for task, artifact in sorted(artifacts.items())},
+        "dataset_fingerprints": sorted({artifact.dataset_fingerprint for artifact in artifacts.values()}),
+        "promotion_status": "approved" if all(item["approved"] for item in promotion_evaluation.values()) else "rejected",
+        "promotion_evaluation": promotion_evaluation,
     }
-    (directory / "training-report.json").write_text(
-        json.dumps(report, sort_keys=True, indent=2) + "\n", encoding="utf-8"
-    )
+    report_path = directory / "training-report.json"
+    report_tmp = directory / ".training-report.json.tmp"
+    report_tmp.write_text(json.dumps(report, sort_keys=True, indent=2) + "\n", encoding="utf-8")
+    os.replace(report_tmp, report_path)
+    manifest["trainingReport"] = report_path.name
+    manifest_path = directory / "model-manifest.json"
+    manifest_tmp = directory / ".model-manifest.json.tmp"
+    manifest_tmp.write_text(json.dumps(manifest, sort_keys=True, indent=2) + "\n", encoding="utf-8")
+    os.replace(manifest_tmp, manifest_path)
     return report
 
 

@@ -55,14 +55,14 @@ def test_liquidation_prediction_is_bounded_and_deterministic(features: RiskFeatu
         position_id="position-1",
         trace_id="trace-1",
         features=features,
-        horizons_days=[1, 7, 30],
+        horizons=["1h", "7d"],
     )
     first = predict_liquidation(request, 1_700_000_000)
     second = predict_liquidation(request, 1_700_000_000)
     assert first == second
     assert first.prediction_id == second.prediction_id
     assert all(0 <= probability <= 10_000 for probability in first.horizons.values())
-    assert first.horizons["30"] >= first.horizons["1"]
+    assert first.horizons["7d"] >= first.horizons["1h"]
 
 
 def test_regime_probabilities_sum_to_ten_thousand(features: RiskFeatures) -> None:
@@ -110,7 +110,7 @@ async def test_prediction_endpoint_requires_service_token(
                 "position_id": "position-1",
                 "trace_id": "trace-4",
                 "features": features.model_dump(mode="json"),
-                "horizons_days": [1],
+                "horizons": ["1h"],
             },
         )
     assert response.status_code == 503
@@ -132,7 +132,7 @@ async def test_prediction_endpoint_returns_versioned_output(
                 "position_id": "position-1",
                 "trace_id": "trace-5",
                 "features": features.model_dump(mode="json"),
-                "horizons_days": [1],
+                "horizons": ["1h"],
             },
         )
     assert response.status_code == 200

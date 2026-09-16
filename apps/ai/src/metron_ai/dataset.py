@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Final
@@ -320,6 +321,12 @@ def validate_dataset(records: list[SyntheticRecord]) -> dict[str, object]:
         "gas_multiplier_bps",
         "cross_chain_exposure_usd",
     )
+    feature_ranges: dict[str, dict[str, float]] = {
+        column: {"min": math.inf, "max": -math.inf} for column in FEATURE_COLUMNS
+    }
+    missingness: dict[str, int] = {column: 0 for column in FEATURE_COLUMNS}
+    scenario_coverage: dict[str, int] = {}
+    group_ids: set[str] = set()
     for record in records:
         if (
             record.source_type != "synthetic"
@@ -328,6 +335,21 @@ def validate_dataset(records: list[SyntheticRecord]) -> dict[str, object]:
             raise ValueError("record provenance or feature schema is invalid")
         if previous_timestamp is not None and record.timestamp <= previous_timestamp:
             raise ValueError("timestamps must be strictly increasing")
+        scenario_name = record.scenario_id.split("-", maxsplit=1)[0]
+        scenario_coverage[scenario_name] = scenario_coverage.get(scenario_name, 0) + 1
+        if record.user_id in group_ids:
+            raise ValueError("group leakage detected: user appears in multiple records")
+        group_ids.add(record.user_id)
+        for column in FEATURE_COLUMNS:
+            raw_value = record.features.get(column)
+            if raw_value is None:
+                missingness[column] += 1
+                continue
+            numeric_value = float(raw_value)
+            if not math.isfinite(numeric_value):
+                raise ValueError(f"feature {column} is non-finite")
+            feature_ranges[column]["min"] = min(feature_ranges[column]["min"], numeric_value)
+            feature_ranges[column]["max"] = max(feature_ranges[column]["max"], numeric_value)
         previous_timestamp = record.timestamp
         if set(record.features) != set(FEATURE_COLUMNS):
             raise ValueError("feature columns do not match the feature schema")
@@ -350,13 +372,45 @@ def validate_dataset(records: list[SyntheticRecord]) -> dict[str, object]:
                 previous_label = value
             label_counts[label] += value
         scenarios.add(record.scenario_id.split("-", maxsplit=1)[0])
+    train_end = int(len(records) * 0.7)
+    validation_end = int(len(records) * 0.85)
+    split_records = {
+        "train": records[:train_end],
+        "validation": records[train_end:validation_end],
+        "test": records[validation_end:],
+    }
+    scenario_coverage_by_split = {
+        split: {
+            scenario: sum(1 for record in split_rows if record.scenario_id.split("-", maxsplit=1)[0] == scenario)
+            for scenario in sorted(scenarios)
+        }
+        for split, split_rows in split_records.items()
+    }
+    label_prevalence = {
+        label: label_counts[label] / len(records)
+        for label in binary_labels
+    }
     return {
         "rows": len(records),
         "feature_schema_version": FEATURE_SCHEMA_VERSION,
         "fingerprint": dataset_fingerprint(records),
         "scenario_count": len(scenarios),
         "scenarios": sorted(scenarios),
+        "scenario_coverage": scenario_coverage,
+        "scenario_coverage_by_split": scenario_coverage_by_split,
         "label_positive_counts": label_counts,
+        "label_prevalence": label_prevalence,
+        "class_balance": label_prevalence,
+        "feature_ranges": feature_ranges,
+        "missingness": missingness,
+        "temporal_split_boundaries": {
+            "train_end": records[train_end - 1].timestamp if train_end else None,
+            "validation_end": records[validation_end - 1].timestamp if validation_end else None,
+            "test_end": records[-1].timestamp,
+        },
+        "group_leakage_checked": True,
+        "accounting_invariants_checked": True,
+        "chronology_invariants_checked": True,
     }
 
 

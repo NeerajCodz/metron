@@ -49,6 +49,7 @@ export interface SolverRoute extends VersionedPayload {
   intentId: IntentId;
   strategyId: StrategyId;
   actions: RouteAction[];
+  strategyGraph?: StrategyGraph;
   expectedNetApyBps: BasisPoints;
   expectedDrawdownBps: PercentageBps;
   expectedImpermanentLossBps?: PercentageBps;
@@ -61,6 +62,19 @@ export interface SolverRoute extends VersionedPayload {
   liquidityScoreBps: BasisPoints;
   validityDeadline: UnixSeconds;
   scoreVersion: string;
+}
+
+export interface StrategyGraphNode {
+  nodeId: string;
+  action: RouteAction;
+  dependsOn: string[];
+}
+
+export interface StrategyGraph {
+  graphId: string;
+  nodes: StrategyGraphNode[];
+  entryNodeIds: string[];
+  terminalNodeIds: string[];
 }
 
 export interface SolverBidCommit {

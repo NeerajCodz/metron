@@ -5,6 +5,7 @@ export type Bytes32 = Hex;
 
 export type ChainId = number;
 export type UnixSeconds = number;
+export type UnixMilliseconds = number;
 export type BasisPoints = number;
 export type PercentageBps = number;
 export type DecimalString = string;
@@ -36,4 +37,10 @@ export interface ModelMetadata {
   modelVersion: string;
   featureSchemaVersion: string;
   generatedAt: UnixSeconds;
+  datasetFingerprint?: string;
+  featureFingerprint?: string;
+  artifactVersion?: string;
+  fallbackReason?: string;
+  predictionSource?: "model" | "deterministic" | "mixed";
+  sourceByHorizon?: Record<string, "model" | "deterministic">;
 }

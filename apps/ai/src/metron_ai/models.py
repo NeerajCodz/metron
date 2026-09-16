@@ -13,6 +13,37 @@ MODEL_VERSION = "risk-deterministic-v1"
 MarketRegime = Literal[
     "stable", "trending", "high_volatility", "liquidity_stress", "flash_crash", "recovery"
 ]
+Horizon = Literal["1h", "6h", "24h", "7d"]
+SUPPORTED_HORIZONS: tuple[Horizon, ...] = ("1h", "6h", "24h", "7d")
+
+
+class SourceSpan(BaseModel):
+    start: int = Field(ge=0)
+    end: int = Field(ge=0)
+    fragment: str = Field(min_length=1)
+
+    @field_validator("end")
+    @classmethod
+    def end_after_start(cls, value: int, info: object) -> int:
+        start = getattr(info, "data", {}).get("start", 0)
+        if value < start:
+            raise ValueError("source span end must not precede start")
+        return value
+
+
+class ExtractionEvidence(BaseModel):
+    field: str = Field(min_length=1)
+    value: str = Field(min_length=1)
+    confidence_bps: int = Field(ge=0, le=10_000)
+    status: Literal["confirmed", "ambiguous", "missing"] = "confirmed"
+    source_spans: list[SourceSpan] = Field(default_factory=list)
+
+
+class Ambiguity(BaseModel):
+    field: str = Field(min_length=1)
+    reason_code: Literal["missing", "conflicting", "unlabeled", "unsupported", "incomplete"]
+    alternatives: list[str] = Field(default_factory=list)
+    requires_confirmation: bool = True
 
 
 class RiskFeatures(BaseModel):
@@ -30,16 +61,14 @@ class LiquidationRequest(BaseModel):
     position_id: str = Field(min_length=1)
     trace_id: str = Field(min_length=1)
     features: RiskFeatures
-    horizons_days: list[int] = Field(min_length=1, max_length=8)
+    horizons: list[Horizon] = Field(min_length=1, max_length=4)
 
-    @field_validator("horizons_days")
+    @field_validator("horizons")
     @classmethod
-    def validate_horizons(cls, values: list[int]) -> list[int]:
-        if any(value <= 0 for value in values) or len(set(values)) != len(values):
-            raise ValueError("horizons_days must contain unique positive values")
+    def validate_horizons(cls, values: list[Horizon]) -> list[Horizon]:
+        if len(set(values)) != len(values):
+            raise ValueError("horizons must contain unique supported values")
         return values
-
-
 class LiquidationPrediction(BaseModel):
     schema_version: Literal["1.0.0"] = RISK_SCHEMA_VERSION
     trace_id: str
@@ -48,8 +77,13 @@ class LiquidationPrediction(BaseModel):
     model_version: str = MODEL_VERSION
     feature_schema_version: str = FEATURE_SCHEMA_VERSION
     dataset_fingerprint: str | None = None
+    feature_fingerprint: str | None = None
+    artifact_version: str | None = None
+    fallback_reason: str | None = None
+    prediction_source: Literal["model", "deterministic", "mixed"] = "deterministic"
+    source_by_horizon: dict[Horizon, Literal["model", "deterministic"]] = Field(default_factory=dict)
     generated_at: int
-    horizons: dict[str, int]
+    horizons: dict[Horizon, int]
     confidence_bps: int = Field(ge=0, le=10_000)
     fallback_used: bool
 
@@ -67,14 +101,17 @@ class RegimePrediction(BaseModel):
     model_version: str = MODEL_VERSION
     feature_schema_version: str = FEATURE_SCHEMA_VERSION
     dataset_fingerprint: str | None = None
+    feature_fingerprint: str | None = None
     generated_at: int
     probabilities_bps: dict[str, int]
     selected_regime: MarketRegime
+    prediction_source: Literal["model", "deterministic"] = "deterministic"
+    fallback_reason: str | None = None
     fallback_used: bool
-
 
 class StressScenario(BaseModel):
     schema_version: Literal["1.0.0"] = RISK_SCHEMA_VERSION
+    scenario_id: str = "scenario"
     eth_price_shock_bps: int = Field(ge=-10_000, le=100_000)
     stablecoin_depeg_bps: int = Field(ge=-10_000, le=10_000)
     dex_liquidity_shock_bps: int = Field(ge=-10_000, le=100_000)
@@ -82,20 +119,52 @@ class StressScenario(BaseModel):
     gas_multiplier_bps: int = Field(ge=0, le=1_000_000)
     lending_utilization_shock_bps: int = Field(ge=-10_000, le=10_000)
 
+class ObservationReference(BaseModel):
+    observation_id: str = Field(min_length=1)
+    source: str = Field(min_length=1)
+    observed_at_ms: int = Field(ge=0)
+    quality: Literal["valid", "stale", "invalid"]
+
+
+class SimulationComponent(BaseModel):
+    component_id: str = Field(min_length=1)
+    component_type: Literal["lending", "liquidity", "hedge", "bridge", "protocol"]
+    chain_id: int = Field(gt=0)
+    asset: str = Field(min_length=1)
+    pool_id: str | None = None
+    value_usd: Decimal = Field(ge=0)
+    delta_wad: int
+    health_factor_wad: int | None = Field(default=None, ge=0)
+    observations: list[ObservationReference] = Field(default_factory=list)
+
+
+class ComponentEffect(BaseModel):
+    component_id: str
+    before_value_usd: Decimal
+    after_value_usd: Decimal
+    delta_usd: Decimal
+    before_delta_wad: int
+    after_delta_wad: int
+    failure_reason: str | None = None
 
 class SimulationRequest(BaseModel):
     position_id: str = Field(min_length=1)
     trace_id: str = Field(min_length=1)
     features: RiskFeatures
     scenarios: list[StressScenario] = Field(min_length=1, max_length=32)
+    components: list[SimulationComponent] = Field(default_factory=list, max_length=128)
 
 
 class ScenarioResult(BaseModel):
     scenario_index: int
+    scenario_id: str = "scenario"
     health_factor_wad: int
     net_delta_wad: int
     liquidation_probability_bps: int = Field(ge=0, le=10_000)
     estimated_loss_bps: int = Field(ge=0, le=100_000)
+    cost_usd: Decimal = Decimal("0")
+    component_effects: list[ComponentEffect] = Field(default_factory=list)
+    failure_reason: str | None = None
     assumptions: list[str] = Field(min_length=1)
 
 
@@ -107,23 +176,44 @@ class SimulationResponse(BaseModel):
     feature_schema_version: str = FEATURE_SCHEMA_VERSION
     generated_at: int
     scenarios: list[ScenarioResult]
+    provenance: list[ObservationReference] = Field(default_factory=list)
+    fallback_reason: str | None = None
     fallback_used: bool = False
+
+
+class ExplanationEvidence(BaseModel):
+    evidence_id: str = Field(min_length=1)
+    kind: Literal["observation", "calculation", "prediction", "scenario"]
+    source_reference: str = Field(min_length=1)
+    trace_id: str
+    observed_at_ms: int | None = Field(default=None, ge=0)
+    quality: Literal["valid", "stale", "invalid"] = "valid"
+    content: dict[str, str | int | float | bool | None]
 
 
 class ExplanationRequest(BaseModel):
     trace_id: str = Field(min_length=1)
-    observed_data: list[str] = Field(min_length=1)
-    deterministic_calculations: list[str] = Field(min_length=1)
-    model_predictions: list[str] = Field(min_length=1)
-    scenario_assumptions: list[str] = Field(min_length=1)
+    answer_kind: Literal["value", "trend", "driver", "comparison", "scenario_impact"] = "driver"
+    observed_data: list[str] = Field(default_factory=list)
+    deterministic_calculations: list[str] = Field(default_factory=list)
+    model_predictions: list[str] = Field(default_factory=list)
+    scenario_assumptions: list[str] = Field(default_factory=list)
+    evidence: list[ExplanationEvidence] = Field(default_factory=list)
 
 
 class ExplanationResponse(BaseModel):
     trace_id: str
-    observed_data: list[str]
-    deterministic_calculations: list[str]
-    model_predictions: list[str]
-    scenario_assumptions: list[str]
+    answer_kind: Literal["value", "trend", "driver", "comparison", "scenario_impact"] = "driver"
+    answer: str = ""
+    observed_data: list[str] = Field(default_factory=list)
+    deterministic_calculations: list[str] = Field(default_factory=list)
+    model_predictions: list[str] = Field(default_factory=list)
+    scenario_assumptions: list[str] = Field(default_factory=list)
+    evidence: list[ExplanationEvidence] = Field(default_factory=list)
+    missing_evidence_ids: list[str] = Field(default_factory=list)
+    refusal_code: Literal[
+        "unsupported_answer_kind", "missing_evidence", "stale_evidence", "conflicting_evidence", "untrusted_source"
+    ] | None = None
 
 
 class RecoveryPolicy(BaseModel):
@@ -181,6 +271,8 @@ class CascadePosition(BaseModel):
 
 class CascadeRequest(BaseModel):
     trace_id: str = Field(min_length=1)
+    market_id: str = Field(default="market", min_length=1)
+    venue_id: str = Field(default="venue", min_length=1)
     forced_selling_usd: Decimal = Field(ge=0)
     market_depth_usd: Decimal = Field(gt=0)
     price_impact_slope_bps: int = Field(ge=0, le=100_000)
@@ -189,17 +281,34 @@ class CascadeRequest(BaseModel):
     positions: list[CascadePosition] = Field(min_length=1, max_length=1000)
 
 
+class CascadeRound(BaseModel):
+    round_index: int
+    consumed_depth_usd: Decimal
+    remaining_depth_usd: Decimal
+    incremental_impact_bps: int
+    cumulative_impact_bps: int
+    generated_selling_usd: Decimal
+    unresolved_selling_usd: Decimal
+    liquidated_position_ids: list[str] = Field(default_factory=list)
+
+
 class CascadeResponse(BaseModel):
     schema_version: Literal["1.0.0"] = RISK_SCHEMA_VERSION
     trace_id: str
     generated_at: int
+    market_id: str = "market"
+    venue_id: str = "venue"
     forced_selling_volume_usd: Decimal
     consumed_depth_usd: Decimal
+    remaining_depth_usd: Decimal = Decimal("0")
     secondary_price_impact_bps: int
     newly_liquidatable_positions: list[str]
     affected_position_count: int
     secondary_exposure_usd: Decimal
     rounds: int
+    round_records: list[CascadeRound] = Field(default_factory=list)
+    unresolved_selling_usd: Decimal = Decimal("0")
+    termination_reason: Literal["fixed_point", "depth_exhausted", "max_rounds", "no_selling"] = "fixed_point"
     converged: bool
 
 
@@ -215,7 +324,6 @@ class RecommendationResponse(BaseModel):
     trace_id: str
     recommended_action_type: str
     rationale: list[str] = Field(min_length=1)
-
 
 class IntentDraftRequest(BaseModel):
     trace_id: str = Field(min_length=1)
@@ -233,10 +341,10 @@ class IntentDraftResponse(BaseModel):
     assets: list[str]
     chains: list[int]
     protocols: list[str]
-    ambiguities: list[str] = Field(default_factory=list)
+    ambiguities: list[Ambiguity] = Field(default_factory=list)
+    evidence: list[ExtractionEvidence] = Field(default_factory=list)
     source_text: str
     requires_approval: bool = True
-
 
 class ThresholdRequest(BaseModel):
     trace_id: str = Field(min_length=1)
@@ -247,6 +355,13 @@ class ThresholdRequest(BaseModel):
     market_regime: MarketRegime | None = None
     liquidity_stress_bps: int = Field(default=0, ge=0, le=10_000)
     protocol_risk_bps: int = Field(default=0, ge=0, le=10_000)
+    health_factor_wad: int | None = Field(default=None, ge=0)
+    observation_quality: Literal["valid", "stale", "invalid", "missing"] = "valid"
+    observation_ids: list[str] = Field(default_factory=list)
+    policy_id: str = "threshold-policy-v1"
+    policy_version: str = "1"
+    evaluation_time_ms: int | None = Field(default=None, ge=0)
+    prior_intervention_bps: int = Field(default=0, ge=0, le=10_000)
 
 
 class ThresholdResponse(BaseModel):
@@ -254,7 +369,13 @@ class ThresholdResponse(BaseModel):
     recommended_intervention_bps: int = Field(ge=0, le=10_000)
     intervention_required: bool
     rationale: list[str] = Field(min_length=1)
-
+    policy_id: str = "threshold-policy-v1"
+    policy_version: str = "1"
+    evaluation_time_ms: int = 0
+    adjustment_terms: dict[str, int] = Field(default_factory=dict)
+    selected_cap_bps: int = Field(ge=0, le=10_000)
+    validity_window_ms: int = Field(default=300_000, ge=0)
+    fallback_reason: str | None = None
 
 class LiquidityEstimateRequest(BaseModel):
     trace_id: str = Field(min_length=1)
@@ -316,6 +437,7 @@ class ScenarioDraftResponse(BaseModel):
     trace_id: str
     scenario: StressScenario
     source_text: str
+    ambiguities: list[Ambiguity] = Field(default_factory=list)
     requires_approval: bool = True
 
 

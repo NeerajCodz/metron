@@ -40,6 +40,19 @@ export const routeActionSchema = z.strictObject({
   calldata: hexSchema,
 });
 
+const strategyGraphNodeSchema = z.strictObject({
+  nodeId: nonEmptyIdSchema,
+  action: routeActionSchema,
+  dependsOn: z.array(nonEmptyIdSchema),
+});
+
+const strategyGraphSchema = z.strictObject({
+  graphId: nonEmptyIdSchema,
+  nodes: z.array(strategyGraphNodeSchema).min(1),
+  entryNodeIds: z.array(nonEmptyIdSchema).min(1),
+  terminalNodeIds: z.array(nonEmptyIdSchema).min(1),
+});
+
 export const solverRouteSchema = z
   .strictObject({
     schemaVersion: z.literal(SOLVER_ROUTE_SCHEMA_VERSION),
@@ -48,6 +61,7 @@ export const solverRouteSchema = z
     intentId: nonEmptyIdSchema,
     strategyId: nonEmptyIdSchema,
     actions: z.array(routeActionSchema).min(1),
+    strategyGraph: strategyGraphSchema.optional(),
     expectedNetApyBps: basisPointsSchema,
     expectedDrawdownBps: basisPointsSchema,
     expectedImpermanentLossBps: basisPointsSchema.optional(),
@@ -71,4 +85,34 @@ export const solverRouteSchema = z
         });
       }
     });
+    if (!route.strategyGraph) return;
+    const nodeIds = new Set(route.strategyGraph.nodes.map((node) => node.nodeId));
+    const actionIndexes = new Set(route.actions.map((action) => action.actionIndex));
+    for (const node of route.strategyGraph.nodes) {
+      if (!actionIndexes.has(node.action.actionIndex)) {
+        context.addIssue({
+          code: "custom",
+          message: "strategy graph node action is not present in route",
+          path: ["strategyGraph", "nodes"],
+        });
+      }
+      for (const dependency of node.dependsOn) {
+        if (!nodeIds.has(dependency) || dependency === node.nodeId) {
+          context.addIssue({
+            code: "custom",
+            message: "strategy graph dependency is invalid",
+            path: ["strategyGraph", "nodes"],
+          });
+        }
+      }
+    }
+    for (const nodeId of [...route.strategyGraph.entryNodeIds, ...route.strategyGraph.terminalNodeIds]) {
+      if (!nodeIds.has(nodeId)) {
+        context.addIssue({
+          code: "custom",
+          message: "strategy graph boundary node is missing",
+          path: ["strategyGraph"],
+        });
+      }
+    }
   });

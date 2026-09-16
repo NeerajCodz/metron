@@ -117,6 +117,7 @@ export default defineSchema({
     liquidationProbabilityBps: v.optional(v.number()),
     lastRiskSnapshotId: v.optional(v.id("riskSnapshots")),
     traceId: v.string(),
+    latestBlockByChain: v.record(v.string(), v.number()),
     updatedAt: v.number(),
   })
     .index("by_owner", ["ownerAddress"])
@@ -215,10 +216,11 @@ export default defineSchema({
     transactionHash: v.string(),
     blockNumber: v.number(),
     blockHash: v.string(),
-    transactionIndex: v.number(),
+    from: v.optional(v.string()),
+    to: v.optional(v.string()),
     status: v.union(v.literal("confirmed"), v.literal("reverted"), v.literal("orphaned")),
     traceId: v.optional(v.string()),
-    observedAt: v.number(),
+    observedAtMs: v.number(),
   })
     .index("by_chain_and_hash", ["chainId", "transactionHash"])
     .index("by_chain_and_block", ["chainId", "blockNumber"]),
@@ -259,12 +261,11 @@ export default defineSchema({
     protocolRiskBps: v.number(),
     explanationJson: v.string(),
     traceId: v.string(),
-    observedAt: v.number(),
+    observedAtMs: v.number(),
   })
     .index("by_position", ["positionId"])
-    .index("by_position_and_time", ["positionId", "observedAt"])
+    .index("by_position_and_time", ["positionId", "observedAtMs"])
     .index("by_trace", ["traceId"]),
-
   aiPredictions: defineTable({
     positionId: v.optional(v.id("positions")),
     predictionType: v.string(),
@@ -276,12 +277,106 @@ export default defineSchema({
     responseJson: v.string(),
     confidenceBps: v.optional(v.number()),
     fallbackUsed: v.boolean(),
+    fallbackReason: v.optional(v.string()),
+    predictionSource: v.optional(v.union(v.literal("model"), v.literal("deterministic"), v.literal("mixed"))),
+    datasetFingerprint: v.optional(v.string()),
+    featureFingerprint: v.optional(v.string()),
+    artifactVersion: v.optional(v.string()),
+    latencyMs: v.optional(v.number()),
     traceId: v.string(),
     generatedAt: v.number(),
   })
     .index("by_position", ["positionId"])
     .index("by_type", ["predictionType"])
     .index("by_trace", ["traceId"]),
+  simulationSessions: defineTable({
+    sessionId: v.string(),
+    ownerSubject: v.string(),
+    ownerAddress: v.optional(v.string()),
+    scenarioJson: v.string(),
+    status: v.union(
+      v.literal("created"),
+      v.literal("running"),
+      v.literal("completed"),
+      v.literal("failed"),
+      v.literal("cancelled"),
+    ),
+    traceId: v.string(),
+    idempotencyKey: v.string(),
+    maxParticipants: v.number(),
+    maxTurns: v.number(),
+    participantCount: v.number(),
+    turnCount: v.number(),
+    coordinatorProvider: v.optional(v.string()),
+    coordinatorModel: v.optional(v.string()),
+    observationIds: v.array(v.string()),
+    resultJson: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_session", ["sessionId"])
+    .index("by_owner", ["ownerSubject"])
+    .index("by_owner_and_idempotency", ["ownerSubject", "idempotencyKey"])
+    .index("by_trace", ["traceId"]),
+
+  simulationParticipants: defineTable({
+    participantId: v.string(),
+    sessionId: v.string(),
+    participantType: v.union(v.literal("deterministic_bot"), v.literal("ai_agent")),
+    role: v.string(),
+    displayName: v.optional(v.string()),
+    provider: v.optional(v.string()),
+    model: v.optional(v.string()),
+    toolsJson: v.optional(v.string()),
+    configJson: v.optional(v.string()),
+    traceId: v.string(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_participant", ["participantId"])
+    .index("by_session", ["sessionId"])
+    .index("by_session_and_participant", ["sessionId", "participantId"]),
+
+  simulationEvents: defineTable({
+    eventId: v.string(),
+    sessionId: v.string(),
+    turn: v.number(),
+    eventType: v.string(),
+    participantId: v.optional(v.string()),
+    traceId: v.string(),
+    idempotencyKey: v.string(),
+    inputJson: v.optional(v.string()),
+    outputJson: v.optional(v.string()),
+    resultJson: v.optional(v.string()),
+    observationIds: v.array(v.string()),
+    createdAt: v.number(),
+  })
+    .index("by_event", ["eventId"])
+    .index("by_session_and_turn", ["sessionId", "turn"])
+    .index("by_session_and_idempotency", ["sessionId", "idempotencyKey"])
+    .index("by_trace", ["traceId"]),
+
+  solverProposals: defineTable({
+    proposalId: v.string(),
+    sessionId: v.string(),
+    solverId: v.optional(v.string()),
+    participantId: v.optional(v.string()),
+    proposalType: v.string(),
+    provider: v.string(),
+    model: v.string(),
+    proposalJson: v.string(),
+    rationaleJson: v.optional(v.string()),
+    status: v.union(v.literal("pending"), v.literal("accepted"), v.literal("rejected")),
+    traceId: v.string(),
+    idempotencyKey: v.string(),
+    observationIds: v.array(v.string()),
+    createdAt: v.number(),
+  })
+    .index("by_proposal", ["proposalId"])
+    .index("by_session", ["sessionId"])
+    .index("by_session_and_idempotency", ["sessionId", "idempotencyKey"])
+    .index("by_trace", ["traceId"]),
+
 
   alerts: defineTable({
     positionId: v.optional(v.id("positions")),
@@ -312,18 +407,57 @@ export default defineSchema({
     .index("by_owner_and_read", ["ownerAddress", "readAt"])
     .index("by_trace", ["traceId"]),
 
-  protocolMetrics: defineTable({
+  marketObservations: defineTable({
+    observationId: v.string(),
+    schemaVersion: v.literal("market-observation-v1"),
     chainId: v.number(),
     protocol: v.string(),
     metric: v.string(),
     value: v.string(),
     unit: v.string(),
+    observedAtMs: v.number(),
     blockNumber: v.number(),
-    observedAt: v.number(),
+    source: v.union(
+      v.literal("indexer"),
+      v.literal("adapter"),
+      v.literal("oracle"),
+      v.literal("provider"),
+      v.literal("simulation"),
+    ),
+    sourceReference: v.string(),
+    quality: v.union(v.literal("valid"), v.literal("stale"), v.literal("invalid")),
+    traceId: v.string(),
+    asset: v.optional(v.string()),
+    quoteAsset: v.optional(v.string()),
+    pair: v.optional(v.string()),
   })
-    .index("by_protocol_metric", ["chainId", "protocol", "metric"])
-    .index("by_observed_at", ["observedAt"]),
+    .index("by_observation", ["observationId"])
+    .index("by_protocol_metric_time", ["chainId", "protocol", "metric", "observedAtMs"])
+    .index("by_source_observation", ["source", "observationId"])
+    .index("by_asset_time", ["asset", "observedAtMs"])
+    .index("by_chain_block", ["chainId", "blockNumber"]),
 
+  auditEvents: defineTable({
+    eventId: v.string(),
+    schemaVersion: v.literal("audit-event-v1"),
+    eventType: v.string(),
+    status: v.string(),
+    timestampMs: v.number(),
+    traceId: v.string(),
+    ownerAddress: v.string(),
+    intentId: v.optional(v.string()),
+    positionId: v.optional(v.string()),
+    executionKey: v.optional(v.string()),
+    messageId: v.optional(v.string()),
+    sessionId: v.optional(v.string()),
+    participantId: v.optional(v.string()),
+    detailsJson: v.string(),
+  })
+    .index("by_event", ["eventId"])
+    .index("by_owner_time", ["ownerAddress", "timestampMs"])
+    .index("by_intent_time", ["intentId", "timestampMs"])
+    .index("by_position_time", ["positionId", "timestampMs"])
+    .index("by_trace_time", ["traceId", "timestampMs"]),
   indexerCursors: defineTable({
     chainId: v.number(),
     stream: v.string(),

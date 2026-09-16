@@ -4,6 +4,7 @@ from time import time
 
 import structlog
 from fastapi import FastAPI, Header, HTTPException
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from metron_ai.cascade import simulate_cascade
@@ -36,6 +37,7 @@ from metron_ai.models import (
     ThresholdRequest,
     ThresholdResponse,
 )
+from metron_ai.simulator import run_simulation
 from metron_ai.optimization import estimate_liquidity, optimize_allocation
 from metron_ai.recommendations import (
     parse_intent_draft,
@@ -44,9 +46,16 @@ from metron_ai.recommendations import (
     recommend_threshold,
 )
 from metron_ai.recovery import rank_recovery
-from metron_ai.risk_model import predict_liquidation, predict_regime
+from metron_ai.risk_model import model_status, predict_liquidation, predict_regime
+from metron_ai.orchestration import run_simulation_turn, run_solver
+from metron_ai.providers import ProviderCatalog
+from metron_ai.runtime_models import (
+    ProviderCatalogResponse,
+    SimulationTurnRequest,
+    SimulationTurnResponse,
+    SolverRequest,
+)
 from metron_ai.settings import get_settings
-from metron_ai.simulator import run_simulation
 
 logger = structlog.get_logger()
 
@@ -87,6 +96,18 @@ def require_service_token(service_token: str | None) -> None:
 async def health() -> HealthResponse:
     settings = get_settings()
     return HealthResponse(status="ok", service="metron-ai", environment=settings.environment)
+
+@app.get("/model-status", tags=["operations"])
+async def model_status_endpoint() -> dict[str, object]:
+    return model_status()
+
+
+@app.get("/ready", tags=["operations"])
+async def ready() -> JSONResponse:
+    status = model_status()
+    settings = get_settings()
+    ready_for_policy = status["status"] == "models_loaded" or not settings.require_models
+    return JSONResponse(status_code=200 if ready_for_policy else 503, content={**status, "ready": ready_for_policy})
 
 
 @app.post("/v1/liquidation/predict", response_model=LiquidationPrediction, tags=["risk"])
@@ -199,3 +220,39 @@ async def explanation(
 ) -> ExplanationResponse:
     require_service_token(x_metron_service_token)
     return explain(request)
+
+
+@app.get("/v1/ai/providers", response_model=ProviderCatalogResponse, tags=["ai-runtime"])
+@app.get("/v1/providers", response_model=ProviderCatalogResponse, tags=["ai-runtime"])
+async def provider_catalog(
+    x_metron_service_token: str | None = Header(default=None),
+) -> ProviderCatalogResponse:
+    require_service_token(x_metron_service_token)
+    catalog = ProviderCatalog()
+    default = catalog.default_selection()
+    return ProviderCatalogResponse(
+        providers=catalog.descriptors(),
+        default_provider=default.provider,
+        default_model=default.model or "",
+    )
+
+
+@app.post("/v1/ai/simulation/turn", response_model=SimulationTurnResponse, tags=["ai-runtime"])
+@app.post("/v1/agents/simulate", response_model=SimulationTurnResponse, tags=["ai-runtime"])
+@app.post("/v1/simulation/turn", response_model=SimulationTurnResponse, tags=["ai-runtime"])
+async def agent_simulation_turn(
+    request: SimulationTurnRequest,
+    x_metron_service_token: str | None = Header(default=None),
+) -> SimulationTurnResponse:
+    require_service_token(x_metron_service_token)
+    return await run_simulation_turn(request)
+
+
+@app.post("/v1/ai/solver", response_model=SimulationTurnResponse, tags=["ai-runtime"])
+@app.post("/v1/agents/solve", response_model=SimulationTurnResponse, tags=["ai-runtime"])
+async def agent_solver(
+    request: SolverRequest,
+    x_metron_service_token: str | None = Header(default=None),
+) -> SimulationTurnResponse:
+    require_service_token(x_metron_service_token)
+    return await run_solver(request)

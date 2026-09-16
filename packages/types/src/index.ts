@@ -6,3 +6,5 @@ export * from "./primitives.js";
 export * from "./recovery.js";
 export * from "./risk.js";
 export * from "./solver.js";
+export * from "./market-observation.js";
+export * from "./portfolio.js";

@@ -1,4 +1,13 @@
-import type { PositionId, TraceId } from "@metron/types";
+import type {
+  AuditEvent,
+  CrossChainMessage,
+  ExecutionRecord,
+  ExecutionStatus,
+  MarketObservation,
+  PortfolioGraph,
+  PositionId,
+  TraceId,
+} from "@metron/types";
 
 export interface AiClientOptions {
   baseUrl: string;
@@ -43,7 +52,15 @@ export type ConvexOperation =
   | "intents.listMine"
   | "positions.get"
   | "positions.listMine"
+  | "positions.graph"
   | "positions.timeline"
+  | "executions.getByKey"
+  | "executions.listByPosition"
+  | "executions.listMine"
+  | "crossChainMessages.get"
+  | "crossChainMessages.listMine"
+  | "crossChainMessages.listRecoveryRequired"
+  | "marketObservations.latest"
   | "solvers.list";
 export type ConvexTransport = <TResponse>(
   operation: ConvexOperation,
@@ -72,6 +89,62 @@ export class MetronConvexClient {
   getPositionTimeline<TResponse>(positionId: PositionId, limit?: number): Promise<TResponse> {
     return this.transport("positions.timeline", {
       positionId,
+      ...(limit === undefined ? {} : { limit }),
+    });
+  }
+
+  getPortfolioGraph(positionId: PositionId): Promise<PortfolioGraph | null> {
+    return this.transport<PortfolioGraph | null>("positions.graph", { positionId });
+  }
+
+  getActivity(
+    positionId: PositionId,
+    options: { limit?: number; cursor?: string } = {},
+  ): Promise<{ page: AuditEvent[]; isDone: boolean; continueCursor: string }> {
+    return this.transport("positions.timeline", { positionId, ...options });
+  }
+
+  getExecution(executionKey: string): Promise<ExecutionRecord | null> {
+    return this.transport("executions.getByKey", { executionKey });
+  }
+
+  listExecutions(
+    positionId: PositionId,
+    options: { status?: ExecutionStatus; limit?: number; cursor?: string } = {},
+  ): Promise<{ page: ExecutionRecord[]; isDone: boolean; continueCursor: string } | null> {
+    return this.transport("executions.listByPosition", { positionId, ...options });
+  }
+
+  listMyExecutions(
+    options: { status?: ExecutionStatus; limit?: number; cursor?: string } = {},
+  ): Promise<{ page: ExecutionRecord[]; isDone: boolean; continueCursor: string }> {
+    return this.transport("executions.listMine", options);
+  }
+
+  getCrossChainMessage(messageId: string): Promise<CrossChainMessage | null> {
+    return this.transport("crossChainMessages.get", { messageId });
+  }
+
+  listCrossChainMessages(limit?: number): Promise<CrossChainMessage[]> {
+    return this.transport("crossChainMessages.listMine", { ...(limit === undefined ? {} : { limit }) });
+  }
+
+  listRecoveryMessages(limit?: number): Promise<CrossChainMessage[]> {
+    return this.transport("crossChainMessages.listRecoveryRequired", {
+      ...(limit === undefined ? {} : { limit }),
+    });
+  }
+
+  latestMarketObservations(
+    chainId: number,
+    protocol: string,
+    metric: string,
+    limit?: number,
+  ): Promise<MarketObservation[]> {
+    return this.transport("marketObservations.latest", {
+      chainId,
+      protocol,
+      metric,
       ...(limit === undefined ? {} : { limit }),
     });
   }

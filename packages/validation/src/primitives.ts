@@ -17,6 +17,7 @@ export const decimalStringSchema = z
 export const basisPointsSchema = z.number().int().min(0).max(10_000);
 export const chainIdSchema = z.number().int().positive();
 export const unixSecondsSchema = z.number().int().nonnegative();
+export const unixMillisecondsSchema = z.number().int().nonnegative();
 export const nonEmptyIdSchema = z.string().trim().min(1).max(128);
 
 export function hasUniqueValues<T>(values: readonly T[]): boolean {
