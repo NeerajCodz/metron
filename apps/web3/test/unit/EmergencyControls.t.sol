@@ -49,6 +49,14 @@ contract EmergencyControlsTest is Test {
         vm.startPrank(admin);
         vm.expectRevert(abi.encodeWithSelector(InsuranceReserve.TriggerNotVerified.selector, keccak256("unverified")));
         reserve.claim(coverageId, 10e18, InsuranceReserve.TriggerKind.ORACLE_DIVERGENCE, keccak256("unverified"), keccak256("claim-1"));
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                InsuranceReserve.TriggerMismatch.selector,
+                InsuranceReserve.TriggerKind.ORACLE_DIVERGENCE,
+                InsuranceReserve.TriggerKind.PRICE_LOSS
+            )
+        );
+        reserve.claim(coverageId, 10e18, InsuranceReserve.TriggerKind.PRICE_LOSS, evidence, keccak256("claim-0"));
         reserve.claim(coverageId, 60e18, InsuranceReserve.TriggerKind.ORACLE_DIVERGENCE, evidence, keccak256("claim-1"));
         vm.expectRevert();
         reserve.claim(coverageId, 50e18, InsuranceReserve.TriggerKind.ORACLE_DIVERGENCE, evidence, keccak256("claim-2"));

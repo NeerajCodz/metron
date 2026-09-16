@@ -31,6 +31,7 @@ contract InsuranceReserve is AccessControl, Pausable, ReentrancyGuard {
     error InvalidAmount();
     error InvalidCoverage();
     error TriggerNotVerified(bytes32 evidenceHash);
+    error TriggerMismatch(TriggerKind expected, TriggerKind received);
     error CoverageUnavailable(uint256 requested, uint256 available);
     error ClaimAlreadyProcessed(bytes32 claimId);
     error ClaimExpired(uint256 expiry);
@@ -39,6 +40,8 @@ contract InsuranceReserve is AccessControl, Pausable, ReentrancyGuard {
     uint256 public immutable reserveCap;
     mapping(bytes32 coverageId => Coverage coverage) public coverages;
     mapping(bytes32 evidenceHash => bool verified) public verifiedEvidence;
+    mapping(bytes32 evidenceHash => TriggerKind trigger) public evidenceTriggers;
+    mapping(bytes32 evidenceHash => bool configuredEvidence) public configuredEvidence;
     mapping(bytes32 claimId => bool processed) public processedClaims;
 
     event ReserveFunded(address indexed funder, uint256 amount);
@@ -75,6 +78,8 @@ contract InsuranceReserve is AccessControl, Pausable, ReentrancyGuard {
     function configureEvidence(bytes32 evidenceHash, TriggerKind trigger, bool verified) external onlyRole(CONFIG_ROLE) {
         if (evidenceHash == bytes32(0)) revert InvalidCoverage();
         verifiedEvidence[evidenceHash] = verified;
+        evidenceTriggers[evidenceHash] = trigger;
+        configuredEvidence[evidenceHash] = true;
         emit EvidenceConfigured(evidenceHash, trigger, verified);
     }
 
@@ -89,6 +94,9 @@ contract InsuranceReserve is AccessControl, Pausable, ReentrancyGuard {
         if (!coverage.enabled || block.timestamp > coverage.expiresAt) revert ClaimExpired(coverage.expiresAt);
         if (amount == 0 || evidenceHash == bytes32(0) || claimNonce == bytes32(0)) revert InvalidAmount();
         if (!verifiedEvidence[evidenceHash]) revert TriggerNotVerified(evidenceHash);
+        if (!configuredEvidence[evidenceHash] || evidenceTriggers[evidenceHash] != trigger) {
+            revert TriggerMismatch(evidenceTriggers[evidenceHash], trigger);
+        }
         uint256 remainingCoverage = coverage.cap - coverage.paid;
         uint256 available = asset.balanceOf(address(this));
         if (amount > remainingCoverage || amount > available) revert CoverageUnavailable(amount, remainingCoverage < available ? remainingCoverage : available);

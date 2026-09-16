@@ -43,6 +43,10 @@
     "abi": "DeltaMathTest.json",
     "source": "apps/web3/out/DeltaMath.t.sol/DeltaMathTest.json"
   },
+  "Deploy": {
+    "abi": "Deploy.json",
+    "source": "apps/web3/out/Deploy.s.sol/Deploy.json"
+  },
   "ECDSA": {
     "abi": "ECDSA.json",
     "source": "apps/web3/out/ECDSA.sol/ECDSA.json"
@@ -446,6 +450,10 @@
   "SafeERC20": {
     "abi": "SafeERC20.json",
     "source": "apps/web3/out/SafeERC20.sol/SafeERC20.json"
+  },
+  "Script": {
+    "abi": "Script.json",
+    "source": "apps/web3/out/Script.sol/Script.json"
   },
   "ShortStrings": {
     "abi": "ShortStrings.json",

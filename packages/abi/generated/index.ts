@@ -9,6 +9,7 @@ import CrossChainRouter from "./CrossChainRouter.json" with { type: "json" };
 import DeltaMath from "./DeltaMath.json" with { type: "json" };
 import DeltaMathHarness from "./DeltaMathHarness.json" with { type: "json" };
 import DeltaMathTest from "./DeltaMathTest.json" with { type: "json" };
+import Deploy from "./Deploy.json" with { type: "json" };
 import ECDSA from "./ECDSA.json" with { type: "json" };
 import EIP712 from "./EIP712.json" with { type: "json" };
 import ERC165 from "./ERC165.json" with { type: "json" };
@@ -102,6 +103,7 @@ import RiskMath from "./RiskMath.json" with { type: "json" };
 import RiskMathTest from "./RiskMathTest.json" with { type: "json" };
 import SafeCast from "./SafeCast.json" with { type: "json" };
 import SafeERC20 from "./SafeERC20.json" with { type: "json" };
+import Script from "./Script.json" with { type: "json" };
 import ShortStrings from "./ShortStrings.json" with { type: "json" };
 import SolverRegistry from "./SolverRegistry.json" with { type: "json" };
 import SolverSettlement from "./SolverSettlement.json" with { type: "json" };
@@ -165,6 +167,7 @@ export const abis = {
   "DeltaMath": DeltaMath,
   "DeltaMathHarness": DeltaMathHarness,
   "DeltaMathTest": DeltaMathTest,
+  "Deploy": Deploy,
   "ECDSA": ECDSA,
   "EIP712": EIP712,
   "ERC165": ERC165,
@@ -258,6 +261,7 @@ export const abis = {
   "RiskMathTest": RiskMathTest,
   "SafeCast": SafeCast,
   "SafeERC20": SafeERC20,
+  "Script": Script,
   "ShortStrings": ShortStrings,
   "SolverRegistry": SolverRegistry,
   "SolverSettlement": SolverSettlement,

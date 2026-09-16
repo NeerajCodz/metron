@@ -164,6 +164,25 @@
   },
   {
     "type": "function",
+    "name": "configuredEvidence",
+    "inputs": [
+      {
+        "name": "evidenceHash",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "configuredEvidence",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "coverages",
     "inputs": [
       {
@@ -197,6 +216,25 @@
         "name": "enabled",
         "type": "bool",
         "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "evidenceTriggers",
+    "inputs": [
+      {
+        "name": "evidenceHash",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "trigger",
+        "type": "uint8",
+        "internalType": "enum InsuranceReserve.TriggerKind"
       }
     ],
     "stateMutability": "view"
@@ -718,6 +756,22 @@
         "name": "token",
         "type": "address",
         "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "TriggerMismatch",
+    "inputs": [
+      {
+        "name": "expected",
+        "type": "uint8",
+        "internalType": "enum InsuranceReserve.TriggerKind"
+      },
+      {
+        "name": "received",
+        "type": "uint8",
+        "internalType": "enum InsuranceReserve.TriggerKind"
       }
     ]
   },
