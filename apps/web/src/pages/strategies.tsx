@@ -15,12 +15,11 @@ import {
   SlidersHorizontal,
   Sparkles,
   Target,
-  TrendingUp,
   WalletCards,
   X,
   Zap,
 } from "lucide-react";
-import { Badge, Button, GlassCard, Select } from "@metron/ui";
+import { Badge, Button, Select } from "@metron/ui";
 
 type Strategy = {
   id: string;
