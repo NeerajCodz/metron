@@ -304,9 +304,14 @@ const riskPageStyles = `
   background: rgba(242, 241, 237, 0.08);
 }
 
-.web-page-risk-score-progress .metron-progress__bar {
+.web-page-risk-score-progress .metron-progress__fill {
   background: var(--web-page-risk-sand);
 }
+
+.web-page-risk-breakdown-progress .metron-progress__header {
+  display: none;
+}
+
 
 .web-page-risk-score-footnote {
   display: flex;
@@ -647,9 +652,10 @@ const riskPageStyles = `
   background: rgba(242, 241, 237, 0.08);
 }
 
-.web-page-risk-breakdown-progress .metron-progress__bar {
+.web-page-risk-breakdown-progress .metron-progress__fill {
   background: var(--web-page-risk-sand);
 }
+
 
 .web-page-risk-breakdown-note {
   margin: 0.42rem 0 0;
@@ -1171,7 +1177,7 @@ export function RiskCenterPage() {
     return () => window.clearTimeout(timer);
   }, [simulationState]);
 
-  const selectedScenario = stressScenarios.find((scenario) => scenario.id === selectedScenarioId) ?? stressScenarios[0];
+  const selectedScenario = stressScenarios.find((scenario) => scenario.id === selectedScenarioId) ?? stressScenarios[0]!;
   const horizonValues = horizonData[horizon];
   const horizonPeak = Math.max(...horizonValues);
   const currentProtectionCount = Object.values(protections).filter(Boolean).length;
@@ -1399,7 +1405,6 @@ export function RiskCenterPage() {
                     <Progress
                       className="web-page-risk-breakdown-progress"
                       label={item.label}
-                      labelHidden
                       value={item.value}
                       valueLabel={`${item.value} out of 100`}
                       tone={getProgressTone(item.value)}
