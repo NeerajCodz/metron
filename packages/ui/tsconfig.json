@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "baseUrl": ".",
     "declaration": true,
     "declarationMap": true,
     "jsx": "react-jsx",
@@ -8,6 +9,9 @@
     "moduleResolution": "Bundler",
     "noEmit": false,
     "outDir": "dist",
+    "paths": {
+      "@/*": ["src/*"]
+    },
     "rootDir": "src",
     "sourceMap": true
   },
