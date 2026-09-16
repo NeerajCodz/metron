@@ -69,6 +69,7 @@ library MetronTypes {
         bytes32 intentId;
         bytes32 strategyId;
         bytes32 traceId;
+        bytes32 policyHash;
         uint256 coordinationChainId;
         uint64 createdAt;
         uint64 updatedAt;

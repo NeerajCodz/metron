@@ -79,6 +79,7 @@ contract PositionManager is AccessControl, IPositionManager {
             intentId: intentId,
             strategyId: strategyId,
             traceId: authorization.traceId,
+            policyHash: authorization.policyHash,
             coordinationChainId: block.chainid,
             createdAt: timestamp,
             updatedAt: timestamp,
@@ -136,7 +137,7 @@ contract PositionManager is AccessControl, IPositionManager {
         );
     }
 
-    function getPosition(bytes32 positionId) external view returns (MetronTypes.Position memory) {
+    function getPosition(bytes32 positionId) external view override returns (MetronTypes.Position memory) {
         return positions[positionId];
     }
 
