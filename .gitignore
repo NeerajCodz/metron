@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build and test output
+.turbo/
+dist/
+coverage/
+artifacts/
+cache/
+out/
+broadcast/
+
+# Generated files
+apps/backend/convex/_generated/
+apps/web3/contracts/zk/generated/
+apps/web3/zk/target/
+packages/abi/generated/
+
+# Python
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+*.py[cod]
+
+# Noir and Foundry dependencies
+apps/web3/lib/
+apps/web3/zk/**/target/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+logs/
