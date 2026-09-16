@@ -64,6 +64,17 @@ library MetronTypes {
         IntentStatus status;
     }
 
+    struct Position {
+        address owner;
+        bytes32 intentId;
+        bytes32 strategyId;
+        bytes32 traceId;
+        uint256 coordinationChainId;
+        uint64 createdAt;
+        uint64 updatedAt;
+        PositionStatus status;
+    }
+
     struct ExecutionConstraints {
         uint16 slippageBps;
         uint16 capitalMoveBps;
