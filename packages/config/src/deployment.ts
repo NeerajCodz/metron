@@ -2,7 +2,12 @@ import { z } from "zod";
 
 import { CHAIN_IDS, type SupportedChainKey } from "./chains.js";
 
-const addressSchema = z.string().regex(/^0x[0-9a-fA-F]{40}$/);
+const addressSchema = z
+  .string()
+  .regex(/^0x[0-9a-fA-F]{40}$/)
+  .refine((address) => address.toLowerCase() !== "0x0000000000000000000000000000000000000000", {
+    message: "zero address is not a deployment address",
+  });
 const transactionHashSchema = z.string().regex(/^0x[0-9a-fA-F]{64}$/);
 const bytes32Schema = z.string().regex(/^0x[0-9a-fA-F]{64}$/);
 

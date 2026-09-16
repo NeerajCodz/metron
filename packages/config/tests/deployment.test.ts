@@ -39,4 +39,15 @@ describe("deployment configuration", () => {
       /does not match/,
     );
   });
+
+  it("rejects zero addresses in protocol or contract records", () => {
+    const invalid = {
+      ...validDeployment,
+      protocols: {
+        ...validDeployment.protocols,
+        layerZeroEndpoint: "0x0000000000000000000000000000000000000000",
+      },
+    };
+    expect(() => validateDeploymentForChain("baseSepolia", invalid)).toThrow(/zero address/);
+  });
 });
