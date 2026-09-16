@@ -1,0 +1,85 @@
+:root,
+.metron-theme {
+  color-scheme: dark;
+  --metron-crimson: #710014;
+  --metron-crimson-bright: #9b1730;
+  --metron-crimson-soft: rgb(113 0 20 / 28%);
+  --metron-sand: #b38f6f;
+  --metron-sand-soft: rgb(179 143 111 / 16%);
+  --metron-pearl: #f2f1ed;
+  --metron-pearl-muted: rgb(242 241 237 / 68%);
+  --metron-obsidian: #161616;
+  --metron-ink: #0b0b0b;
+  --metron-surface: rgb(29 27 27 / 72%);
+  --metron-surface-strong: rgb(34 31 31 / 88%);
+  --metron-surface-hover: rgb(50 43 43 / 86%);
+  --metron-border: rgb(242 241 237 / 14%);
+  --metron-border-strong: rgb(242 241 237 / 24%);
+  --metron-focus: #b38f6f;
+  --metron-danger: #d65a6f;
+  --metron-success: #9fbd9c;
+  --metron-warning: #d8b27e;
+  --metron-font-sans: "Satoshi", "Avenir Next", "Segoe UI Variable", "Segoe UI", sans-serif;
+  --metron-font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  --metron-radius-control: 0.875rem;
+  --metron-radius-card: 1.5rem;
+  --metron-radius-pill: 999px;
+  --metron-blur: 28px;
+  --metron-shadow-raised: 0 24px 80px rgb(0 0 0 / 44%);
+  --metron-shadow-control: 0 10px 28px rgb(0 0 0 / 28%);
+  --metron-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --metron-duration-fast: 140ms;
+  --metron-duration-medium: 260ms;
+  font-family: var(--metron-font-sans);
+  color: var(--metron-pearl);
+}
+
+.metron-theme {
+  min-height: 100%;
+  background:
+    radial-gradient(circle at 15% -10%, rgb(113 0 20 / 48%), transparent 33rem),
+    radial-gradient(circle at 86% 12%, rgb(179 143 111 / 12%), transparent 30rem),
+    linear-gradient(145deg, #090909 0%, var(--metron-obsidian) 48%, #0f0d0d 100%);
+}
+
+.metron-theme,
+.metron-theme *,
+.metron-theme *::before,
+.metron-theme *::after {
+  box-sizing: border-box;
+}
+
+.metron-theme button,
+.metron-theme input,
+.metron-theme textarea,
+.metron-theme select {
+  font: inherit;
+}
+
+.metron-theme ::selection {
+  color: var(--metron-pearl);
+  background: var(--metron-crimson-bright);
+}
+
+.metron-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .metron-theme *,
+  .metron-theme *::before,
+  .metron-theme *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
