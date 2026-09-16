@@ -222,3 +222,74 @@ export {
   type SidebarProviderProps,
   type SidebarTriggerProps,
 } from "./components/sidebar.js";
+export { Label, type LabelProps } from "./components/label.js";
+export {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupText,
+  type InputGroupAddonProps,
+  type InputGroupProps,
+} from "./components/input-group.js";
+export {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+  type InputOTPGroupProps,
+  type InputOTPProps,
+  type InputOTPSeparatorProps,
+  type InputOTPSlotProps,
+} from "./components/input-otp.js";
+export { Checkbox, type CheckboxProps } from "./components/checkbox.js";
+export {
+  RadioGroup,
+  RadioGroupItem,
+  type RadioGroupItemProps,
+  type RadioGroupProps,
+} from "./components/radio-group.js";
+export { Slider, type SliderProps } from "./components/slider.js";
+export { Toggle, type ToggleProps } from "./components/toggle.js";
+export {
+  ToggleGroup,
+  ToggleGroupItem,
+  type ToggleGroupItemProps,
+  type ToggleGroupProps,
+} from "./components/toggle-group.js";
+export {
+  NativeSelect,
+  Select as ComposableSelect,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
+  type NativeSelectProps,
+  type SelectContentProps,
+  type SelectItemProps,
+  type SelectProps as ComposableSelectProps,
+  type SelectTriggerProps,
+  type SelectValueProps,
+} from "./components/select.js";
+export {
+  Combobox,
+  type ComboboxItem,
+  type ComboboxProps,
+} from "./components/combobox.js";
+export {
+  Command,
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+  CommandShortcut,
+  type CommandDialogProps,
+  type CommandGroupProps,
+  type CommandInputProps,
+  type CommandItemProps,
+  type CommandProps,
+} from "./components/command.js";
