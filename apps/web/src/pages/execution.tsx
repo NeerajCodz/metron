@@ -277,7 +277,7 @@ export function ExecutionPage() {
                     variant="quiet"
                     size="sm"
                     leadingIcon={<Copy size={14} />}
-                    onClick={handleCopyAddress}
+                    onClick={() => void handleCopyAddress()}
                     aria-label="Copy destination wallet address"
                   >
                     {copied ? "Copied" : "Copy"}

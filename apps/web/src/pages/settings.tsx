@@ -307,7 +307,7 @@ export function SettingsPage() {
               <div><span>Last signature</span><strong>7 minutes ago</strong></div>
             </div>
             <div className="web-page-settings__wallet-actions">
-              <Button variant="outline" size="sm" leadingIcon={copied ? <Check size={15} /> : <Copy size={15} />} onClick={handleCopy}>{copied ? "Copied" : "Copy address"}</Button>
+              <Button variant="outline" size="sm" leadingIcon={copied ? <Check size={15} /> : <Copy size={15} />} onClick={() => void handleCopy()}>{copied ? "Copied" : "Copy address"}</Button>
               <Button variant="quiet" size="sm" leadingIcon={<ExternalLink size={15} />} href="https://etherscan.io" target="_blank" rel="noreferrer">View on explorer</Button>
               <Button variant="danger" size="sm" leadingIcon={<LogOut size={15} />} onClick={handleWalletAction}>Disconnect</Button>
             </div>

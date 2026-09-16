@@ -325,7 +325,7 @@ export function RecoveryModal({
           cancelLabel={cancelLabel}
           confirmLabel={confirmLabel}
           onCancel={() => onOpenChange(false)}
-          onConfirm={confirm}
+          onConfirm={() => void confirm()}
           loading={busy}
           disabled={!selectedAction}
         />
@@ -467,7 +467,7 @@ export function FlashUnwindModal({
           cancelLabel={cancelLabel}
           confirmLabel={confirmLabel}
           onCancel={() => onOpenChange(false)}
-          onConfirm={confirm}
+          onConfirm={() => void confirm()}
           loading={busy}
           disabled={requireAcknowledgement && !acknowledged}
           destructive
