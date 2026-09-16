@@ -1,5 +1,11 @@
 import { McpAuthError } from "./auth.js";
 
+export type McpToolResponse = {
+  content: [{ type: "text"; text: string }];
+  structuredContent?: Record<string, unknown>;
+  isError?: boolean;
+};
+
 export const CHARACTER_LIMIT = 25_000;
 export const RESPONSE_FORMATS = ["json", "markdown"] as const;
 export type ResponseFormat = (typeof RESPONSE_FORMATS)[number];
@@ -8,10 +14,7 @@ export function toolResult(
   payload: Record<string, unknown>,
   responseFormat: ResponseFormat,
   title: string,
-): {
-  content: [{ type: "text"; text: string }];
-  structuredContent: Record<string, unknown>;
-} {
+): McpToolResponse {
   const json = JSON.stringify(payload, null, 2);
   const text = responseFormat === "json" ? json : markdownResult(payload, title);
   return {
@@ -20,10 +23,7 @@ export function toolResult(
   };
 }
 
-export function toolError(error: unknown): {
-  isError: true;
-  content: [{ type: "text"; text: string }];
-} {
+export function toolError(error: unknown): McpToolResponse {
   if (error instanceof McpAuthError) {
     return { isError: true, content: [{ type: "text", text: `${error.code}: ${error.message}` }] };
   }
