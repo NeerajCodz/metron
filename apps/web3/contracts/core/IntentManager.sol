@@ -5,9 +5,10 @@ import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 import {EIP712} from "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
 import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import {Pausable} from "@openzeppelin/contracts/utils/Pausable.sol";
+import {IIntentManager} from "../interfaces/IIntentManager.sol";
 import {MetronTypes} from "../libraries/MetronTypes.sol";
 
-contract IntentManager is AccessControl, EIP712, Pausable {
+contract IntentManager is AccessControl, EIP712, Pausable, IIntentManager {
     bytes32 public constant SETTLER_ROLE = keccak256("SETTLER_ROLE");
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     bytes32 public constant INTENT_TYPEHASH = keccak256(
@@ -123,6 +124,7 @@ contract IntentManager is AccessControl, EIP712, Pausable {
     function isExecutionAuthorized(bytes32 intentId, uint256 chainId, bytes32 protocolId, address asset)
         external
         view
+        override
         returns (bool)
     {
         MetronTypes.IntentAuthorization storage authorization = intents[intentId];
@@ -131,7 +133,7 @@ contract IntentManager is AccessControl, EIP712, Pausable {
             && allowedAssets[intentId][asset];
     }
 
-    function getIntent(bytes32 intentId) external view returns (MetronTypes.IntentAuthorization memory) {
+    function getIntent(bytes32 intentId) external view override returns (MetronTypes.IntentAuthorization memory) {
         return intents[intentId];
     }
 

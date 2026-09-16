@@ -33,6 +33,13 @@ library MetronTypes {
         RISK_INCREASING
     }
 
+    enum AutomationKind {
+        MANUAL,
+        REBALANCE,
+        RECOVERY,
+        EMERGENCY_UNWIND
+    }
+
     struct AutomationPolicy {
         uint16 maxCapitalMoveBps;
         uint16 maxCollateralSaleBps;
@@ -60,10 +67,12 @@ library MetronTypes {
     struct ExecutionConstraints {
         uint16 slippageBps;
         uint16 capitalMoveBps;
+        uint16 collateralSaleBps;
         uint256 repaymentAmount;
         uint256 resultingHealthFactorWad;
         uint256 gasFeeWei;
         ActionRisk actionRisk;
+        AutomationKind automationKind;
     }
 
     struct StrategyAction {
