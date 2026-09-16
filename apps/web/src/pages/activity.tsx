@@ -15,14 +15,12 @@ import {
   Search,
   ShieldCheck,
   Sparkles,
-  X,
   type LucideIcon,
 } from "lucide-react";
 import {
   Badge,
   Button,
   GlassCard,
-  IconButton,
   InlineAlert,
   Input,
   Select,
@@ -636,16 +634,7 @@ export function ActivityPage() {
                 <div className="web-page-activity-detail-header">
                   <div className="web-page-activity-detail-topline">
                     <span className="web-page-activity-detail-category">Selected event</span>
-                    <div style={{ display: "flex", alignItems: "center", gap: ".5rem" }}>
-                      <Badge variant={statusVariant[selectedEvent.status]}>{selectedEvent.status}</Badge>
-                      <IconButton
-                        icon={<X size={15} />}
-                        accessibleLabel="Close event details"
-                        variant="quiet"
-                        size="sm"
-                        onClick={() => setSelectedId(filteredEvents[0]?.id ?? defaultEvent.id)}
-                      />
-                    </div>
+                    <Badge variant={statusVariant[selectedEvent.status]}>{selectedEvent.status}</Badge>
                   </div>
                   <h2 className="web-page-activity-detail-title">{selectedEvent.title}</h2>
                   <p className="web-page-activity-detail-summary">{selectedEvent.summary}</p>
