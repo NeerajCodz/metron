@@ -15,10 +15,11 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "turbo run lint",
-    "test": "turbo run test",
     "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
     "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build",
     "check:env": "node scripts/check-env.mjs",
+    "check:abi": "node scripts/check-abi.mjs",
     "generate:abi": "node scripts/generate-abi.mjs",
     "sync:addresses": "node scripts/sync-addresses.mjs"
   },
