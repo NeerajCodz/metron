@@ -40,14 +40,17 @@
       "id": "FR-005",
       "title": "Natural-language intent parsing",
       "status": "in-scope",
-      "implementation": ["apps/ai/src/llm/intent_parser.py", "apps/ai/src/api/intent.py"],
+      "implementation": [
+        "apps/ai/src/metron_ai/recommendations.py",
+        "apps/ai/src/metron_ai/main.py"
+      ],
       "verification": ["intent parser contract tests", "approval-required integration test"]
     },
     {
       "id": "FR-006",
       "title": "Private intent commitment",
       "status": "in-scope",
-      "implementation": ["packages/protocol", "packages/sdk", "apps/web3/zk/circuits/intent"],
+      "implementation": ["packages/protocol", "packages/sdk", "apps/web3/zk/intent/src/main.nr"],
       "verification": ["cross-runtime commitment vectors", "intent circuit tests"]
     },
     {
@@ -55,7 +58,7 @@
       "title": "Ownership proof",
       "status": "in-scope",
       "implementation": [
-        "apps/web3/zk/circuits/ownership",
+        "apps/web3/zk/ownership/src/main.nr",
         "apps/web3/contracts/zk/ZKOwnershipVerifier.sol"
       ],
       "verification": ["ownership circuit tests", "nullifier replay invariant"]
@@ -64,24 +67,21 @@
       "id": "FR-008",
       "title": "Solver candidate generation",
       "status": "in-scope",
-      "implementation": ["apps/web3/solver/engine", "apps/web3/solver/routes"],
+      "implementation": ["apps/web3/solver/routes.ts", "apps/backend/convex/solvers.ts"],
       "verification": ["multi-candidate solver integration test"]
     },
     {
       "id": "FR-009",
       "title": "Solver scoring",
       "status": "in-scope",
-      "implementation": [
-        "packages/protocol/src/route-scoring.ts",
-        "apps/web3/solver/engine/scorer.ts"
-      ],
+      "implementation": ["packages/protocol/src/route-scoring.ts", "apps/web3/solver/scorer.ts"],
       "verification": ["deterministic scoring tests", "constraint rejection tests"]
     },
     {
       "id": "FR-010",
       "title": "Solver auction",
       "status": "in-scope",
-      "implementation": ["apps/web3/solver/auction", "apps/web3/contracts/solver"],
+      "implementation": ["apps/web3/solver/sealed-bid.ts", "apps/web3/contracts/solver"],
       "verification": ["commit-reveal tests", "settlement integration tests"]
     },
     {
@@ -89,7 +89,7 @@
       "title": "MEV reduction",
       "status": "in-scope",
       "implementation": [
-        "apps/web3/solver/auction",
+        "apps/web3/solver/sealed-bid.ts",
         "apps/web3/contracts/solver/SolverSettlement.sol"
       ],
       "verification": ["reveal-window tests", "minimum-output tests"]
@@ -98,7 +98,11 @@
       "id": "FR-012",
       "title": "Lending",
       "status": "in-scope",
-      "implementation": ["apps/web3/contracts/defi/AaveV3Adapter.sol", "apps/web3/adapters/aave"],
+      "implementation": [
+        "apps/web3/contracts/defi/AaveV3Adapter.sol",
+        "apps/web3/contracts/defi/LendingManager.sol",
+        "apps/web3/adapters/aave/client.ts"
+      ],
       "verification": ["Aave fork tests", "health-factor boundary tests"]
     },
     {
@@ -108,7 +112,7 @@
       "implementation": [
         "apps/web3/contracts/defi/UniswapV4Adapter.sol",
         "apps/web3/contracts/defi/LiquidityManager.sol",
-        "apps/web3/adapters/uniswap"
+        "apps/web3/adapters/uniswap/client.ts"
       ],
       "verification": ["Uniswap fork tests", "liquidity position tests"]
     },
@@ -116,7 +120,7 @@
       "id": "FR-014",
       "title": "Uniswap v4 hooks",
       "status": "in-scope",
-      "implementation": ["apps/web3/contracts/defi/hooks"],
+      "implementation": ["apps/web3/contracts/hooks/RiskLimitHook.sol"],
       "verification": ["hook fuzz tests", "hook invariant tests", "hook adversarial tests"]
     },
     {
@@ -154,21 +158,24 @@
       "id": "FR-019",
       "title": "Delta rebalancing",
       "status": "in-scope",
-      "implementation": ["apps/web3/contracts/defi/HedgeManager.sol", "apps/web3/keeper"],
+      "implementation": ["apps/web3/contracts/hedging/HedgeManager.sol", "apps/web3/keeper"],
       "verification": ["tolerance boundary tests", "cooldown and hysteresis tests"]
     },
     {
       "id": "FR-020",
       "title": "Liquidation probability",
       "status": "in-scope",
-      "implementation": ["apps/ai/src/api/liquidation.py", "apps/ai/src/models/liquidation"],
+      "implementation": ["apps/ai/src/metron_ai/risk_model.py", "apps/ai/src/metron_ai/models.py"],
       "verification": ["probability calibration tests", "horizon contract tests"]
     },
     {
       "id": "FR-021",
       "title": "Recovery strategy ranking",
       "status": "in-scope",
-      "implementation": ["apps/ai/src/optimization/recovery.py", "apps/ai/src/api/recovery.py"],
+      "implementation": [
+        "apps/ai/src/metron_ai/recovery.py",
+        "apps/ai/src/metron_ai/optimization.py"
+      ],
       "verification": ["recovery simulation tests", "policy-envelope tests"]
     },
     {
@@ -176,7 +183,7 @@
       "title": "Dynamic risk threshold",
       "status": "in-scope",
       "implementation": [
-        "apps/ai/src/api/threshold.py",
+        "apps/ai/src/metron_ai/recommendations.py",
         "apps/web3/contracts/risk/RiskController.sol"
       ],
       "verification": ["threshold bound tests", "regime sensitivity tests"]
@@ -185,63 +192,69 @@
       "id": "FR-023",
       "title": "Personalized risk policy",
       "status": "in-scope",
-      "implementation": ["apps/ai/src/api/personalization.py", "apps/backend/convex/ai"],
+      "implementation": ["apps/ai/src/metron_ai/recommendations.py", "apps/backend/convex/ai.ts"],
       "verification": ["hard-limit precedence tests", "preference history tests"]
     },
     {
       "id": "FR-024",
       "title": "Market regime detection",
       "status": "in-scope",
-      "implementation": ["apps/ai/src/api/regime.py", "apps/ai/src/models/market_regime"],
+      "implementation": ["apps/ai/src/metron_ai/risk_model.py", "apps/ai/src/metron_ai/models.py"],
       "verification": ["regime confusion matrix", "fallback classifier tests"]
     },
     {
       "id": "FR-025",
       "title": "Liquidity-aware execution",
       "status": "in-scope",
-      "implementation": ["apps/ai/src/api/liquidity.py", "apps/web3/solver/engine"],
+      "implementation": ["apps/ai/src/metron_ai/optimization.py", "apps/web3/solver/routes.ts"],
       "verification": ["slippage sensitivity tests", "route liquidity tests"]
     },
     {
       "id": "FR-026",
       "title": "Cascade liquidation prediction",
       "status": "in-scope",
-      "implementation": ["apps/ai/src/api/cascade.py", "apps/ai/src/simulation"],
+      "implementation": ["apps/ai/src/metron_ai/cascade.py", "apps/ai/src/metron_ai/simulator.py"],
       "verification": ["cascade propagation tests", "scenario sensitivity tests"]
     },
     {
       "id": "FR-027",
       "title": "Stress scenario generation",
       "status": "in-scope",
-      "implementation": ["apps/ai/src/api/stress.py", "apps/ai/src/llm/scenario_parser.py"],
+      "implementation": [
+        "apps/ai/src/metron_ai/simulator.py",
+        "apps/ai/src/metron_ai/recommendations.py"
+      ],
       "verification": ["deterministic stress tests", "natural-language conversion tests"]
     },
     {
       "id": "FR-028",
       "title": "Explainable risk",
       "status": "in-scope",
-      "implementation": ["apps/ai/src/api/explain.py", "apps/ai/src/llm/explanations.py"],
+      "implementation": ["apps/ai/src/metron_ai/explain.py", "apps/ai/src/metron_ai/main.py"],
       "verification": ["explanation provenance tests"]
     },
     {
       "id": "FR-029",
       "title": "Natural-language analysis",
       "status": "in-scope",
-      "implementation": ["apps/ai/src/llm", "apps/ai/src/api/explain.py"],
+      "implementation": ["apps/ai/src/metron_ai/explain.py", "apps/ai/src/metron_ai/main.py"],
       "verification": ["simulator-grounding tests", "missing-value refusal tests"]
     },
     {
       "id": "FR-030",
       "title": "Emergency circuit breaker",
       "status": "in-scope",
-      "implementation": ["apps/web3/contracts/risk/CircuitBreaker.sol"],
+      "implementation": ["apps/web3/contracts/emergency/CircuitBreaker.sol"],
       "verification": ["mode permission tests", "permission monotonicity invariant"]
     },
     {
       "id": "FR-031",
       "title": "Same-chain flash unwind",
       "status": "in-scope",
-      "implementation": ["apps/web3/contracts/risk/RecoveryExecutor.sol"],
+      "implementation": [
+        "apps/web3/contracts/emergency/EmergencyUnwind.sol",
+        "apps/web3/contracts/core/RecoveryExecutor.sol"
+      ],
       "verification": ["flash unwind fork tests", "atomicity invariant"]
     },
     {
@@ -255,7 +268,7 @@
       "id": "FR-033",
       "title": "Parametric insurance",
       "status": "in-scope",
-      "implementation": ["apps/web3/contracts/insurance/InsuranceReserve.sol"],
+      "implementation": ["apps/web3/contracts/emergency/InsuranceReserve.sol"],
       "verification": ["objective trigger tests", "reserve capacity invariant"]
     },
     {
@@ -276,7 +289,7 @@
       "id": "NFR-003",
       "title": "Observability",
       "status": "in-scope",
-      "implementation": ["packages/logger", "apps/backend/convex/analytics"],
+      "implementation": ["packages/logger", "packages/observability", "apps/backend/convex"],
       "verification": ["trace correlation end-to-end test"]
     },
     {
@@ -329,8 +342,13 @@
       "id": "NFR-010",
       "title": "Testability",
       "status": "in-scope",
-      "implementation": ["apps/web3/test", "tests/e2e"],
-      "verification": ["Foundry fork suite", "full-system end-to-end suite"]
+      "implementation": [
+        "apps/web3/test",
+        "apps/web3/test-ts",
+        "apps/ai/tests",
+        "packages/*/tests"
+      ],
+      "verification": ["Foundry regression suite", "backend-only end-to-end smoke suite"]
     }
   ]
 }
