@@ -1,0 +1,201 @@
+.metron-card {
+  min-width: 0;
+  color: var(--metron-pearl);
+}
+
+.metron-card__glass {
+  width: 100%;
+  background:
+    radial-gradient(circle at 12% 0%, rgb(242 241 237 / 9%), transparent 32%),
+    radial-gradient(circle at 90% 110%, rgb(113 0 20 / 17%), transparent 40%),
+    rgb(12 12 12 / 82%);
+}
+
+.metron-card__surface {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: clamp(1.125rem, 2.5vw, 1.75rem);
+}
+
+.metron-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.25rem;
+  min-width: 0;
+}
+
+.metron-card__heading {
+  min-width: 0;
+}
+
+.metron-card__eyebrow {
+  margin: 0 0 0.55rem;
+  color: var(--metron-sand);
+  font-family: var(--metron-font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.metron-card__title {
+  margin: 0;
+  color: var(--metron-pearl);
+  font-family: var(--metron-font-sans);
+  font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+  font-weight: 650;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+}
+
+.metron-card__description {
+  max-width: 65ch;
+  margin-top: 0.5rem;
+  color: var(--metron-pearl-muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.metron-card__action {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+}
+
+.metron-card__body {
+  min-width: 0;
+  margin-top: 1.25rem;
+}
+
+.metron-card__header + .metron-card__body {
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--metron-border);
+}
+
+.metron-card__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-width: 0;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  color: var(--metron-pearl-muted);
+  border-top: 1px solid var(--metron-border);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.metron-metric-card__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.metron-metric-card__icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+}
+
+.metron-metric-card__icon > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.metron-metric-card .metron-card__body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.65rem 0.85rem;
+  margin-top: 0.85rem;
+}
+
+.metron-metric-card .metron-card__header + .metron-card__body {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.metron-metric-card__value {
+  color: var(--metron-pearl);
+  font-family: var(--metron-font-sans);
+  font-size: clamp(1.9rem, 4vw, 2.75rem);
+  font-variant-numeric: tabular-nums;
+  font-weight: 680;
+  line-height: 1;
+  letter-spacing: -0.055em;
+}
+
+.metron-metric-card__change {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--metron-border);
+  border-radius: var(--metron-radius-pill);
+  font-family: var(--metron-font-mono);
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.metron-metric-card__change--neutral {
+  color: var(--metron-pearl-muted);
+  background: rgb(242 241 237 / 7%);
+}
+
+.metron-metric-card__change--positive {
+  color: #c9e3c6;
+  background: rgb(72 110 69 / 28%);
+  border-color: rgb(159 189 156 / 38%);
+}
+
+.metron-metric-card__change--negative {
+  color: #ffb4c0;
+  background: rgb(113 0 20 / 42%);
+  border-color: rgb(214 90 111 / 42%);
+}
+
+@media (max-width: 36rem) {
+  .metron-card__surface {
+    padding: 1rem;
+  }
+
+  .metron-card__header {
+    gap: 0.875rem;
+  }
+
+  .metron-card__action {
+    align-self: flex-start;
+  }
+
+  .metron-card__body,
+  .metron-card__header + .metron-card__body,
+  .metron-card__footer {
+    margin-top: 1rem;
+  }
+
+  .metron-card__header + .metron-card__body {
+    padding-top: 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .metron-card,
+  .metron-card * {
+    transition: none;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .metron-card__glass {
+    background: #121212;
+  }
+}
