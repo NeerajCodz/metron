@@ -1,0 +1,6 @@
+.metron-scroll-reveal { margin: 0; }
+.metron-scroll-reveal__text { margin: 0; }
+.metron-scroll-reveal__word { display: inline-block; }
+@media (prefers-reduced-motion: reduce) { .metron-scroll-reveal__word { filter: none !important; opacity: 1 !important; } }
+.metron-landing-scroll-copy { max-width: 36rem; margin-top: 1.2rem; }
+.metron-landing-scroll-copy__text { color: var(--metron-pearl-muted); font-size: 0.93rem; line-height: 1.7; }

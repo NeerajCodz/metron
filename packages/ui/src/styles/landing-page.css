@@ -1,0 +1,170 @@
+:root {
+  --metron-landing-max: 1380px;
+  --metron-landing-copy: "Space Grotesk", var(--metron-font-sans), sans-serif;
+  --metron-landing-body: "Manrope", var(--metron-font-sans), sans-serif;
+}
+
+.metron-landing {
+  min-width: 320px;
+  overflow: hidden;
+  background: #000;
+  color: var(--metron-pearl);
+  font-family: var(--metron-landing-body);
+}
+
+.metron-landing * { box-sizing: border-box; }
+.metron-landing a, .metron-landing button { -webkit-tap-highlight-color: transparent; }
+.metron-landing button { font: inherit; }
+
+.metron-landing-nav-wrap {
+  position: absolute;
+  inset: 1.25rem 1.25rem auto;
+  z-index: 20;
+  display: flex;
+  justify-content: center;
+}
+
+.metron-landing-nav {
+  display: flex;
+  width: min(100%, var(--metron-landing-max));
+  min-height: 4rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border: 1px solid rgb(242 241 237 / 14%);
+  border-radius: 999px;
+  padding: 0.55rem 0.65rem 0.55rem 1.15rem;
+  background: rgb(0 0 0 / 26%);
+  box-shadow: inset 0 1px 0 rgb(242 241 237 / 10%), 0 18px 70px rgb(0 0 0 / 45%);
+  backdrop-filter: blur(24px) saturate(120%);
+  -webkit-backdrop-filter: blur(24px) saturate(120%);
+}
+
+.metron-landing-brand {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.68rem;
+  color: var(--metron-pearl);
+  font-family: var(--metron-landing-copy);
+  font-size: 0.77rem;
+  font-weight: 700;
+  letter-spacing: 0.17em;
+  text-decoration: none;
+}
+
+.metron-landing-mark {
+  position: relative;
+  display: inline-flex;
+  width: 1.2rem;
+  height: 1.2rem;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(45deg);
+  border: 1px solid rgb(242 241 237 / 72%);
+}
+
+.metron-landing-mark::before, .metron-landing-mark::after, .metron-landing-mark span {
+  position: absolute;
+  display: block;
+  background: var(--metron-crimson);
+  content: "";
+}
+
+.metron-landing-mark::before { width: 0.42rem; height: 0.42rem; }
+.metron-landing-mark::after { width: 0.16rem; height: 0.9rem; background: var(--metron-sand); }
+.metron-landing-mark span { width: 0.9rem; height: 0.16rem; background: var(--metron-pearl); }
+
+.metron-landing-nav-links { display: flex; align-items: center; gap: clamp(1rem, 2.4vw, 2.3rem); margin-left: auto; }
+.metron-landing-nav-links a { display: inline-flex; align-items: center; gap: 0.25rem; color: var(--metron-pearl-muted); font-size: 0.72rem; font-weight: 650; letter-spacing: 0.01em; text-decoration: none; transition: color 180ms ease; }
+.metron-landing-nav-links a:hover { color: var(--metron-pearl); }
+.metron-landing-nav-actions { display: flex; flex: 0 0 auto; align-items: center; gap: 0.6rem; }
+.metron-landing-nav-status { display: inline-flex; align-items: center; gap: 0.42rem; color: var(--metron-pearl-dim); font-family: var(--metron-font-mono); font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.metron-landing-nav-status span, .metron-landing-live > span, .metron-landing-intent-state > span, .metron-landing-footer-built > span { width: 0.38rem; height: 0.38rem; border-radius: 999px; background: var(--metron-sand); box-shadow: 0 0 0 0.25rem rgb(179 143 111 / 12%); }
+.metron-landing-nav-cta { min-height: 2.55rem; padding: 0.7rem 1rem; font-size: 0.67rem; }
+.metron-landing-menu-toggle { display: none; min-height: 2.5rem; font-size: 0.66rem; }
+
+.metron-landing-hero { position: relative; min-height: 100dvh; isolation: isolate; overflow: hidden; background: #000; }
+.metron-landing-hero-prism { z-index: -2; }
+.metron-landing-hero::after { position: absolute; inset: auto 0 0; z-index: -1; height: 26%; background: linear-gradient(180deg, transparent, #000 86%); content: ""; pointer-events: none; }
+.metron-landing-hero-grid { position: absolute; inset: 0; z-index: -1; opacity: 0.18; background-image: linear-gradient(90deg, transparent calc(25% - 0.5px), rgb(242 241 237 / 8%) 25%, transparent calc(25% + 0.5px), transparent calc(50% - 0.5px), rgb(242 241 237 / 8%) 50%, transparent calc(50% + 0.5px), transparent calc(75% - 0.5px), rgb(242 241 237 / 8%) 75%, transparent calc(75% + 0.5px)); mask-image: linear-gradient(180deg, #000, transparent 90%); }
+.metron-landing-hero-inner { position: relative; display: grid; width: min(100%, var(--metron-landing-max)); min-height: 100dvh; grid-template-columns: minmax(0, 0.84fr) minmax(0, 1.16fr); align-items: center; gap: clamp(2rem, 6vw, 8rem); margin: 0 auto; padding: 8rem 2rem 6rem; }
+.metron-landing-hero-copy { position: relative; z-index: 2; max-width: 43rem; }
+.metron-landing-kicker { display: inline-flex; align-items: center; gap: 0.65rem; color: var(--metron-sand); font-family: var(--metron-font-mono); font-size: 0.67rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; }
+.metron-landing-kicker-line { display: inline-block; width: 2.25rem; height: 1px; background: currentColor; }
+.metron-landing-hero h1 { max-width: 10ch; margin: 1.35rem 0 1.6rem; color: var(--metron-pearl); font-family: var(--metron-landing-copy); font-size: clamp(3.6rem, 8.5vw, 8.6rem); font-weight: 500; letter-spacing: -0.09em; line-height: 0.88; text-wrap: balance; }
+.metron-landing-hero h1 em, .metron-landing-final h2 em { color: var(--metron-sand); font-style: normal; }
+.metron-landing-hero-lede { max-width: 36rem; margin: 0; color: var(--metron-pearl-muted); font-size: clamp(1rem, 1.45vw, 1.22rem); line-height: 1.68; }
+.metron-landing-hero-actions { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-top: 2rem; }
+.metron-landing-hero-note { display: inline-flex; align-items: center; gap: 0.46rem; margin-top: 1.35rem; color: var(--metron-pearl-dim); font-family: var(--metron-font-mono); font-size: 0.65rem; letter-spacing: 0.03em; }
+.metron-landing-intent-card-wrap { position: relative; z-index: 2; align-self: end; justify-self: end; width: min(100%, 30rem); margin-bottom: 8vh; }
+.metron-landing-intent-card { padding: 1.35rem; }
+.metron-landing-intent-head, .metron-landing-intent-footer, .metron-landing-envelope-panel-head, .metron-landing-envelope-foot { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.metron-landing-live { display: inline-flex; align-items: center; gap: 0.45rem; color: var(--metron-pearl-muted); font-family: var(--metron-font-mono); font-size: 0.61rem; letter-spacing: 0.09em; text-transform: uppercase; }
+.metron-landing-intent-code, .metron-landing-envelope-panel-head, .metron-landing-envelope-foot { color: var(--metron-pearl-dim); font-family: var(--metron-font-mono); font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.metron-landing-intent-prompt { display: flex; min-height: 8rem; align-items: flex-start; gap: 0.6rem; padding: 2.15rem 0 1.15rem; color: var(--metron-pearl); font-family: var(--metron-landing-copy); font-size: clamp(1.12rem, 2vw, 1.45rem); letter-spacing: -0.035em; line-height: 1.2; }
+.metron-landing-prompt-mark { color: var(--metron-sand); font-family: var(--metron-font-mono); font-size: 1rem; }
+.metron-landing-cursor { display: inline-block; width: 0.5rem; height: 1.2em; margin-top: 0.05em; background: var(--metron-sand); animation: metron-cursor 1.1s steps(2, jump-none) infinite; }
+.metron-landing-intent-tags { display: grid; gap: 0.5rem; border-top: 1px solid rgb(242 241 237 / 12%); padding-top: 1rem; }
+.metron-landing-intent-tags span { display: flex; justify-content: space-between; color: var(--metron-pearl-dim); font-family: var(--metron-font-mono); font-size: 0.61rem; text-transform: uppercase; }
+.metron-landing-intent-tags strong { color: var(--metron-pearl); font-weight: 500; }
+.metron-landing-intent-footer { margin-top: 1.2rem; color: var(--metron-pearl-dim); font-family: var(--metron-font-mono); font-size: 0.58rem; letter-spacing: 0.04em; text-transform: uppercase; }
+.metron-landing-intent-footer > span:first-child { display: inline-flex; align-items: center; gap: 0.4rem; }
+.metron-landing-intent-state { display: inline-flex; align-items: center; gap: 0.45rem; color: var(--metron-sand); }
+.metron-landing-hero-footer { position: absolute; right: max(2rem, calc((100vw - var(--metron-landing-max)) / 2 + 2rem)); bottom: 1.8rem; left: max(2rem, calc((100vw - var(--metron-landing-max)) / 2 + 2rem)); z-index: 2; display: flex; align-items: center; justify-content: space-between; color: var(--metron-pearl-dim); font-family: var(--metron-font-mono); font-size: 0.58rem; letter-spacing: 0.04em; text-transform: uppercase; }
+.metron-landing-scroll-cue { display: inline-flex; align-items: center; gap: 0.5rem; }
+
+.metron-landing-section { width: min(100%, var(--metron-landing-max)); margin: 0 auto; padding: clamp(6rem, 13vw, 12rem) 2rem; scroll-margin-top: 5rem; }
+.metron-landing-section-rule { width: 100%; height: 1px; margin-bottom: clamp(3rem, 8vw, 7rem); background: rgb(242 241 237 / 12%); }
+.metron-landing-problem-layout { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); align-items: center; gap: clamp(3rem, 10vw, 12rem); }
+.metron-landing-fragment-map { position: relative; min-height: 27rem; }
+.metron-landing-fragment { position: absolute; display: inline-flex; align-items: center; gap: 0.5rem; border: 1px solid rgb(242 241 237 / 17%); border-radius: 999px; padding: 0.7rem 0.9rem; color: var(--metron-pearl-muted); background: rgb(255 255 255 / 3%); font-family: var(--metron-font-mono); font-size: 0.65rem; backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
+.fragment-a { top: 10%; left: 4%; }.fragment-b { top: 27%; right: 3%; }.fragment-c { bottom: 24%; left: 12%; }.fragment-d { right: 17%; bottom: 8%; }
+.metron-landing-fragment-center { position: absolute; top: 50%; left: 50%; display: grid; width: 10rem; height: 10rem; place-content: center; transform: translate(-50%, -50%); border: 1px solid rgb(242 241 237 / 38%); border-radius: 50%; background: rgb(0 0 0 / 72%); box-shadow: 0 0 0 1.5rem rgb(242 241 237 / 2%), 0 0 0 3rem rgb(242 241 237 / 1%); text-align: center; backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
+.metron-landing-fragment-center span { display: grid; width: 2rem; height: 2rem; place-items: center; margin: 0 auto 0.8rem; border-radius: 50%; color: var(--metron-crimson); background: var(--metron-pearl); }
+.metron-landing-fragment-center strong { color: var(--metron-pearl); font-family: var(--metron-landing-copy); font-size: 0.88rem; font-weight: 550; letter-spacing: -0.03em; line-height: 1.1; }
+.metron-landing-map-line { position: absolute; display: block; height: 1px; transform-origin: left center; background: linear-gradient(90deg, rgb(242 241 237 / 32%), transparent); }
+.line-one { top: 28%; left: 25%; width: 26%; transform: rotate(34deg); }.line-two { top: 38%; left: 61%; width: 20%; transform: rotate(145deg); }.line-three { top: 68%; left: 31%; width: 22%; transform: rotate(-27deg); }.line-four { top: 70%; left: 61%; width: 18%; transform: rotate(34deg); }
+
+.metron-landing-lifecycle > .metron-landing-heading { margin-bottom: clamp(3rem, 7vw, 6rem); }
+.metron-landing-lifecycle-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid rgb(242 241 237 / 14%); }
+.metron-landing-lifecycle-item { position: relative; min-height: 17rem; border-right: 1px solid rgb(242 241 237 / 14%); padding: 1.2rem 1.2rem 1.5rem; }
+.metron-landing-lifecycle-item:first-child { border-left: 1px solid rgb(242 241 237 / 14%); }.metron-landing-lifecycle-item:hover { background: rgb(242 241 237 / 3%); }
+.metron-landing-lifecycle-top { display: flex; align-items: center; justify-content: space-between; color: var(--metron-sand); }.metron-landing-lifecycle-top > span { color: var(--metron-pearl-dim); font-family: var(--metron-font-mono); font-size: 0.62rem; }.metron-landing-lifecycle-item h3 { margin: 4.8rem 0 0.8rem; color: var(--metron-pearl); font-family: var(--metron-landing-copy); font-size: 1.45rem; font-weight: 550; letter-spacing: -0.05em; line-height: 1; }.metron-landing-lifecycle-item p { max-width: 17rem; margin: 0; color: var(--metron-pearl-muted); font-size: 0.82rem; line-height: 1.65; }.metron-landing-lifecycle-arrow { position: absolute; right: 1.2rem; bottom: 1.2rem; color: var(--metron-pearl-dim); transition: color 180ms ease, transform 180ms ease; }.metron-landing-lifecycle-item:hover .metron-landing-lifecycle-arrow { color: var(--metron-sand); transform: translate(2px, -2px); }
+
+.metron-landing-envelope { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); align-items: center; gap: clamp(3rem, 11vw, 12rem); }.metron-landing-envelope-copy > .metron-landing-action { margin-top: 2rem; }.metron-landing-envelope-panel { padding: clamp(1.2rem, 3vw, 2rem); }.metron-landing-envelope-panel-head { padding-bottom: 1.35rem; border-bottom: 1px solid rgb(242 241 237 / 12%); }.metron-landing-envelope-row { display: grid; grid-template-columns: 1.1fr 1fr auto; align-items: center; gap: 1rem; border-bottom: 1px solid rgb(242 241 237 / 9%); padding: 1.15rem 0; color: var(--metron-pearl-muted); font-family: var(--metron-font-mono); font-size: 0.67rem; }.metron-landing-envelope-row strong { color: var(--metron-pearl); font-family: var(--metron-landing-copy); font-size: 1rem; font-weight: 500; letter-spacing: -0.03em; }.metron-landing-ok { display: inline-flex; align-items: center; gap: 0.35rem; color: var(--metron-sand); font-size: 0.58rem; text-transform: uppercase; }.metron-landing-envelope-foot { padding-top: 1.2rem; }.metron-landing-envelope-foot > span:first-child { display: inline-flex; align-items: center; gap: 0.45rem; }.metron-landing-scan-dot { width: 0.38rem; height: 0.38rem; border-radius: 999px; background: var(--metron-sand); box-shadow: 0 0 0 0.26rem rgb(179 143 111 / 13%); animation: metron-pulse 1.8s ease-in-out infinite; }
+
+.metron-landing-principles > .metron-landing-heading { margin-bottom: clamp(3rem, 7vw, 6rem); }.metron-landing-principles-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.8rem; }.metron-landing-principle { min-height: 19rem; padding: 1.5rem; }.metron-landing-principle.principle-wide { display: grid; grid-column: span 2; grid-template-columns: auto 1fr auto; min-height: 12rem; align-items: center; gap: 1.35rem; }.metron-landing-principle-glyph { display: grid; width: 3rem; height: 3rem; place-items: center; border: 1px solid rgb(242 241 237 / 16%); border-radius: 1rem; color: var(--metron-sand); background: rgb(242 241 237 / 3%); }.metron-landing-principle > span, .metron-landing-principle-wide span { display: block; margin-top: 2rem; color: var(--metron-sand); font-family: var(--metron-font-mono); font-size: 0.61rem; letter-spacing: 0.1em; text-transform: uppercase; }.metron-landing-principle.principle-wide > div:nth-child(2) > span { margin-top: 0; }.metron-landing-principle h3 { max-width: 13ch; margin: 1rem 0 0.7rem; color: var(--metron-pearl); font-family: var(--metron-landing-copy); font-size: clamp(1.45rem, 2.7vw, 2.3rem); font-weight: 540; letter-spacing: -0.06em; line-height: 0.98; }.metron-landing-principle p { max-width: 32rem; margin: 0; color: var(--metron-pearl-muted); font-size: 0.84rem; line-height: 1.7; }.metron-landing-principle > svg { align-self: start; color: var(--metron-pearl-dim); }.metron-landing-principle-wide h3 { max-width: 20ch; }
+
+.metron-landing-faq { display: grid; grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr); gap: clamp(3rem, 12vw, 13rem); }.metron-landing-faq-list { border-top: 1px solid rgb(242 241 237 / 14%); }.metron-landing-faq-item { border-bottom: 1px solid rgb(242 241 237 / 14%); }.metron-landing-faq-item button { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 1rem; border: 0; padding: 1.4rem 0; color: var(--metron-pearl); background: transparent; cursor: pointer; font-family: var(--metron-landing-copy); font-size: 1.05rem; font-weight: 500; letter-spacing: -0.03em; text-align: left; }.metron-landing-faq-item button svg { flex: 0 0 auto; color: var(--metron-sand); transition: transform 180ms ease; }.metron-landing-faq-item.is-open button svg { transform: rotate(180deg); }.metron-landing-faq-answer { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 280ms var(--metron-ease); }.metron-landing-faq-answer p { min-height: 0; overflow: hidden; margin: 0; color: var(--metron-pearl-muted); font-size: 0.87rem; line-height: 1.7; }.metron-landing-faq-item.is-open .metron-landing-faq-answer { grid-template-rows: 1fr; }.metron-landing-faq-item.is-open .metron-landing-faq-answer p { padding: 0 2.8rem 1.45rem 0; }
+
+.metron-landing-final { position: relative; display: grid; min-height: 39rem; place-items: center; overflow: hidden; padding: 7rem 2rem; text-align: center; }.metron-landing-final-glow { position: absolute; top: 20%; left: 50%; width: min(50rem, 90vw); aspect-ratio: 1; transform: translateX(-50%); border-radius: 50%; background: radial-gradient(circle, rgb(113 0 20 / 26%), transparent 65%); filter: blur(20px); pointer-events: none; }.metron-landing-final > *:not(.metron-landing-final-glow) { position: relative; z-index: 1; }.metron-landing-final h2 { margin: 1.5rem 0; color: var(--metron-pearl); font-family: var(--metron-landing-copy); font-size: clamp(3.2rem, 8vw, 7.8rem); font-weight: 500; letter-spacing: -0.09em; line-height: 0.88; }.metron-landing-final p { max-width: 28rem; margin: 0 auto 1.8rem; color: var(--metron-pearl-muted); font-size: 1rem; line-height: 1.7; }
+.metron-landing-footer { border-top: 1px solid rgb(242 241 237 / 14%); padding: 2rem max(2rem, calc((100vw - var(--metron-landing-max)) / 2 + 2rem)) 1.5rem; }.metron-landing-footer-top { display: flex; align-items: center; justify-content: space-between; gap: 2rem; }.metron-landing-footer-top p { max-width: 19rem; margin: 0; color: var(--metron-pearl-dim); font-size: 0.75rem; line-height: 1.5; }.metron-landing-footer-github { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--metron-pearl-muted); font-size: 0.72rem; text-decoration: none; }.metron-landing-footer-bottom { display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-top: 1px solid rgb(242 241 237 / 10%); margin-top: 2.8rem; padding-top: 1rem; color: var(--metron-pearl-dim); font-family: var(--metron-font-mono); font-size: 0.56rem; letter-spacing: 0.04em; text-transform: uppercase; }.metron-landing-footer-built { display: inline-flex; align-items: center; gap: 0.45rem; color: var(--metron-sand); }
+
+@keyframes metron-cursor { 50% { opacity: 0; } }
+@keyframes metron-pulse { 50% { opacity: 0.45; transform: scale(0.8); } }
+
+@media (max-width: 900px) {
+  .metron-landing-nav-status { display: none; }
+  .metron-landing-hero-inner { grid-template-columns: minmax(0, 1fr); align-items: end; padding-top: 9rem; }
+  .metron-landing-hero-prism { opacity: 0.75; }
+  .metron-landing-intent-card-wrap { width: min(100%, 33rem); margin: 0 0 2rem; justify-self: start; }
+  .metron-landing-hero-footer { display: none; }
+  .metron-landing-problem-layout, .metron-landing-envelope, .metron-landing-faq { grid-template-columns: 1fr; gap: 4rem; }
+  .metron-landing-fragment-map { min-height: 22rem; }
+}
+
+@media (max-width: 680px) {
+  .metron-landing-nav-wrap { inset: 0.75rem 0.75rem auto; }
+  .metron-landing-nav { min-height: 3.55rem; padding-left: 0.85rem; }
+  .metron-landing-nav-links { position: absolute; top: calc(100% + 0.55rem); right: 0; left: 0; display: grid; gap: 0; max-height: 0; overflow: hidden; border: 1px solid transparent; border-radius: 1.4rem; background: rgb(0 0 0 / 82%); opacity: 0; transition: max-height 240ms ease, opacity 240ms ease, border-color 240ms ease; backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+  .metron-landing-nav-links.is-open { max-height: 18rem; border-color: rgb(242 241 237 / 16%); opacity: 1; }
+  .metron-landing-nav-links a { padding: 1rem 1.15rem; border-bottom: 1px solid rgb(242 241 237 / 8%); }.metron-landing-nav-links a:last-child { border-bottom: 0; }
+  .metron-landing-nav-cta { display: none; }.metron-landing-menu-toggle { display: inline-flex; }
+  .metron-landing-hero-inner { min-height: 100dvh; padding: 8.5rem 1.2rem 3.5rem; }.metron-landing-hero h1 { font-size: clamp(3.25rem, 15vw, 5.8rem); }.metron-landing-hero-lede { font-size: 0.94rem; }.metron-landing-hero-actions { display: grid; grid-template-columns: 1fr; }.metron-landing-hero-actions .metron-landing-action { width: 100%; }.metron-landing-intent-card { padding: 1.05rem; }.metron-landing-intent-prompt { min-height: 7rem; padding-top: 1.7rem; font-size: 1.13rem; }
+  .metron-landing-section { padding: 5.5rem 1.2rem; }.metron-landing-heading h2 { font-size: clamp(2.55rem, 13vw, 4.3rem); }.metron-landing-heading p { font-size: 0.9rem; }.metron-landing-fragment-map { min-height: 19rem; transform: scale(0.9); transform-origin: center; }.metron-landing-fragment-center { width: 8.4rem; height: 8.4rem; }.metron-landing-fragment-center strong { font-size: 0.76rem; }
+  .metron-landing-lifecycle-grid { grid-template-columns: 1fr 1fr; }.metron-landing-lifecycle-item { min-height: 15rem; }.metron-landing-lifecycle-item:nth-child(2) { border-right: 0; }.metron-landing-lifecycle-item:nth-child(3) { border-top: 1px solid rgb(242 241 237 / 14%); border-left: 1px solid rgb(242 241 237 / 14%); }.metron-landing-lifecycle-item:nth-child(4) { border-top: 1px solid rgb(242 241 237 / 14%); }.metron-landing-lifecycle-item h3 { margin-top: 3.8rem; font-size: 1.2rem; }
+  .metron-landing-envelope-row { grid-template-columns: 1fr auto; }.metron-landing-envelope-row strong { grid-column: 1; grid-row: 2; }.metron-landing-ok { grid-column: 2; grid-row: 2; }.metron-landing-envelope-foot { display: grid; gap: 0.55rem; }
+  .metron-landing-principles-grid { grid-template-columns: 1fr; }.metron-landing-principle.principle-wide { grid-column: auto; grid-template-columns: auto 1fr; }.metron-landing-principle.principle-wide > svg { display: none; }.metron-landing-principle h3 { font-size: 1.7rem; }.metron-landing-principle.principle-wide h3 { font-size: 1.55rem; }
+  .metron-landing-final { min-height: 32rem; padding: 5rem 1.2rem; }.metron-landing-final h2 { font-size: clamp(3.1rem, 15vw, 5.5rem); }.metron-landing-footer { padding: 2rem 1.2rem 1.2rem; }.metron-landing-footer-top { display: grid; gap: 1rem; }.metron-landing-footer-bottom { display: grid; gap: 0.55rem; margin-top: 2rem; }.metron-landing-footer-built { display: none; }
+}

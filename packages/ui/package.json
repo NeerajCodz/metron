@@ -27,7 +27,9 @@
     "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.preview.json --noEmit"
   },
   "dependencies": {
-    "motion": "^12.25.0"
+    "gsap": "^3.15.0",
+    "motion": "^12.25.0",
+    "vgpu": "^0.5.0"
   },
   "peerDependencies": {
     "react": "^19.0.0",

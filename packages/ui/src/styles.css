@@ -43,6 +43,9 @@
   font-display: swap;
 }
 
+@import "./styles/landing.css";
+@import "./styles/landing-page.css";
+@import "./styles/landing-reveal.css";
 :root,
 .metron-theme {
   color-scheme: dark;
