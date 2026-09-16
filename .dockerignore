@@ -1,0 +1,11 @@
+node_modules
+.pnpm-store
+.git
+.turbo
+apps/web3/out
+apps/web3/cache
+apps/web3/lib
+apps/ai/.venv
+apps/ai/.pytest_cache
+apps/ai/.mypy_cache
+apps/ai/.ruff_cache

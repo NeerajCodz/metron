@@ -1,0 +1,54 @@
+services:
+  ai:
+    build:
+      context: ..
+      dockerfile: apps/ai/Dockerfile
+    environment:
+      METRON_AI_SERVICE_TOKEN: ${METRON_AI_SERVICE_TOKEN:?set METRON_AI_SERVICE_TOKEN}
+      METRON_ENVIRONMENT: local
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  solver:
+    build:
+      context: ..
+      dockerfile: apps/web3/Dockerfile
+    environment:
+      METRON_SERVICE: solver
+      METRON_RUNTIME_READY: ${SOLVER_RUNTIME_READY:-false}
+      PORT: 8787
+    ports:
+      - "8787:8787"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8787/health').then(r=>{if(!r.ok)process.exit(1)})"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  keeper:
+    build:
+      context: ..
+      dockerfile: apps/web3/Dockerfile
+    environment:
+      METRON_SERVICE: keeper
+      METRON_RUNTIME_READY: ${KEEPER_RUNTIME_READY:-false}
+      PORT: 8788
+    ports:
+      - "8788:8788"
+    command: ["sh", "-c", "PORT=8788 node apps/web3/dist/runtime/server.js"]
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8788/health').then(r=>{if(!r.ok)process.exit(1)})"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  anvil:
+    image: ghcr.io/foundry-rs/foundry:v1.8.3
+    command: ["anvil", "--host", "0.0.0.0", "--chain-id", "31337"]
+    ports:
+      - "8545:8545"

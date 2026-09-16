@@ -23,7 +23,7 @@ if (!publicResult.success) {
 
 if (process.argv.includes("--secrets")) {
   const secretInput = {
-    AI_SERVICE_TOKEN: process.env.AI_SERVICE_TOKEN,
+    AI_SERVICE_TOKEN: process.env.METRON_AI_SERVICE_TOKEN ?? process.env.AI_SERVICE_TOKEN,
     INTERNAL_SERVICE_TOKEN: process.env.INTERNAL_SERVICE_TOKEN,
     AUTOMATION_PRIVATE_KEY: process.env.AUTOMATION_PRIVATE_KEY,
     DEPLOYER_PRIVATE_KEY: process.env.DEPLOYER_PRIVATE_KEY,
