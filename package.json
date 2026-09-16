@@ -21,6 +21,7 @@
     "check:env": "node scripts/check-env.mjs",
     "check:abi": "node scripts/check-abi.mjs",
     "deploy:web3": "node scripts/deploy-web3.mjs",
+    "record:deployment": "node scripts/record-deployment.mjs",
     "validate:deployment": "node scripts/validate-deployment.mjs",
     "generate:abi": "node scripts/generate-abi.mjs",
     "sync:addresses": "node scripts/sync-addresses.mjs"
