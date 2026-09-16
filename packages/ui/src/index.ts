@@ -475,3 +475,36 @@ export {
   type DonutChartProps,
   type SparklineProps,
 } from "./components/chart.js";
+export { Bubble, type BubbleProps, type BubbleVariant } from "./components/bubble.js";
+export {
+  Message,
+  MessageActions,
+  MessageHeader,
+  MessageTimestamp,
+  type MessageProps,
+  type MessageRole,
+} from "./components/message.js";
+export {
+  MessageScroller,
+  type MessageScrollerProps,
+} from "./components/message-scroller.js";
+export {
+  Questionnaire,
+  QuestionnaireOption,
+  type QuestionnaireOptionProps,
+  type QuestionnaireProps,
+} from "./components/questionnaire.js";
+export { Attachment, type AttachmentProps } from "./components/attachment.js";
+export {
+  Blockquote,
+  H1,
+  H2,
+  H3,
+  H4,
+  InlineCode,
+  Large,
+  Lead,
+  Muted,
+  P,
+  Small,
+} from "./components/typography.js";
