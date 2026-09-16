@@ -9,6 +9,7 @@ solc = "0.8.30"
 evm_version = "cancun"
 optimizer = true
 optimizer_runs = 10_000
+via_ir = true
 bytecode_hash = "ipfs"
 cbor_metadata = true
 auto_detect_remappings = false
