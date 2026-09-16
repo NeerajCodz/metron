@@ -28,6 +28,7 @@ import {
   Progress,
   Select,
   Switch,
+  ThinkingOrb,
 } from "@metron/ui";
 
 type Horizon = "24h" | "7d" | "30d";
@@ -1678,12 +1679,12 @@ export function RiskCenterPage() {
               ) : simulationState === "running" ? (
                 <div className="web-page-risk-result-loading" role="status" aria-live="polite">
                   <div>
-                    <div className="web-page-risk-loading-bars" aria-hidden="true">
-                      <span />
-                      <span />
-                      <span />
-                      <span />
-                    </div>
+                    <ThinkingOrb
+                      state="solving"
+                      size={64}
+                      dark
+                      aria-label="Risk cascade simulation in progress"
+                    />
                     <p>Tracing collateral across 3 venues</p>
                   </div>
                 </div>

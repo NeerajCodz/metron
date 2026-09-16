@@ -10,7 +10,6 @@ import {
   Filter,
   Gauge,
   Layers3,
-  RefreshCw,
   Search,
   ShieldCheck,
   SlidersHorizontal,
@@ -20,7 +19,7 @@ import {
   X,
   Zap,
 } from "lucide-react";
-import { Badge, Button, Select } from "@metron/ui";
+import { Badge, Button, Select, ThinkingOrb } from "@metron/ui";
 
 type Strategy = {
   id: string;
@@ -746,7 +745,7 @@ export function StrategiesPage() {
             }}
           >
             {action.status === "running" ? (
-              <RefreshCw className="web-page-strategies__spin" size={14} />
+              <ThinkingOrb state="solving" size={20} dark aria-label="Solver working" />
             ) : (
               <Check size={14} />
             )}

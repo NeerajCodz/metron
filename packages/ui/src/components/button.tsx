@@ -8,6 +8,7 @@ import {
 } from "react";
 
 import { cn } from "../lib/cn.js";
+import { ThinkingOrb } from "./thinking-orb.js";
 
 export type ButtonVariant =
   | "solid"
@@ -100,7 +101,7 @@ function controlClassName(
 }
 
 function LoadingIndicator(): ReactNode {
-  return <span className="metron-button__spinner" aria-hidden="true" />;
+  return <ThinkingOrb state="working" size={20} dark aria-hidden="true" />;
 }
 
 function ButtonContent({

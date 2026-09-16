@@ -45,7 +45,7 @@ import { StrategiesPage } from "./pages/strategies";
 import { StrategyDetailPage } from "./pages/strategy-detail";
 import { MetronStateProvider, useMetronState } from "./state/metron-state";
 import { NotificationCenter } from "./components/notification-center";
-import { BackgroundLayout, Badge } from "@metron/ui";
+import { BackgroundLayout, Badge, ThinkingOrb } from "@metron/ui";
 
 const DevScreenGallery = import.meta.env.DEV
   ? lazy(() => import("./dev/ScreenGallery").then((module) => ({ default: module.ScreenGallery })))
@@ -137,14 +137,25 @@ function ShellFeedback() {
     <aside className="app-feedback" aria-label="Live operation feedback" aria-live="polite">
       {activeJob ? (
         <div className="app-feedback__job">
-          <div className="app-feedback__job-head">
-            <span>{activeJob.label}</span>
-            <span>{activeJob.progress}%</span>
+          <div className="app-feedback__job-content">
+            <ThinkingOrb
+              state="working"
+              size={20}
+              dark
+              paused={activeJob.progress >= 100}
+              aria-label={`${activeJob.label} in progress`}
+            />
+            <div className="app-feedback__job-copy">
+              <div className="app-feedback__job-head">
+                <span>{activeJob.label}</span>
+                <span>{activeJob.progress}%</span>
+              </div>
+              <div className="app-feedback__progress" aria-hidden="true">
+                <span style={{ width: `${activeJob.progress}%` }} />
+              </div>
+              {activeJob.message ? <p>{activeJob.message}</p> : null}
+            </div>
           </div>
-          <div className="app-feedback__progress" aria-hidden="true">
-            <span style={{ width: `${activeJob.progress}%` }} />
-          </div>
-          {activeJob.message ? <p>{activeJob.message}</p> : null}
         </div>
       ) : null}
       {recentNotifications.map((notification) => (

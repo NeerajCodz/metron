@@ -11,7 +11,6 @@ import {
   FileCheck2,
   LockKeyhole,
   Pencil,
-  RefreshCw,
   ShieldCheck,
   Sparkles,
   Target,
@@ -28,6 +27,7 @@ import {
   Select,
   Switch,
   Textarea,
+  ThinkingOrb,
 } from "@metron/ui";
 
 const pageStyle: CSSProperties = {
@@ -372,7 +372,12 @@ export function IntentPage() {
                       color: "#c8aa8e",
                     }}
                   >
-                    <RefreshCw size={18} className="web-page-intent__spin" aria-hidden="true" />
+                    <ThinkingOrb
+                      state="searching"
+                      size={64}
+                      dark
+                      aria-label="AI translating your brief"
+                    />
                     <strong style={{ fontSize: "0.98rem", fontWeight: 560 }}>
                       Translating your brief
                     </strong>
@@ -646,7 +651,7 @@ export function IntentPage() {
                     fontSize: "0.78rem",
                   }}
                 >
-                  <RefreshCw size={14} className="web-page-intent__spin" aria-hidden="true" />
+                  <ThinkingOrb state="composing" size={20} dark aria-label="Recording private commitment" />
                   Recording private commitment…
                 </div>
               ) : null}

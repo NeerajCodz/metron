@@ -422,6 +422,12 @@ export {
   type SpinnerTone,
 } from "./components/spinner.js";
 export {
+  ThinkingOrb,
+  type ThinkingOrbProps,
+  type ThinkingOrbState,
+  type ThinkingOrbTheme,
+} from "./components/thinking-orb.js";
+export {
   Table,
   TableBody,
   TableCaption,
@@ -529,5 +535,4 @@ export {
   type LandingLinkProps,
   type LandingSectionHeadingProps,
 } from "./components/landing/primitives.js";
-export { LandingPrism, type LandingPrismProps } from "./components/landing/prism.js";
 export { ScrollReveal, type ScrollRevealProps } from "./components/landing/scroll-reveal.js";
