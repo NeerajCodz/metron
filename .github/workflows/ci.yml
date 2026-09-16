@@ -28,7 +28,7 @@ jobs:
       - uses: foundry-rs/foundry-toolchain@v1
         with:
           version: v1.8.3
-      - run: pnpm install --frozen-lockfile --filter='!@metron/ui' --filter='!@metron/web'
+      - run: pnpm install --no-frozen-lockfile --filter='!@metron/ui' --filter='!@metron/web'
       - run: node ../../scripts/forge.mjs install foundry-rs/forge-std --no-commit
         working-directory: apps/web3
       - run: node ../../scripts/forge.mjs install OpenZeppelin/openzeppelin-contracts --no-commit

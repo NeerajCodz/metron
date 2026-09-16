@@ -44,7 +44,7 @@ jobs:
         working-directory: apps/web3
       - run: node ../../scripts/forge.mjs install OpenZeppelin/openzeppelin-contracts --no-commit
         working-directory: apps/web3
-      - run: pnpm install --frozen-lockfile --filter='!@metron/ui' --filter='!@metron/web'
+      - run: pnpm install --no-frozen-lockfile --filter='!@metron/ui' --filter='!@metron/web'
       - run: pnpm --filter @metron/config build
       - run: node scripts/deploy-web3.mjs "${{ inputs.chain }}"
         env:
