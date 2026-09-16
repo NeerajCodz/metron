@@ -18,6 +18,7 @@
   "dependencies": {
     "@metron/ai": "workspace:*",
     "@metron/config": "workspace:*",
+    "@metron/protocol": "workspace:*",
     "@metron/sdk": "workspace:*",
     "@metron/types": "workspace:*",
     "@modelcontextprotocol/sdk": "^1.30.0",

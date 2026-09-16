@@ -74,6 +74,9 @@ importers:
       '@metron/config':
         specifier: workspace:*
         version: link:../../packages/config
+      '@metron/protocol':
+        specifier: workspace:*
+        version: link:../../packages/protocol
       '@metron/sdk':
         specifier: workspace:*
         version: link:../../packages/sdk
