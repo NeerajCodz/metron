@@ -1,0 +1,33 @@
+{
+  "name": "@metron/mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.js",
+    "./server": "./dist/server.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+    "dev": "tsx src/index.ts",
+    "lint": "eslint src tests --max-warnings=0",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "@metron/ai": "workspace:*",
+    "@metron/config": "workspace:*",
+    "@metron/sdk": "workspace:*",
+    "@metron/types": "workspace:*",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@metron/eslint-config": "workspace:*",
+    "@metron/typescript-config": "workspace:*",
+    "tsx": "^4.19.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.0"
+  }
+}
