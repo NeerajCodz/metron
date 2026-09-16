@@ -19,6 +19,20 @@ contract LayerZeroAdapter is AccessControl, Pausable, ReentrancyGuard {
         EXPIRED
     }
 
+    struct RemoteMessage {
+        bytes32 dispatchId;
+        uint8 version;
+        uint256 sourceChainId;
+        address sourceContract;
+        bytes32 positionId;
+        uint8 actionType;
+        address target;
+        bytes32 payloadHash;
+        uint64 nonce;
+        uint64 expiresAt;
+        bytes data;
+    }
+
     struct MessageState {
         uint32 dstEid;
         bytes32 receiver;
@@ -161,7 +175,10 @@ contract LayerZeroAdapter is AccessControl, Pausable, ReentrancyGuard {
         MessageState storage state = messages[guid];
         if (state.status != MessageStatus.NONE) revert MessageAlreadyHandled(guid);
         if (message.length == 0) revert InvalidMessage();
-        (, uint64 expiresAt) = abi.decode(message, (bytes32, uint64));
+        (, , , , , , , , , uint64 expiresAt, ) = abi.decode(
+            message,
+            (bytes32, uint8, uint256, address, bytes32, uint8, address, bytes32, uint64, uint64, bytes)
+        );
         if (expiresAt <= block.timestamp) {
             state.messageHash = keccak256(message);
             state.expiresAt = expiresAt;

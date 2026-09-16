@@ -13,7 +13,9 @@ contract CrossChainRouter is AccessControl, Pausable, ReentrancyGuard {
         bytes32 positionId;
         uint32 dstEid;
         address target;
+        uint8 actionType;
         bytes32 payloadHash;
+        uint64 nonce;
         uint64 expiresAt;
         bytes32 guid;
         bool dispatched;
@@ -41,7 +43,6 @@ contract CrossChainRouter is AccessControl, Pausable, ReentrancyGuard {
         uint64 expiresAt,
         bytes32 guid
     );
-
     constructor(address admin, ILayerZeroAdapter adapter_) {
         if (admin == address(0) || address(adapter_) == address(0)) revert InvalidAddress();
         adapter = adapter_;
@@ -66,29 +67,48 @@ contract CrossChainRouter is AccessControl, Pausable, ReentrancyGuard {
         bytes32 positionId,
         uint32 dstEid,
         bytes32 receiver,
+        uint8 actionType,
         address target,
         bytes calldata data,
         bytes calldata options,
         uint64 expiresAt,
         address refundAddress
     ) external payable onlyRole(DISPATCH_ROLE) whenNotPaused nonReentrant returns (bytes32 dispatchId, bytes32 guid) {
-        if (positionId == bytes32(0) || receiver == bytes32(0) || data.length == 0) revert InvalidIdentifier();
+        if (positionId == bytes32(0) || receiver == bytes32(0) || actionType == 0 || data.length == 0) {
+            revert InvalidIdentifier();
+        }
         if (!allowedTargets[target]) revert TargetNotAllowed(target);
         if (expiresAt <= block.timestamp) revert InvalidExpiry(expiresAt);
-        dispatchId = keccak256(abi.encode(address(this), block.chainid, positionId, nextDispatchNonce++, target, data));
+        uint64 nonce = nextDispatchNonce++;
+        bytes32 payloadHash = keccak256(data);
+        dispatchId = keccak256(abi.encode(address(this), block.chainid, positionId, nonce, target, data));
         if (dispatches[dispatchId].dispatched) revert DispatchAlreadySubmitted(dispatchId);
-        bytes memory message = abi.encode(dispatchId, expiresAt, target, data);
+        bytes memory message = abi.encode(
+            dispatchId,
+            uint8(1),
+            block.chainid,
+            address(this),
+            positionId,
+            actionType,
+            target,
+            payloadHash,
+            nonce,
+            expiresAt,
+            data
+        );
         guid = adapter.sendMessage{value: msg.value}(dstEid, receiver, message, options, expiresAt, refundAddress);
         if (guid == bytes32(0)) revert InvalidGuid();
         dispatches[dispatchId] = DispatchState({
             positionId: positionId,
             dstEid: dstEid,
             target: target,
-            payloadHash: keccak256(data),
+            actionType: actionType,
+            payloadHash: payloadHash,
+            nonce: nonce,
             expiresAt: expiresAt,
             guid: guid,
             dispatched: true
         });
-        emit DispatchSubmitted(dispatchId, positionId, dstEid, target, keccak256(data), expiresAt, guid);
+        emit DispatchSubmitted(dispatchId, positionId, dstEid, target, payloadHash, expiresAt, guid);
     }
 }

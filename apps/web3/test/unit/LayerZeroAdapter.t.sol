@@ -65,6 +65,7 @@ contract LayerZeroAdapterTest is Test {
         adapter.grantRole(adapter.ROUTER_ROLE(), address(router));
         router.configureTarget(address(target), true);
         remoteExecutor.configureTarget(address(target), true);
+        remoteExecutor.configureSourceRouter(REMOTE_EID, address(router), block.chainid);
         router.grantRole(router.DISPATCH_ROLE(), dispatcher);
         vm.stopPrank();
     }
@@ -76,6 +77,7 @@ contract LayerZeroAdapterTest is Test {
             keccak256("position"),
             REMOTE_EID,
             REMOTE_PEER,
+            1,
             address(target),
             data,
             bytes(""),
@@ -83,8 +85,20 @@ contract LayerZeroAdapterTest is Test {
             dispatcher
         );
         assertTrue(dispatchId != bytes32(0));
+        bytes memory message = abi.encode(
+            dispatchId,
+            uint8(1),
+            block.chainid,
+            address(router),
+            keccak256("position"),
+            uint8(1),
+            address(target),
+            keccak256(data),
+            uint64(0),
+            uint64(block.timestamp + 1 hours),
+            data
+        );
         LzOrigin memory origin = LzOrigin(REMOTE_EID, REMOTE_PEER, 1);
-        bytes memory message = abi.encode(dispatchId, uint64(block.timestamp + 1 hours), address(target), data);
         bytes32 inboundGuid = keccak256("inbound-guid");
         endpoint.deliver(address(adapter), origin, inboundGuid, message);
         assertTrue(outboundGuid != inboundGuid);
@@ -95,7 +109,19 @@ contract LayerZeroAdapterTest is Test {
 
     function testRejectsWrongPeerAndDuplicateGuid() external {
         bytes memory data = abi.encodeCall(MockRemoteTarget.execute, ());
-        bytes memory message = abi.encode(keccak256("dispatch"), uint64(block.timestamp + 1 hours), address(target), data);
+        bytes memory message = abi.encode(
+            keccak256("dispatch"),
+            uint8(1),
+            block.chainid,
+            address(router),
+            keccak256("position"),
+            uint8(1),
+            address(target),
+            keccak256(data),
+            uint64(0),
+            uint64(block.timestamp + 1 hours),
+            data
+        );
         LzOrigin memory wrongOrigin = LzOrigin(999, REMOTE_PEER, 1);
         vm.prank(address(endpoint));
         (bool rejected,) = address(adapter).call(
@@ -113,7 +139,19 @@ contract LayerZeroAdapterTest is Test {
     function testExpiredInboundMessageIsNotExecuted() external {
         bytes memory data = abi.encodeCall(MockRemoteTarget.execute, ());
         uint64 expiry = uint64(block.timestamp + 10);
-        bytes memory message = abi.encode(keccak256("expired"), expiry, address(target), data);
+        bytes memory message = abi.encode(
+            keccak256("expired"),
+            uint8(1),
+            block.chainid,
+            address(router),
+            keccak256("position"),
+            uint8(1),
+            address(target),
+            keccak256(data),
+            uint64(0),
+            expiry,
+            data
+        );
         vm.warp(expiry + 1);
         LzOrigin memory origin = LzOrigin(REMOTE_EID, REMOTE_PEER, 1);
         bytes32 guid = keccak256("expired-guid");
