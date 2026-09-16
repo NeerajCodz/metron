@@ -1,0 +1,205 @@
+:root {
+  --web-bg: #08090b;
+  --web-surface: #101216;
+  --web-surface-raised: #17191e;
+  --web-border: rgb(242 241 237 / 13%);
+  --web-border-strong: rgb(242 241 237 / 24%);
+  --web-text: #f2f1ed;
+  --web-text-muted: rgb(242 241 237 / 62%);
+  --web-text-dim: rgb(242 241 237 / 40%);
+  --web-crimson: #c21f3b;
+  --web-crimson-deep: #710014;
+  --web-success: #52d69a;
+  --web-content-width: 1440px;
+  --web-gutter: clamp(1.25rem, 4vw, 4.5rem);
+  --web-space-section: clamp(4rem, 11vw, 10rem);
+  --web-radius: 0.75rem;
+}
+
+html {
+  min-width: 320px;
+  min-height: 100%;
+  background: var(--web-bg);
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  background: var(--web-bg);
+  color: var(--web-text);
+  font-family: var(--metron-font-sans), "Segoe UI", sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--web-crimson);
+  outline-offset: 4px;
+}
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  width: min(100%, var(--web-content-width));
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 0 var(--web-gutter);
+  background:
+    linear-gradient(90deg, transparent 0, transparent calc(100% - 1px), rgb(242 241 237 / 5%) calc(100% - 1px)),
+    var(--web-bg);
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 5.5rem;
+  border-bottom: 1px solid var(--web-border);
+}
+
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--web-text);
+  font-size: 0.78rem;
+  font-weight: 750;
+  letter-spacing: 0.2em;
+  text-decoration: none;
+}
+
+.wordmark-mark {
+  display: block;
+  width: 0.7rem;
+  height: 0.7rem;
+  background: var(--web-crimson);
+  box-shadow: 0 0 0 0.25rem rgb(194 31 59 / 13%);
+  transform: rotate(45deg);
+}
+
+.network-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--web-text-muted);
+  font-family: var(--metron-font-mono), monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.status-dot {
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 50%;
+  background: var(--web-success);
+  box-shadow: 0 0 0 0.2rem rgb(82 214 154 / 12%);
+}
+
+.welcome-panel {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  max-width: 44rem;
+  padding: var(--web-space-section) 0;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 1.75rem;
+  color: var(--web-crimson);
+  font-family: var(--metron-font-mono), monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.welcome-panel h1 {
+  max-width: 11ch;
+  margin: 0;
+  color: var(--web-text);
+  font-size: clamp(3.4rem, 9vw, 8.5rem);
+  font-weight: 500;
+  letter-spacing: -0.075em;
+  line-height: 0.9;
+}
+
+.welcome-panel p {
+  max-width: 27rem;
+  margin: 2rem 0 2.5rem;
+  color: var(--web-text-muted);
+  font-size: clamp(1rem, 1.4vw, 1.25rem);
+  line-height: 1.55;
+}
+
+.panel-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.9rem 1.15rem;
+  border: 1px solid var(--web-border-strong);
+  border-radius: var(--web-radius);
+  background: var(--web-surface);
+  color: var(--web-text);
+  font-size: 0.85rem;
+  font-weight: 650;
+  text-decoration: none;
+  transition: border-color 180ms ease, background-color 180ms ease, transform 180ms ease;
+}
+
+.panel-link:hover {
+  border-color: var(--web-crimson);
+  background: var(--web-surface-raised);
+  transform: translateY(-2px);
+}
+
+.app-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--web-border);
+  color: var(--web-text-dim);
+  font-family: var(--metron-font-mono), monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+}
+
+@media (max-width: 600px) {
+  .app-header {
+    min-height: 4.5rem;
+  }
+
+  .network-status {
+    font-size: 0.58rem;
+  }
+
+  .welcome-panel h1 {
+    font-size: clamp(3.25rem, 18vw, 5.5rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
