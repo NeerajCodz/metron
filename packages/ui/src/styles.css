@@ -9,54 +9,94 @@
 @import "./styles/overlays.css";
 @import "./styles/navigation.css";
 @import "./styles/ai.css";
+@import "./styles/liquid-theme.css";
+
+@font-face {
+  font-family: "Metron Lato";
+  src: url("./fonts/Lato-Regular.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Metron Lato";
+  src: url("./fonts/Lato-Bold.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Metron Lato";
+  src: url("./fonts/Lato-Black.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Metron TheSansMono";
+  src: url("./fonts/TheSansMono-ExtraBold.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+}
+
 :root,
 .metron-theme {
   color-scheme: dark;
   --metron-black: #000000;
   --metron-background: #000000;
-  --metron-carbon: #0c0c0e;
-  --metron-carbon-surface: #121215;
-  --metron-carbon-hover: #18181c;
-  --metron-carbon-border: rgba(242, 241, 237, 0.12);
+  --metron-carbon: #000000;
+  --metron-carbon-surface: transparent;
+  --metron-carbon-hover: rgb(255 255 255 / 7%);
+  --metron-carbon-border: rgb(255 255 255 / 16%);
   --metron-crimson: #710014;
-  --metron-crimson-bright: #9b1730;
-  --metron-crimson-glow: rgba(155, 23, 48, 0.35);
+  --metron-crimson-bright: #99152d;
+  --metron-crimson-glow: rgb(113 0 20 / 32%);
   --metron-sand: #b38f6f;
-  --metron-sand-bright: #c8aa8e;
-  --metron-sand-glow: rgba(179, 143, 111, 0.28);
+  --metron-sand-bright: #cfb69f;
+  --metron-sand-glow: rgb(179 143 111 / 22%);
   --metron-pearl: #f2f1ed;
-  --metron-pearl-muted: rgb(242 241 237 / 68%);
-  --metron-pearl-dim: rgb(242 241 237 / 42%);
-  --metron-obsidian: #0c0c0e;
+  --metron-pearl-muted: rgb(242 241 237 / 70%);
+  --metron-pearl-dim: rgb(242 241 237 / 44%);
+  --metron-obsidian: #000000;
   --metron-ink: #000000;
-  --metron-surface: rgba(12, 12, 14, 0.7);
-  --metron-surface-strong: #151518;
-  --metron-surface-hover: rgb(242 241 237 / 8%);
-  --metron-border: rgb(242 241 237 / 14%);
-  --metron-border-strong: rgb(242 241 237 / 26%);
-  --metron-focus: #b38f6f;
-  --metron-danger: #710014;
-  --metron-success: #34d399;
-  --metron-warning: #f59e0b;
-  --metron-font-sans: "Satoshi", "Avenir Next", "Segoe UI Variable", "Segoe UI", sans-serif;
-  --metron-font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
-  --metron-radius-control: 0.875rem;
-  --metron-radius-card: 1.25rem;
+  --metron-surface: transparent;
+  --metron-surface-strong: #090909;
+  --metron-surface-hover: rgb(255 255 255 / 7%);
+  --metron-border: rgb(255 255 255 / 15%);
+  --metron-border-strong: rgb(255 255 255 / 32%);
+  --metron-focus: #f2f1ed;
+  --metron-danger: #99152d;
+  --metron-success: #f2f1ed;
+  --metron-warning: #b38f6f;
+  --metron-font-sans: "Metron Lato", "Lato", "Avenir Next", "Segoe UI", sans-serif;
+  --metron-font-display: "Metron TheSansMono", "Arial Black", monospace;
+  --metron-font-mono: "Metron TheSansMono", "IBM Plex Mono", Consolas, monospace;
+  --metron-radius-control: 999px;
+  --metron-radius-card: 2rem;
+  --metron-radius-panel: 2.5rem;
   --metron-radius-pill: 999px;
-  --metron-blur: 28px;
-  --metron-shadow-raised: 0 24px 80px rgb(0 0 0 / 70%);
-  --metron-shadow-control: 0 10px 28px rgb(0 0 0 / 40%);
-  --metron-shadow-glass: inset 0 1px 1px 0 rgba(255, 255, 255, 0.18), inset 0 -1px 1px 0 rgba(0, 0, 0, 0.5), 0 20px 60px rgba(0, 0, 0, 0.7);
-  --metron-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
-  --metron-duration-fast: 140ms;
-  --metron-duration-medium: 260ms;
+  --metron-blur: 30px;
+  --metron-glass-fill: transparent;
+  --metron-glass-stroke: rgb(255 255 255 / 22%);
+  --metron-glass-highlight: rgb(255 255 255 / 58%);
+  --metron-glass-lowlight: rgb(255 255 255 / 7%);
+  --metron-shadow-raised: 0 24px 80px rgb(0 0 0 / 72%);
+  --metron-shadow-control: 0 14px 42px rgb(0 0 0 / 48%);
+  --metron-shadow-glass: 0 26px 80px rgb(0 0 0 / 64%);
+  --metron-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --metron-duration-fast: 150ms;
+  --metron-duration-medium: 320ms;
   font-family: var(--metron-font-sans);
   color: var(--metron-pearl);
 }
 
 .metron-theme {
   min-height: 100%;
-  background: var(--metron-black);
+  background: #000000;
 }
 
 .metron-theme,
@@ -75,7 +115,7 @@
 
 .metron-theme ::selection {
   color: var(--metron-pearl);
-  background: var(--metron-crimson-bright);
+  background: var(--metron-crimson);
 }
 
 .metron-sr-only {
@@ -90,17 +130,6 @@
   border: 0;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .metron-theme *,
-  .metron-theme *::before,
-  .metron-theme *::after {
-    scroll-behavior: auto !important;
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
 .metron-liquid-glass {
   position: relative;
   isolation: isolate;
@@ -110,6 +139,7 @@
   background: transparent;
   box-shadow: var(--metron-glass-glow);
   color: var(--metron-pearl);
+  transform: translateZ(0);
   transform-style: preserve-3d;
 }
 
@@ -128,7 +158,7 @@
 
 .metron-liquid-glass:focus-visible {
   outline: 2px solid var(--metron-focus);
-  outline-offset: 3px;
+  outline-offset: 4px;
 }
 
 .metron-liquid-glass__filter {
@@ -150,25 +180,28 @@
 .metron-liquid-glass__bend {
   z-index: -3;
   background: transparent;
-  backdrop-filter: blur(var(--metron-glass-blur)) saturate(150%) contrast(1.05);
-  -webkit-backdrop-filter: blur(var(--metron-glass-blur)) saturate(150%) contrast(1.05);
+  backdrop-filter: var(--metron-glass-filter, none) blur(var(--metron-glass-blur)) saturate(135%) contrast(1.08);
+  -webkit-backdrop-filter: var(--metron-glass-filter, none) blur(var(--metron-glass-blur)) saturate(135%) contrast(1.08);
 }
 
 .metron-liquid-glass__face {
   z-index: -2;
-  background: linear-gradient(135deg, rgb(242 241 237 / 13%), transparent 36%);
-  box-shadow:
-    inset 0 1px 0 rgb(242 241 237 / 20%),
-    inset 0 -1px 0 rgb(0 0 0 / 32%);
+  background: transparent;
+  box-shadow: var(--metron-glass-edge-shadow);
 }
 
 .metron-liquid-glass__edge {
-  inset: 1px;
+  inset: 0;
   z-index: -1;
-  border: 1px solid var(--metron-border);
-  box-shadow:
-    inset 1px 1px 1px rgb(242 241 237 / 7%),
-    inset -1px -1px 1px rgb(0 0 0 / 24%);
+  padding: 1px;
+  background:
+    linear-gradient(135deg, rgb(255 255 255 / 68%) 0%, rgb(255 255 255 / 10%) 18%, transparent 44%),
+    linear-gradient(315deg, rgb(255 255 255 / 34%) 0%, transparent 24%),
+    linear-gradient(90deg, transparent 20%, rgb(255 255 255 / 20%) 48%, transparent 76%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
 }
 
 .metron-liquid-glass__content {
@@ -186,5 +219,16 @@
   .metron-liquid-glass__bend {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .metron-theme *,
+  .metron-theme *::before,
+  .metron-theme *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

@@ -201,54 +201,57 @@
 }
 
 /* Typography */
-.metron-typography-h1 {
-  font-size: clamp(2.25rem, 5vw, 3.25rem);
-  font-weight: 750;
-  letter-spacing: -0.04em;
-  line-height: 1.1;
+.metron-typography-h1,
+.metron-typography-h2,
+.metron-typography-h3,
+.metron-typography-h4 {
+  margin: 0;
   color: var(--metron-pearl);
-  margin: 0 0 1rem;
+  font-family: var(--metron-font-display);
+  font-weight: 800;
+  text-wrap: balance;
+}
+
+.metron-typography-h1 {
+  max-width: 12ch;
+  font-size: clamp(3.25rem, 9vw, 8rem);
+  letter-spacing: -0.075em;
+  line-height: 0.86;
 }
 
 .metron-typography-h2 {
-  font-size: clamp(1.75rem, 3.5vw, 2.25rem);
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.2;
-  color: var(--metron-pearl);
-  margin: 0 0 0.875rem;
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  letter-spacing: -0.065em;
+  line-height: 0.9;
 }
 
 .metron-typography-h3 {
-  font-size: clamp(1.25rem, 2.5vw, 1.5rem);
-  font-weight: 650;
-  letter-spacing: -0.025em;
-  line-height: 1.25;
-  color: var(--metron-pearl);
-  margin: 0 0 0.75rem;
+  font-size: clamp(1.5rem, 3vw, 2.4rem);
+  letter-spacing: -0.05em;
+  line-height: 0.95;
 }
 
 .metron-typography-h4 {
   font-size: 1.125rem;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1.35;
-  color: var(--metron-pearl);
-  margin: 0 0 0.5rem;
+  letter-spacing: -0.035em;
+  line-height: 1;
 }
 
 .metron-typography-lead {
-  font-size: 1.125rem;
-  line-height: 1.6;
+  max-width: 56ch;
+  margin: 0;
   color: var(--metron-pearl-muted);
-  margin: 0 0 1rem;
+  font-size: clamp(1rem, 1.7vw, 1.25rem);
+  line-height: 1.6;
+  text-wrap: pretty;
 }
 
 .metron-typography-p {
-  font-size: 0.9375rem;
-  line-height: 1.6;
+  max-width: 65ch;
+  margin: 0;
   color: var(--metron-pearl);
-  margin: 0 0 0.875rem;
+  font-size: 0.9375rem;
+  line-height: 1.65;
 }
 
 .metron-typography-large {
@@ -274,10 +277,11 @@
 }
 
 .metron-typography-code {
-  font-family: var(--metron-font-mono);
-  font-size: 0.85em;
-  padding: 0.15rem 0.35rem;
-  border-radius: 0.25rem;
-  background: rgba(242, 241, 237, 0.08);
+  padding: 0.25rem 0.55rem;
+  color: var(--metron-pearl);
+  background: transparent;
   border: 1px solid var(--metron-border);
+  border-radius: var(--metron-radius-pill);
+  font-family: var(--metron-font-mono);
+  font-size: 0.78em;
 }

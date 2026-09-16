@@ -1,0 +1,129 @@
+/* Transparent liquid material applied across shadcn-style surfaces. */
+:where(
+  .metron-accordion-item,
+  .metron-alert,
+  .metron-alert--liquid-glass,
+  .metron-attachment,
+  .metron-bubble--assistant,
+  .metron-bubble--liquid-glass,
+  .metron-bubble--user,
+  .metron-calendar,
+  .metron-card--carbon,
+  .metron-card--glass,
+  .metron-card--solid,
+  .metron-chart-tooltip,
+  .metron-command,
+  .metron-context-menu-content,
+  .metron-dialog-modal,
+  .metron-alert-dialog-modal,
+  .metron-drawer-content,
+  .metron-hover-card-content,
+  .metron-input-group,
+  .metron-item,
+  .metron-menubar,
+  .metron-navigation-menu-content,
+  .metron-popover-content,
+  .metron-questionnaire,
+  .metron-select-content,
+  .metron-select-trigger,
+  .metron-sheet-content,
+  .metron-table-container,
+  .metron-tabs-list,
+  .metron-toggle-group,
+  .metron-tooltip-content
+) {
+  background: transparent;
+  border-color: var(--metron-glass-stroke);
+  backdrop-filter: blur(var(--metron-blur)) saturate(135%);
+  -webkit-backdrop-filter: blur(var(--metron-blur)) saturate(135%);
+  box-shadow:
+    inset 1px 1px 1px rgb(255 255 255 / 22%),
+    inset -1px -1px 1px rgb(255 255 255 / 6%),
+    0 20px 60px rgb(0 0 0 / 58%);
+}
+
+:where(
+  .metron-checkbox,
+  .metron-input-otp-slot,
+  .metron-questionnaire-option,
+  .metron-radio-item,
+  .metron-slider-thumb
+) {
+  background: transparent;
+}
+
+:where(
+  .metron-accordion-item,
+  .metron-alert,
+  .metron-attachment,
+  .metron-bubble,
+  .metron-input,
+  .metron-input-group,
+  .metron-item,
+  .metron-menubar,
+  .metron-questionnaire-option,
+  .metron-select,
+  .metron-select-trigger,
+  .metron-tabs-list,
+  .metron-textarea,
+  .metron-toggle,
+  .metron-toggle-group
+) {
+  border-radius: var(--metron-radius-pill);
+}
+
+:where(
+  .metron-calendar,
+  .metron-command,
+  .metron-dialog-modal,
+  .metron-alert-dialog-modal,
+  .metron-drawer-content,
+  .metron-hover-card-content,
+  .metron-navigation-menu-content,
+  .metron-popover-content,
+  .metron-select-content,
+  .metron-sheet-content
+) {
+  border-radius: var(--metron-radius-card);
+}
+
+.metron-alert--destructive,
+.metron-bubble--user {
+  border-color: rgb(153 21 45 / 70%);
+}
+
+.metron-table-header,
+.metron-table-footer,
+.metron-table-row[data-state="selected"] {
+  background: transparent;
+}
+
+.metron-item:hover,
+.metron-questionnaire-option:hover,
+.metron-table-row:hover {
+  background: rgb(255 255 255 / 5%);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  :where(
+    .metron-accordion-item,
+    .metron-alert,
+    .metron-attachment,
+    .metron-calendar,
+    .metron-command,
+    .metron-context-menu-content,
+    .metron-drawer-content,
+    .metron-hover-card-content,
+    .metron-navigation-menu-content,
+    .metron-popover-content,
+    .metron-questionnaire,
+    .metron-select-content,
+    .metron-sheet-content,
+    .metron-table-container,
+    .metron-tooltip-content
+  ) {
+    background: #090909;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}

@@ -10,3 +10,8 @@ await cp(
   new URL("../dist/styles/", import.meta.url),
   { recursive: true },
 );
+await cp(
+  new URL("../src/fonts/", import.meta.url),
+  new URL("../dist/fonts/", import.meta.url),
+  { recursive: true },
+);

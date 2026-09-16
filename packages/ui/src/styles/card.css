@@ -12,13 +12,9 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
-  padding: clamp(1.125rem, 2.5vw, 1.75rem);
-  background: linear-gradient(180deg, rgba(14, 14, 18, 0.76) 0%, rgba(9, 9, 12, 0.86) 100%);
+  padding: clamp(1.25rem, 3vw, 2rem);
+  background: transparent;
   border-radius: inherit;
-  backdrop-filter: blur(24px) saturate(150%);
-  -webkit-backdrop-filter: blur(24px) saturate(150%);
-  border: 1px solid var(--metron-carbon-border);
-  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.12), 0 16px 40px rgba(0, 0, 0, 0.6);
 }
 
 /* Shadcn Standard Card Classes */
@@ -31,24 +27,16 @@
               box-shadow var(--metron-duration-fast) var(--metron-ease);
 }
 
-.metron-card--carbon {
-  background: linear-gradient(180deg, rgba(15, 15, 18, 0.8) 0%, rgba(8, 8, 10, 0.9) 100%);
-  border: 1px solid var(--metron-carbon-border);
-  backdrop-filter: blur(28px) saturate(160%);
-  -webkit-backdrop-filter: blur(28px) saturate(160%);
-  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.12),
-              inset 0 -1px 1px 0 rgba(0, 0, 0, 0.4),
-              0 18px 48px rgba(0, 0, 0, 0.65);
-}
-
+.metron-card--carbon,
 .metron-card--glass {
-  background: rgba(14, 14, 18, 0.45);
-  border: 1px solid var(--metron-border-strong);
-  backdrop-filter: blur(32px) saturate(170%);
-  -webkit-backdrop-filter: blur(32px) saturate(170%);
-  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.2),
-              inset 0 -1px 1px 0 rgba(0, 0, 0, 0.5),
-              0 20px 60px rgba(0, 0, 0, 0.7);
+  background: transparent;
+  border: 1px solid var(--metron-glass-stroke);
+  backdrop-filter: blur(30px) saturate(135%);
+  -webkit-backdrop-filter: blur(30px) saturate(135%);
+  box-shadow:
+    inset 1px 1px 1px rgb(255 255 255 / 26%),
+    inset -1px -1px 1px rgb(255 255 255 / 7%),
+    0 20px 60px rgb(0 0 0 / 60%);
 }
 
 .metron-card--outline {
@@ -57,8 +45,8 @@
 }
 
 .metron-card--solid {
-  background: var(--metron-carbon-surface);
-  border: 1px solid var(--metron-carbon-border);
+  background: transparent;
+  border: 1px solid var(--metron-border);
 }
 
 .metron-card-header {
@@ -72,11 +60,11 @@
 .metron-card-title {
   margin: 0;
   color: var(--metron-pearl);
-  font-family: var(--metron-font-sans);
-  font-size: clamp(1.05rem, 1.8vw, 1.25rem);
-  font-weight: 650;
-  line-height: 1.25;
-  letter-spacing: -0.025em;
+  font-family: var(--metron-font-display);
+  font-size: clamp(1.1rem, 2vw, 1.35rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
 }
 
 .metron-card-description {
@@ -125,11 +113,11 @@
 .metron-card__title {
   margin: 0;
   color: var(--metron-pearl);
-  font-family: var(--metron-font-sans);
-  font-size: clamp(1.05rem, 1.8vw, 1.25rem);
-  font-weight: 650;
-  line-height: 1.25;
-  letter-spacing: -0.025em;
+  font-family: var(--metron-font-display);
+  font-size: clamp(1.1rem, 2vw, 1.35rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
 }
 
 .metron-card__description {
@@ -207,12 +195,12 @@
 
 .metron-metric-card__value {
   color: var(--metron-pearl);
-  font-family: var(--metron-font-sans);
-  font-size: clamp(1.9rem, 4vw, 2.75rem);
+  font-family: var(--metron-font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
   font-variant-numeric: tabular-nums;
-  font-weight: 680;
-  line-height: 1;
-  letter-spacing: -0.055em;
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.06em;
 }
 
 .metron-metric-card__change {

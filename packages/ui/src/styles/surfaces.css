@@ -367,10 +367,10 @@
 
 /* Sidebar */
 .metron-sidebar-provider {
+  position: relative;
   display: flex;
   width: 100%;
-  min-height: 100vh;
-  position: relative;
+  min-height: 100%;
 }
 
 .metron-sidebar {
@@ -378,10 +378,12 @@
   flex-direction: column;
   width: 16rem;
   flex-shrink: 0;
-  background: linear-gradient(180deg, rgba(12, 12, 15, 0.88) 0%, rgba(8, 8, 10, 0.95) 100%);
-  border-right: 1px solid var(--metron-carbon-border);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
+  background: transparent;
+  border: 1px solid var(--metron-glass-stroke);
+  border-radius: var(--metron-radius-panel);
+  backdrop-filter: blur(30px) saturate(135%);
+  -webkit-backdrop-filter: blur(30px) saturate(135%);
+  box-shadow: inset 1px 1px 1px rgb(255 255 255 / 24%);
   transition: width var(--metron-duration-medium) var(--metron-ease);
 }
 
@@ -454,14 +456,137 @@
 }
 
 .metron-sidebar-menu-button[data-active="true"] {
-  color: var(--metron-pearl);
-  background: rgba(179, 143, 111, 0.12);
-  border-color: rgba(179, 143, 111, 0.3);
+  color: var(--metron-black);
+  background: var(--metron-pearl);
+  border-color: var(--metron-pearl);
 }
 
 .metron-sidebar-footer {
   padding: 1rem;
   border-top: 1px solid var(--metron-border);
+}
+
+.metron-sidebar-trigger-glyph {
+  display: grid;
+  gap: 0.25rem;
+  width: 1rem;
+}
+
+.metron-sidebar-trigger-glyph > span {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+}
+
+.metron-liquid-sidebar {
+  width: min(100%, 20rem);
+  color: var(--metron-pearl);
+}
+
+.metron-liquid-sidebar__glass,
+.metron-liquid-sidebar__surface {
+  width: 100%;
+}
+
+.metron-liquid-sidebar__surface {
+  padding: 1rem;
+}
+
+.metron-liquid-sidebar__heading {
+  padding: 0.75rem 0.8rem 1.1rem;
+  border-bottom: 1px solid var(--metron-border);
+  font-family: var(--metron-font-display);
+  font-size: 1rem;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.metron-liquid-sidebar__menu {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.8rem 0;
+  margin: 0;
+  list-style: none;
+}
+
+.metron-liquid-sidebar__item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  align-items: center;
+  width: 100%;
+  min-height: 3.25rem;
+  padding: 0.65rem 0.9rem;
+  color: var(--metron-pearl-muted);
+  text-align: left;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--metron-radius-pill);
+  cursor: pointer;
+  transition:
+    color var(--metron-duration-fast) var(--metron-ease),
+    background-color var(--metron-duration-fast) var(--metron-ease),
+    border-color var(--metron-duration-fast) var(--metron-ease),
+    transform var(--metron-duration-fast) var(--metron-ease);
+}
+
+.metron-liquid-sidebar__item:hover:not(:disabled) {
+  color: var(--metron-pearl);
+  background: rgb(255 255 255 / 7%);
+  border-color: var(--metron-border);
+}
+
+.metron-liquid-sidebar__item:active:not(:disabled) {
+  transform: scale(0.985);
+}
+
+.metron-liquid-sidebar__item:focus-visible {
+  outline: 2px solid var(--metron-focus);
+  outline-offset: 2px;
+}
+
+.metron-liquid-sidebar__item[data-active="true"] {
+  color: var(--metron-black);
+  background: var(--metron-pearl);
+  border-color: var(--metron-pearl);
+}
+
+.metron-liquid-sidebar__item:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.metron-liquid-sidebar__icon {
+  display: grid;
+  place-items: center;
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.metron-liquid-sidebar__icon > svg {
+  width: 100%;
+  height: 100%;
+}
+
+.metron-liquid-sidebar__label {
+  overflow: hidden;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.metron-liquid-sidebar__badge {
+  font-family: var(--metron-font-mono);
+  font-size: 0.65rem;
+}
+
+.metron-liquid-sidebar__footer {
+  padding: 1rem 0.8rem 0.6rem;
+  color: var(--metron-pearl-muted);
+  border-top: 1px solid var(--metron-border);
+  font-size: 0.8rem;
+  line-height: 1.45;
 }
 
 /* Animations */

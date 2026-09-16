@@ -56,10 +56,8 @@
   overflow: hidden;
   border: 1px solid var(--metron-border);
   border-radius: var(--metron-radius-pill);
-  background: rgb(242 241 237 / 7%);
-  box-shadow:
-    inset 0 1px 4px rgb(0 0 0 / 44%),
-    0 1px 0 rgb(242 241 237 / 5%);
+  background: transparent;
+  box-shadow: inset 0 1px 2px rgb(255 255 255 / 7%);
 }
 
 .metron-progress[data-size="sm"] .metron-progress__track {
@@ -75,11 +73,8 @@
   inset: 0 auto 0 0;
   width: var(--metron-progress-value);
   border-radius: inherit;
-  background:
-    linear-gradient(90deg, color-mix(in srgb, var(--metron-progress-color) 72%, #161616), var(--metron-progress-color));
-  box-shadow:
-    inset 0 1px 0 rgb(242 241 237 / 22%),
-    0 0 16px color-mix(in srgb, var(--metron-progress-color) 28%, transparent);
+  background: var(--metron-progress-color);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 30%);
   transition: width var(--metron-duration-medium) var(--metron-ease);
 }
 

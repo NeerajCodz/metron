@@ -1,3 +1,5 @@
+"use client";
+
 import {
   createContext,
   forwardRef,
@@ -9,6 +11,7 @@ import {
 } from "react";
 
 import { cn } from "../lib/cn.js";
+import { LiquidGlass } from "./liquid-glass.js";
 
 interface SidebarContextValue {
   collapsed: boolean;
@@ -34,7 +37,7 @@ export interface SidebarProviderProps extends HTMLAttributes<HTMLDivElement> {
 export const SidebarProvider = forwardRef<HTMLDivElement, SidebarProviderProps>(
   ({ defaultCollapsed = false, className, children, ...props }, ref) => {
     const [collapsed, setCollapsed] = useState(defaultCollapsed);
-    const toggleCollapsed = () => setCollapsed((prev) => !prev);
+    const toggleCollapsed = () => setCollapsed((previous) => !previous);
 
     return (
       <SidebarContext.Provider value={{ collapsed, setCollapsed, toggleCollapsed }}>
@@ -57,11 +60,7 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(
     return (
       <aside
         ref={ref}
-        className={cn(
-          "metron-sidebar",
-          collapsed && "metron-sidebar--collapsed",
-          className,
-        )}
+        className={cn("metron-sidebar", collapsed && "metron-sidebar--collapsed", className)}
         {...props}
       >
         {children}
@@ -119,19 +118,18 @@ export interface SidebarMenuButtonProps extends ButtonHTMLAttributes<HTMLButtonE
 }
 
 export const SidebarMenuButton = forwardRef<HTMLButtonElement, SidebarMenuButtonProps>(
-  ({ isActive = false, className, children, ...props }, ref) => {
-    return (
-      <button
-        ref={ref}
-        className={cn("metron-sidebar-menu-button", className)}
-        data-active={isActive || undefined}
-        type="button"
-        {...props}
-      >
-        {children}
-      </button>
-    );
-  },
+  ({ isActive = false, className, children, ...props }, ref) => (
+    <button
+      ref={ref}
+      aria-current={isActive ? "page" : undefined}
+      className={cn("metron-sidebar-menu-button", className)}
+      data-active={isActive || undefined}
+      type="button"
+      {...props}
+    >
+      {children}
+    </button>
+  ),
 );
 SidebarMenuButton.displayName = "SidebarMenuButton";
 
@@ -154,27 +152,18 @@ export const SidebarTrigger = forwardRef<HTMLButtonElement, SidebarTriggerProps>
         ref={ref}
         aria-label="Toggle sidebar"
         className={cn("metron-button metron-button--glass metron-button--sm", className)}
-        onClick={(e) => {
-          onClick?.(e);
-          toggleCollapsed();
+        onClick={(event) => {
+          onClick?.(event);
+          if (!event.defaultPrevented) toggleCollapsed();
         }}
         type="button"
         {...props}
       >
         {children ?? (
-          <svg
-            fill="none"
-            height="16"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-            width="16"
-          >
-            <rect height="18" rx="2" ry="2" width="18" x="3" y="3" />
-            <line x1="9" x2="9" y1="3" y2="21" />
-          </svg>
+          <span aria-hidden="true" className="metron-sidebar-trigger-glyph">
+            <span />
+            <span />
+          </span>
         )}
       </button>
     );
@@ -188,3 +177,99 @@ export const SidebarRail = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElem
   ),
 );
 SidebarRail.displayName = "SidebarRail";
+
+export interface LiquidGlassSidebarItem {
+  id: string;
+  label: ReactNode;
+  icon?: ReactNode | undefined;
+  badge?: ReactNode | undefined;
+  disabled?: boolean | undefined;
+}
+
+export interface LiquidGlassSidebarMenuProps
+  extends Omit<HTMLAttributes<HTMLElement>, "onChange" | "title"> {
+  items: readonly LiquidGlassSidebarItem[];
+  activeId?: string | undefined;
+  defaultActiveId?: string | undefined;
+  onActiveChange?: ((id: string) => void) | undefined;
+  heading?: ReactNode | undefined;
+  footer?: ReactNode | undefined;
+  draggable?: boolean | undefined;
+  label?: string | undefined;
+}
+
+export const LiquidGlassSidebarMenu = forwardRef<HTMLElement, LiquidGlassSidebarMenuProps>(
+  (
+    {
+      items,
+      activeId,
+      defaultActiveId,
+      onActiveChange,
+      heading,
+      footer,
+      draggable = false,
+      label = "Primary navigation",
+      className,
+      ...props
+    },
+    ref,
+  ) => {
+    const [internalActiveId, setInternalActiveId] = useState(defaultActiveId ?? items[0]?.id);
+    const selectedId = activeId ?? internalActiveId;
+
+    const selectItem = (item: LiquidGlassSidebarItem) => {
+      if (item.disabled) return;
+      if (activeId === undefined) setInternalActiveId(item.id);
+      onActiveChange?.(item.id);
+    };
+
+    return (
+      <nav ref={ref} aria-label={label} className={cn("metron-liquid-sidebar", className)} {...props}>
+        <LiquidGlass
+          blurIntensity="lg"
+          borderRadius="var(--metron-radius-panel)"
+          className="metron-liquid-sidebar__glass"
+          contentClassName="metron-liquid-sidebar__surface"
+          draggable={draggable}
+          glowIntensity="md"
+          shadowIntensity="lg"
+        >
+          {heading !== undefined ? (
+            <div className="metron-liquid-sidebar__heading">{heading}</div>
+          ) : null}
+          <ul className="metron-liquid-sidebar__menu">
+            {items.map((item) => {
+              const selected = selectedId === item.id;
+              return (
+                <li key={item.id}>
+                  <button
+                    aria-current={selected ? "page" : undefined}
+                    className="metron-liquid-sidebar__item"
+                    data-active={selected || undefined}
+                    disabled={item.disabled}
+                    onClick={() => selectItem(item)}
+                    type="button"
+                  >
+                    {item.icon !== undefined ? (
+                      <span aria-hidden="true" className="metron-liquid-sidebar__icon">
+                        {item.icon}
+                      </span>
+                    ) : null}
+                    <span className="metron-liquid-sidebar__label">{item.label}</span>
+                    {item.badge !== undefined ? (
+                      <span className="metron-liquid-sidebar__badge">{item.badge}</span>
+                    ) : null}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+          {footer !== undefined ? (
+            <div className="metron-liquid-sidebar__footer">{footer}</div>
+          ) : null}
+        </LiquidGlass>
+      </nav>
+    );
+  },
+);
+LiquidGlassSidebarMenu.displayName = "LiquidGlassSidebarMenu";

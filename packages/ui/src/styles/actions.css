@@ -50,53 +50,56 @@
   color: var(--metron-pearl);
   background: var(--metron-crimson);
   border-color: var(--metron-crimson);
-  box-shadow: 0 4px 14px var(--metron-crimson-glow);
+  box-shadow: none;
 }
 
 .metron-button--solid:hover:not(:disabled, [aria-disabled="true"]),
 .metron-button--primary:hover:not(:disabled, [aria-disabled="true"]) {
   background: var(--metron-crimson-bright);
   border-color: var(--metron-crimson-bright);
-  box-shadow: 0 6px 20px var(--metron-crimson-glow);
+  box-shadow: none;
 }
 
 .metron-button--liquid-glass {
   color: var(--metron-pearl);
-  background: rgba(14, 14, 18, 0.45);
-  border: 1px solid var(--metron-border-strong);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.22),
-              inset 0 -1px 1px 0 rgba(0, 0, 0, 0.4),
-              0 8px 24px rgba(0, 0, 0, 0.4);
+  background: transparent;
+  border-color: var(--metron-glass-stroke);
+  backdrop-filter: blur(24px) saturate(135%);
+  -webkit-backdrop-filter: blur(24px) saturate(135%);
+  box-shadow:
+    inset 1px 1px 1px rgb(255 255 255 / 32%),
+    inset -1px -1px 1px rgb(255 255 255 / 8%),
+    0 12px 36px rgb(0 0 0 / 48%);
 }
 
 .metron-button--liquid-glass:hover:not(:disabled, [aria-disabled="true"]) {
-  background: rgba(22, 22, 28, 0.6);
-  border-color: rgba(255, 255, 255, 0.35);
-  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.3),
-              0 12px 32px rgba(0, 0, 0, 0.55);
+  background: rgb(255 255 255 / 5%);
+  border-color: rgb(255 255 255 / 45%);
+  box-shadow:
+    inset 1px 1px 2px rgb(255 255 255 / 42%),
+    inset -1px -1px 2px rgb(255 255 255 / 10%),
+    0 16px 44px rgb(0 0 0 / 58%);
 }
 
 .metron-button--glass {
   color: var(--metron-pearl);
   background: transparent;
-  border-color: var(--metron-border-strong);
-  box-shadow: var(--metron-shadow-control);
-  backdrop-filter: blur(16px) saturate(140%);
-  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border-color: var(--metron-glass-stroke);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 22%);
+  backdrop-filter: blur(20px) saturate(130%);
+  -webkit-backdrop-filter: blur(20px) saturate(130%);
 }
 
 .metron-button--glass:hover:not(:disabled, [aria-disabled="true"]) {
-  background: rgba(242, 241, 237, 0.05);
-  border-color: rgb(242 241 237 / 34%);
+  background: rgb(255 255 255 / 5%);
+  border-color: rgb(255 255 255 / 42%);
 }
 
 .metron-button--crimson {
   color: var(--metron-pearl);
   background: var(--metron-crimson);
   border-color: var(--metron-crimson);
-  box-shadow: 0 4px 16px var(--metron-crimson-glow);
+  box-shadow: none;
 }
 
 .metron-button--crimson:hover:not(:disabled, [aria-disabled="true"]) {
@@ -118,13 +121,13 @@
 
 .metron-button--secondary {
   color: var(--metron-pearl);
-  background: var(--metron-carbon-surface);
-  border-color: var(--metron-carbon-border);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  background: transparent;
+  border-color: var(--metron-border);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 14%);
 }
 
 .metron-button--secondary:hover:not(:disabled, [aria-disabled="true"]) {
-  background: var(--metron-carbon-hover);
+  background: rgb(255 255 255 / 5%);
   border-color: var(--metron-border-strong);
 }
 

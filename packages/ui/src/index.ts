@@ -107,7 +107,13 @@ export {
   type GlassNavigationItem,
   type GlassNavigationProps,
 } from "./components/navigation.js";
-export { LiquidGlass, type LiquidGlassProps } from "./components/liquid-glass.js";
+export {
+  LiquidGlass,
+  LiquidGlassCard,
+  type LiquidGlassBlur,
+  type LiquidGlassIntensity,
+  type LiquidGlassProps,
+} from "./components/liquid-glass.js";
 export { cn } from "./lib/cn.js";
 export {
   BackgroundLayout,
@@ -204,6 +210,7 @@ export {
   type ScrollBarProps,
 } from "./components/scroll-area.js";
 export {
+  LiquidGlassSidebarMenu,
   Sidebar,
   SidebarContent,
   SidebarFooter,
@@ -217,6 +224,8 @@ export {
   SidebarRail,
   SidebarTrigger,
   useSidebar,
+  type LiquidGlassSidebarItem,
+  type LiquidGlassSidebarMenuProps,
   type SidebarMenuButtonProps,
   type SidebarProps,
   type SidebarProviderProps,

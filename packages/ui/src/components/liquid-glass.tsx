@@ -12,12 +12,15 @@ import {
 
 import { cn } from "../lib/cn.js";
 
-type BlurIntensity = "sm" | "md" | "lg" | "xl";
-type GlowIntensity = "none" | "sm" | "md" | "lg";
+export type LiquidGlassBlur = "sm" | "md" | "lg" | "xl";
+export type LiquidGlassIntensity = "none" | "xs" | "sm" | "md" | "lg" | "xl";
+
 type GlassStyle = MotionStyle & {
   "--metron-glass-radius": string;
   "--metron-glass-blur": string;
   "--metron-glass-glow": string;
+  "--metron-glass-edge-shadow": string;
+  "--metron-glass-filter": string;
 };
 
 export interface LiquidGlassProps
@@ -35,24 +38,36 @@ export interface LiquidGlassProps
   height?: CSSProperties["height"] | undefined;
   expandedWidth?: CSSProperties["width"] | undefined;
   expandedHeight?: CSSProperties["height"] | undefined;
-  blurIntensity?: BlurIntensity | undefined;
-  glowIntensity?: GlowIntensity | undefined;
+  blurIntensity?: LiquidGlassBlur | undefined;
+  glowIntensity?: LiquidGlassIntensity | undefined;
+  shadowIntensity?: LiquidGlassIntensity | undefined;
   borderRadius?: string | undefined;
   style?: MotionStyle | undefined;
 }
 
-const blurValues: Record<BlurIntensity, string> = {
+const blurValues: Record<LiquidGlassBlur, string> = {
   sm: "12px",
   md: "20px",
-  lg: "28px",
-  xl: "40px",
+  lg: "30px",
+  xl: "44px",
 };
 
-const glowValues: Record<GlowIntensity, string> = {
+const glowValues: Record<LiquidGlassIntensity, string> = {
   none: "none",
-  sm: "0 18px 48px rgb(0 0 0 / 34%)",
-  md: "0 26px 72px rgb(0 0 0 / 46%)",
-  lg: "0 34px 96px rgb(0 0 0 / 54%)",
+  xs: "0 10px 28px rgb(0 0 0 / 28%)",
+  sm: "0 18px 48px rgb(0 0 0 / 40%)",
+  md: "0 26px 72px rgb(0 0 0 / 52%)",
+  lg: "0 34px 96px rgb(0 0 0 / 64%)",
+  xl: "0 46px 130px rgb(0 0 0 / 72%)",
+};
+
+const edgeValues: Record<LiquidGlassIntensity, string> = {
+  none: "none",
+  xs: "inset 0 1px 0 rgb(255 255 255 / 18%), inset 0 -1px 0 rgb(255 255 255 / 5%)",
+  sm: "inset 0 1px 1px rgb(255 255 255 / 30%), inset 0 -1px 1px rgb(255 255 255 / 8%)",
+  md: "inset 1px 1px 2px rgb(255 255 255 / 38%), inset -1px -1px 2px rgb(255 255 255 / 10%)",
+  lg: "inset 2px 2px 3px rgb(255 255 255 / 44%), inset -2px -2px 3px rgb(255 255 255 / 12%)",
+  xl: "inset 3px 3px 5px rgb(255 255 255 / 50%), inset -3px -3px 5px rgb(255 255 255 / 14%)",
 };
 
 export function LiquidGlass({
@@ -70,7 +85,8 @@ export function LiquidGlass({
   expandedWidth,
   expandedHeight,
   blurIntensity = "lg",
-  glowIntensity = "md",
+  glowIntensity = "sm",
+  shadowIntensity = "md",
   borderRadius = "var(--metron-radius-card)",
   style,
   onKeyDown,
@@ -114,6 +130,8 @@ export function LiquidGlass({
     "--metron-glass-radius": borderRadius,
     "--metron-glass-blur": blurValues[blurIntensity],
     "--metron-glass-glow": glowValues[glowIntensity],
+    "--metron-glass-edge-shadow": edgeValues[shadowIntensity],
+    "--metron-glass-filter": `url("#${filterId}")`,
     ...(!expandable && width !== undefined ? { width } : {}),
     ...(!expandable && height !== undefined ? { height } : {}),
   };
@@ -152,36 +170,43 @@ export function LiquidGlass({
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       style={glassStyle}
-      transition={{ duration: reduceMotion ? 0 : 0.34, ease: [0.2, 0.8, 0.2, 1] }}
+      transition={{ duration: reduceMotion ? 0 : 0.34, ease: [0.22, 1, 0.36, 1] }}
     >
       <svg aria-hidden="true" className="metron-liquid-glass__filter" focusable="false">
         <defs>
-          <filter id={filterId} x="-10%" y="-10%" width="120%" height="120%">
+          <filter
+            colorInterpolationFilters="sRGB"
+            filterUnits="objectBoundingBox"
+            height="140%"
+            id={filterId}
+            width="140%"
+            x="-20%"
+            y="-20%"
+          >
             <feTurbulence
-              baseFrequency="0.009 0.014"
-              numOctaves="1"
+              baseFrequency="0.008 0.012"
+              numOctaves="2"
               result="noise"
-              seed="7"
+              seed="11"
               type="fractalNoise"
             />
+            <feGaussianBlur in="noise" result="softNoise" stdDeviation="0.7" />
             <feDisplacementMap
               in="SourceGraphic"
-              in2="noise"
-              scale="12"
+              in2="softNoise"
+              scale="46"
               xChannelSelector="R"
-              yChannelSelector="G"
+              yChannelSelector="B"
             />
           </filter>
         </defs>
       </svg>
-      <span
-        aria-hidden="true"
-        className="metron-liquid-glass__bend"
-        style={{ filter: `url(#${filterId})` }}
-      />
+      <span aria-hidden="true" className="metron-liquid-glass__bend" />
       <span aria-hidden="true" className="metron-liquid-glass__face" />
       <span aria-hidden="true" className="metron-liquid-glass__edge" />
       <div className={cn("metron-liquid-glass__content", contentClassName)}>{children}</div>
     </motion.div>
   );
 }
+
+export const LiquidGlassCard = LiquidGlass;
