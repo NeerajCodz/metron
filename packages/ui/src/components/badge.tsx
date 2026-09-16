@@ -6,15 +6,19 @@ export type BadgeVariant =
   | "neutral"
   | "accent"
   | "sand"
+  | "crimson"
   | "success"
   | "warning"
-  | "danger";
+  | "danger"
+  | "liquid-glass"
+  | "solid"
+  | "outline";
 
 export interface BadgeProps
   extends Omit<HTMLAttributes<HTMLSpanElement>, "children"> {
   children: ReactNode;
-  variant?: BadgeVariant;
-  leadingIcon?: ReactNode;
+  variant?: BadgeVariant | undefined;
+  leadingIcon?: ReactNode | undefined;
 }
 
 export function Badge({

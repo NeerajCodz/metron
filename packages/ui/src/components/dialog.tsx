@@ -202,6 +202,41 @@ export interface DialogCloseProps extends ButtonHTMLAttributes<HTMLButtonElement
   children?: ReactNode;
 }
 
+
+export interface DialogTriggerProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  children?: ReactNode | undefined;
+}
+
+export const DialogTrigger = forwardRef<HTMLButtonElement, DialogTriggerProps>(
+  ({ className, children, ...props }, ref) => {
+    return (
+      <button
+        ref={ref}
+        className={cn("metron-dialog-trigger", className)}
+        type="button"
+        {...props}
+      >
+        {children}
+      </button>
+    );
+  },
+);
+DialogTrigger.displayName = "DialogTrigger";
+
+export interface DialogContentProps extends HTMLAttributes<HTMLDivElement> {
+  children?: ReactNode | undefined;
+}
+
+export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
+  ({ className, children, ...props }, ref) => {
+    return (
+      <div ref={ref} className={cn("metron-dialog-modal", className)} {...props}>
+        {children}
+      </div>
+    );
+  },
+);
+DialogContent.displayName = "DialogContent";
 export function DialogClose({ className, onClick, type = "button", ...props }: DialogCloseProps) {
   const handleClick: ButtonHTMLAttributes<HTMLButtonElement>["onClick"] = (event) => {
     onClick?.(event);

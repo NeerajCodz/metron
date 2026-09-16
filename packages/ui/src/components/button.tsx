@@ -1,25 +1,40 @@
-import type {
-  AnchorHTMLAttributes,
-  ButtonHTMLAttributes,
-  MouseEvent,
-  ReactNode,
+import {
+  forwardRef,
+  type AnchorHTMLAttributes,
+  type ButtonHTMLAttributes,
+  type HTMLAttributes,
+  type MouseEvent,
+  type ReactNode,
 } from "react";
 
 import { cn } from "../lib/cn.js";
 
-export type ButtonVariant = "solid" | "glass" | "quiet" | "danger";
+export type ButtonVariant =
+  | "solid"
+  | "glass"
+  | "liquid-glass"
+  | "primary"
+  | "crimson"
+  | "sand"
+  | "secondary"
+  | "outline"
+  | "quiet"
+  | "ghost"
+  | "danger"
+  | "destructive"
+  | "link";
 export type ButtonSize = "sm" | "md" | "lg";
 
 export interface ButtonBaseProps {
   children: ReactNode;
-  variant?: ButtonVariant;
-  size?: ButtonSize;
-  leadingIcon?: ReactNode;
-  trailingIcon?: ReactNode;
-  fullWidth?: boolean;
-  loading?: boolean;
-  loadingLabel?: ReactNode;
-  className?: string;
+  variant?: ButtonVariant | undefined;
+  size?: ButtonSize | undefined;
+  leadingIcon?: ReactNode | undefined;
+  trailingIcon?: ReactNode | undefined;
+  fullWidth?: boolean | undefined;
+  loading?: boolean | undefined;
+  loadingLabel?: ReactNode | undefined;
+  className?: string | undefined;
 }
 
 export interface ButtonButtonProps
@@ -40,10 +55,10 @@ export type ButtonProps = ButtonButtonProps | ButtonAnchorProps;
 export interface IconButtonBaseProps {
   icon: ReactNode;
   accessibleLabel: string;
-  variant?: ButtonVariant;
-  size?: ButtonSize;
-  loading?: boolean;
-  className?: string;
+  variant?: ButtonVariant | undefined;
+  size?: ButtonSize | undefined;
+  loading?: boolean | undefined;
+  className?: string | undefined;
 }
 
 export interface IconButtonButtonProps
@@ -330,3 +345,30 @@ export function IconButton(props: IconButtonProps) {
     <IconButtonElement {...props} />
   );
 }
+
+export interface ButtonGroupProps extends HTMLAttributes<HTMLDivElement> {
+  orientation?: "horizontal" | "vertical" | undefined;
+  spacing?: "attached" | "spaced" | undefined;
+  children?: ReactNode | undefined;
+}
+
+export const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(
+  ({ orientation = "horizontal", spacing = "attached", className, children, ...props }, ref) => {
+    return (
+      <div
+        ref={ref}
+        role="group"
+        className={cn(
+          "metron-button-group",
+          `metron-button-group--${orientation}`,
+          `metron-button-group--${spacing}`,
+          className,
+        )}
+        {...props}
+      >
+        {children}
+      </div>
+    );
+  },
+);
+ButtonGroup.displayName = "ButtonGroup";

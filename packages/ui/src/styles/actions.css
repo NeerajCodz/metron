@@ -45,17 +45,37 @@
   font-size: 1rem;
 }
 
-.metron-button--solid {
+.metron-button--solid,
+.metron-button--primary {
   color: var(--metron-pearl);
   background: var(--metron-crimson);
   border-color: var(--metron-crimson);
-  box-shadow: none;
+  box-shadow: 0 4px 14px var(--metron-crimson-glow);
 }
 
-.metron-button--solid:hover:not(:disabled, [aria-disabled="true"]) {
+.metron-button--solid:hover:not(:disabled, [aria-disabled="true"]),
+.metron-button--primary:hover:not(:disabled, [aria-disabled="true"]) {
   background: var(--metron-crimson-bright);
   border-color: var(--metron-crimson-bright);
-  box-shadow: none;
+  box-shadow: 0 6px 20px var(--metron-crimson-glow);
+}
+
+.metron-button--liquid-glass {
+  color: var(--metron-pearl);
+  background: rgba(14, 14, 18, 0.45);
+  border: 1px solid var(--metron-border-strong);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.22),
+              inset 0 -1px 1px 0 rgba(0, 0, 0, 0.4),
+              0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.metron-button--liquid-glass:hover:not(:disabled, [aria-disabled="true"]) {
+  background: rgba(22, 22, 28, 0.6);
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.3),
+              0 12px 32px rgba(0, 0, 0, 0.55);
 }
 
 .metron-button--glass {
@@ -68,34 +88,141 @@
 }
 
 .metron-button--glass:hover:not(:disabled, [aria-disabled="true"]) {
-  background: transparent;
+  background: rgba(242, 241, 237, 0.05);
   border-color: rgb(242 241 237 / 34%);
 }
 
-.metron-button--quiet {
+.metron-button--crimson {
+  color: var(--metron-pearl);
+  background: var(--metron-crimson);
+  border-color: var(--metron-crimson);
+  box-shadow: 0 4px 16px var(--metron-crimson-glow);
+}
+
+.metron-button--crimson:hover:not(:disabled, [aria-disabled="true"]) {
+  background: var(--metron-crimson-bright);
+  border-color: var(--metron-crimson-bright);
+}
+
+.metron-button--sand {
+  color: var(--metron-ink);
+  background: var(--metron-sand);
+  border-color: var(--metron-sand);
+  box-shadow: 0 4px 16px var(--metron-sand-glow);
+}
+
+.metron-button--sand:hover:not(:disabled, [aria-disabled="true"]) {
+  background: var(--metron-sand-bright);
+  border-color: var(--metron-sand-bright);
+}
+
+.metron-button--secondary {
+  color: var(--metron-pearl);
+  background: var(--metron-carbon-surface);
+  border-color: var(--metron-carbon-border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.metron-button--secondary:hover:not(:disabled, [aria-disabled="true"]) {
+  background: var(--metron-carbon-hover);
+  border-color: var(--metron-border-strong);
+}
+
+.metron-button--outline {
+  color: var(--metron-pearl);
+  background: transparent;
+  border-color: var(--metron-border);
+}
+
+.metron-button--outline:hover:not(:disabled, [aria-disabled="true"]) {
+  background: rgba(242, 241, 237, 0.06);
+  border-color: var(--metron-border-strong);
+}
+
+.metron-button--quiet,
+.metron-button--ghost {
   color: var(--metron-pearl);
   background: transparent;
   border-color: transparent;
   box-shadow: none;
 }
 
-.metron-button--quiet:hover:not(:disabled, [aria-disabled="true"]) {
+.metron-button--quiet:hover:not(:disabled, [aria-disabled="true"]),
+.metron-button--ghost:hover:not(:disabled, [aria-disabled="true"]) {
   color: var(--metron-pearl);
   background: rgb(242 241 237 / 9%);
   border-color: var(--metron-border);
 }
 
-.metron-button--danger {
+.metron-button--danger,
+.metron-button--destructive {
   color: var(--metron-pearl);
   background: var(--metron-crimson);
   border-color: var(--metron-crimson);
+  box-shadow: 0 4px 14px var(--metron-crimson-glow);
+}
+
+.metron-button--danger:hover:not(:disabled, [aria-disabled="true"]),
+.metron-button--destructive:hover:not(:disabled, [aria-disabled="true"]) {
+  background: var(--metron-crimson-bright);
+  border-color: var(--metron-crimson-bright);
+}
+
+.metron-button--link {
+  min-height: auto;
+  padding: 0;
+  color: var(--metron-sand);
+  background: transparent;
+  border-color: transparent;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.metron-button--link:hover:not(:disabled, [aria-disabled="true"]) {
+  color: var(--metron-sand-bright);
+}
+
+/* Button Group */
+.metron-button-group {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--metron-radius-control);
+  position: relative;
+  box-shadow: var(--metron-shadow-control);
+}
+
+.metron-button-group--attached > .metron-button:not(:first-child) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  margin-left: -1px;
+}
+
+.metron-button-group--attached > .metron-button:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.metron-button-group--spaced {
+  gap: 0.5rem;
   box-shadow: none;
 }
 
-.metron-button--danger:hover:not(:disabled, [aria-disabled="true"]) {
-  background: var(--metron-crimson-bright);
-  border-color: var(--metron-crimson-bright);
-  box-shadow: none;
+.metron-button-group--vertical {
+  flex-direction: column;
+}
+
+.metron-button-group--vertical.metron-button-group--attached > .metron-button:not(:first-child) {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: inherit;
+  margin-top: -1px;
+  margin-left: 0;
+}
+
+.metron-button-group--vertical.metron-button-group--attached > .metron-button:not(:last-child) {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-right-radius: inherit;
 }
 
 .metron-button:focus-visible {

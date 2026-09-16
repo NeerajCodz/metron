@@ -191,3 +191,172 @@
     transition-duration: 0.01ms;
   }
 }
+
+/* Alert (Shadcn Alert) */
+.metron-alert {
+  position: relative;
+  display: flex;
+  gap: 0.85rem;
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border-radius: var(--metron-radius-control);
+  background: rgba(14, 14, 18, 0.65);
+  border: 1px solid var(--metron-border);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.metron-alert--default {
+  border-color: var(--metron-border);
+}
+
+.metron-alert--destructive {
+  border-color: var(--metron-crimson-bright);
+  background: rgba(113, 0, 20, 0.18);
+  box-shadow: 0 4px 20px rgba(113, 0, 20, 0.25);
+}
+
+.metron-alert--liquid-glass {
+  background: rgba(16, 16, 20, 0.45);
+  border: 1px solid var(--metron-border-strong);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.2), 0 12px 32px rgba(0, 0, 0, 0.6);
+}
+
+.metron-alert-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.metron-alert-title {
+  margin: 0;
+  font-family: var(--metron-font-sans);
+  font-size: 0.9375rem;
+  font-weight: 650;
+  color: var(--metron-pearl);
+  line-height: 1.3;
+}
+
+.metron-alert-description {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--metron-pearl-muted);
+  line-height: 1.5;
+}
+
+/* Avatar */
+.metron-avatar {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--metron-carbon-surface);
+  border: 1px solid var(--metron-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  user-select: none;
+}
+
+.metron-avatar--sm { width: 2rem; height: 2rem; font-size: 0.75rem; }
+.metron-avatar--md { width: 2.5rem; height: 2.5rem; font-size: 0.875rem; }
+.metron-avatar--lg { width: 3.25rem; height: 3.25rem; font-size: 1.1rem; }
+
+.metron-avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.metron-avatar-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-weight: 600;
+  color: var(--metron-pearl);
+  background: rgba(179, 143, 111, 0.16);
+}
+
+.metron-avatar-group {
+  display: inline-flex;
+  align-items: center;
+}
+
+.metron-avatar-group > .metron-avatar:not(:first-child) {
+  margin-left: -0.75rem;
+}
+
+/* Kbd */
+.metron-kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.15rem 0.45rem;
+  border-radius: 0.35rem;
+  background: rgba(18, 18, 22, 0.85);
+  border: 1px solid var(--metron-border-strong);
+  color: var(--metron-pearl);
+  font-family: var(--metron-font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.6), 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+/* Marker */
+.metron-marker {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 999px;
+  background: var(--metron-sand);
+}
+
+.metron-marker--crimson { background: var(--metron-crimson-bright); }
+.metron-marker--success { background: var(--metron-success); }
+.metron-marker--pearl { background: var(--metron-pearl); }
+
+.metron-marker--pulse::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  background: inherit;
+  opacity: 0.4;
+  animation: metron-marker-pulse 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes metron-marker-pulse {
+  0% { transform: scale(1); opacity: 0.6; }
+  70% { transform: scale(2.2); opacity: 0; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* Spinner */
+.metron-spinner {
+  display: inline-block;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid rgba(242, 241, 237, 0.2);
+  border-top-color: var(--metron-sand);
+  border-radius: 999px;
+  animation: metron-spin 0.7s linear infinite;
+}
+
+.metron-spinner--sm { width: 1rem; height: 1rem; border-width: 1.5px; }
+.metron-spinner--lg { width: 2rem; height: 2rem; border-width: 2.5px; }
+.metron-spinner--crimson { border-top-color: var(--metron-crimson-bright); }
+
+@keyframes metron-spin {
+  to { transform: rotate(360deg); }
+}

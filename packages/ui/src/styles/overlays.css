@@ -379,3 +379,87 @@
     padding-left: 1rem;
   }
 }
+
+/* Popover, Tooltip, HoverCard & Context Menu */
+.metron-popover-content {
+  position: absolute;
+  z-index: 50;
+  min-width: 14rem;
+  border-radius: var(--metron-radius-control);
+  background: linear-gradient(180deg, rgba(16, 16, 20, 0.94) 0%, rgba(10, 10, 13, 0.98) 100%);
+  border: 1px solid var(--metron-border-strong);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.16), 0 16px 48px rgba(0, 0, 0, 0.85);
+  padding: 1rem;
+  color: var(--metron-pearl);
+  font-size: 0.875rem;
+  animation: metron-popover-in var(--metron-duration-fast) var(--metron-ease);
+}
+
+.metron-tooltip-content {
+  position: absolute;
+  z-index: 60;
+  padding: 0.35rem 0.65rem;
+  border-radius: 0.5rem;
+  background: rgba(14, 14, 18, 0.9);
+  border: 1px solid var(--metron-border-strong);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  color: var(--metron-pearl);
+  font-size: 0.78rem;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: metron-popover-in var(--metron-duration-fast) ease-out;
+}
+
+.metron-hover-card-content {
+  position: absolute;
+  z-index: 50;
+  width: 18rem;
+  border-radius: var(--metron-radius-control);
+  background: linear-gradient(180deg, rgba(16, 16, 20, 0.92) 0%, rgba(10, 10, 13, 0.96) 100%);
+  border: 1px solid var(--metron-border-strong);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.14), 0 16px 44px rgba(0, 0, 0, 0.8);
+  padding: 1rem;
+  animation: metron-popover-in var(--metron-duration-fast) var(--metron-ease);
+}
+
+.metron-context-menu-content {
+  position: fixed;
+  z-index: 70;
+  min-width: 12rem;
+  border-radius: var(--metron-radius-control);
+  background: linear-gradient(180deg, rgba(16, 16, 20, 0.95) 0%, rgba(10, 10, 13, 0.98) 100%);
+  border: 1px solid var(--metron-border-strong);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.16), 0 20px 60px rgba(0, 0, 0, 0.85);
+  padding: 0.35rem;
+}
+
+.metron-context-menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  border-radius: calc(var(--metron-radius-control) - 0.25rem);
+  font-size: 0.875rem;
+  color: var(--metron-pearl-muted);
+  cursor: pointer;
+  user-select: none;
+  transition: background-color var(--metron-duration-fast) ease, color var(--metron-duration-fast) ease;
+}
+
+.metron-context-menu-item:hover {
+  background: rgba(242, 241, 237, 0.08);
+  color: var(--metron-pearl);
+}
+
+@keyframes metron-popover-in {
+  from { opacity: 0; transform: scale(0.96) translateY(-4px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}

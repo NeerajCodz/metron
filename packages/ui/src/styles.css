@@ -1,39 +1,52 @@
+@import "./styles/background.css";
 @import "./styles/actions.css";
 @import "./styles/card.css";
+@import "./styles/surfaces.css";
 @import "./styles/forms.css";
 @import "./styles/feedback.css";
 @import "./styles/data.css";
 @import "./styles/states.css";
 @import "./styles/overlays.css";
 @import "./styles/navigation.css";
-
+@import "./styles/ai.css";
 :root,
 .metron-theme {
   color-scheme: dark;
+  --metron-black: #000000;
+  --metron-background: #000000;
+  --metron-carbon: #0c0c0e;
+  --metron-carbon-surface: #121215;
+  --metron-carbon-hover: #18181c;
+  --metron-carbon-border: rgba(242, 241, 237, 0.12);
   --metron-crimson: #710014;
   --metron-crimson-bright: #9b1730;
+  --metron-crimson-glow: rgba(155, 23, 48, 0.35);
   --metron-sand: #b38f6f;
+  --metron-sand-bright: #c8aa8e;
+  --metron-sand-glow: rgba(179, 143, 111, 0.28);
   --metron-pearl: #f2f1ed;
   --metron-pearl-muted: rgb(242 241 237 / 68%);
-  --metron-obsidian: #161616;
-  --metron-ink: #0b0b0b;
-  --metron-surface: transparent;
-  --metron-surface-strong: #202020;
+  --metron-pearl-dim: rgb(242 241 237 / 42%);
+  --metron-obsidian: #0c0c0e;
+  --metron-ink: #000000;
+  --metron-surface: rgba(12, 12, 14, 0.7);
+  --metron-surface-strong: #151518;
   --metron-surface-hover: rgb(242 241 237 / 8%);
   --metron-border: rgb(242 241 237 / 14%);
-  --metron-border-strong: rgb(242 241 237 / 24%);
+  --metron-border-strong: rgb(242 241 237 / 26%);
   --metron-focus: #b38f6f;
   --metron-danger: #710014;
-  --metron-success: #b38f6f;
-  --metron-warning: #b38f6f;
+  --metron-success: #34d399;
+  --metron-warning: #f59e0b;
   --metron-font-sans: "Satoshi", "Avenir Next", "Segoe UI Variable", "Segoe UI", sans-serif;
   --metron-font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
   --metron-radius-control: 0.875rem;
-  --metron-radius-card: 1.5rem;
+  --metron-radius-card: 1.25rem;
   --metron-radius-pill: 999px;
   --metron-blur: 28px;
-  --metron-shadow-raised: 0 24px 80px rgb(0 0 0 / 44%);
-  --metron-shadow-control: 0 10px 28px rgb(0 0 0 / 28%);
+  --metron-shadow-raised: 0 24px 80px rgb(0 0 0 / 70%);
+  --metron-shadow-control: 0 10px 28px rgb(0 0 0 / 40%);
+  --metron-shadow-glass: inset 0 1px 1px 0 rgba(255, 255, 255, 0.18), inset 0 -1px 1px 0 rgba(0, 0, 0, 0.5), 0 20px 60px rgba(0, 0, 0, 0.7);
   --metron-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --metron-duration-fast: 140ms;
   --metron-duration-medium: 260ms;
@@ -43,7 +56,7 @@
 
 .metron-theme {
   min-height: 100%;
-  background: var(--metron-obsidian);
+  background: var(--metron-black);
 }
 
 .metron-theme,

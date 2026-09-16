@@ -1,11 +1,9 @@
-html {
-  background: #0b0b0b;
-}
-
+html,
 body {
   min-width: 320px;
   margin: 0;
-  background: #0b0b0b;
+  background: #000000;
+  color: #f2f1ed;
 }
 
 button,
@@ -202,4 +200,39 @@ select {
   .showcase__cell--wide {
     grid-column: 1 / -1;
   }
+}
+
+/* Background Configurator Toolbar */
+.showcase__configurator {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.875rem 1.25rem;
+  margin-bottom: 2rem;
+  border-radius: var(--metron-radius-control);
+  background: rgba(14, 14, 18, 0.75);
+  border: 1px solid var(--metron-carbon-border);
+  backdrop-filter: blur(24px) saturate(150%);
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+}
+
+.showcase__config-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.showcase__config-label {
+  font-family: var(--metron-font-mono);
+  font-size: 0.75rem;
+  color: var(--metron-sand);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.showcase__tabs-container {
+  margin-top: 2rem;
 }
