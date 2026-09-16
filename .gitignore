@@ -6,6 +6,7 @@ node_modules/
 # Build and test output
 .turbo/
 dist/
+apps/ai/dist/
 coverage/
 artifacts/
 cache/
