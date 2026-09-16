@@ -111,6 +111,11 @@
         "internalType": "bytes32"
       },
       {
+        "name": "actionType",
+        "type": "uint8",
+        "internalType": "uint8"
+      },
+      {
         "name": "target",
         "type": "address",
         "internalType": "address"
@@ -177,9 +182,19 @@
         "internalType": "address"
       },
       {
+        "name": "actionType",
+        "type": "uint8",
+        "internalType": "uint8"
+      },
+      {
         "name": "payloadHash",
         "type": "bytes32",
         "internalType": "bytes32"
+      },
+      {
+        "name": "nonce",
+        "type": "uint64",
+        "internalType": "uint64"
       },
       {
         "name": "expiresAt",

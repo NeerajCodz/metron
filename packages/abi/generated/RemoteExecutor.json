@@ -75,6 +75,29 @@
   },
   {
     "type": "function",
+    "name": "configureSourceRouter",
+    "inputs": [
+      {
+        "name": "srcEid",
+        "type": "uint32",
+        "internalType": "uint32"
+      },
+      {
+        "name": "sourceRouter",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "sourceChainId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "configureTarget",
     "inputs": [
       {
@@ -96,7 +119,7 @@
     "name": "executeRemote",
     "inputs": [
       {
-        "name": "",
+        "name": "srcEid",
         "type": "uint32",
         "internalType": "uint32"
       },
@@ -258,6 +281,44 @@
   },
   {
     "type": "function",
+    "name": "sourceChainIds",
+    "inputs": [
+      {
+        "name": "srcEid",
+        "type": "uint32",
+        "internalType": "uint32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "sourceChainId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "sourceRouters",
+    "inputs": [
+      {
+        "name": "srcEid",
+        "type": "uint32",
+        "internalType": "uint32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "sourceRouter",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "supportsInterface",
     "inputs": [
       {
@@ -403,6 +464,25 @@
   },
   {
     "type": "event",
+    "name": "SourceRouterConfigured",
+    "inputs": [
+      {
+        "name": "srcEid",
+        "type": "uint32",
+        "indexed": true,
+        "internalType": "uint32"
+      },
+      {
+        "name": "sourceRouter",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
     "name": "TargetConfigured",
     "inputs": [
       {
@@ -508,12 +588,55 @@
   },
   {
     "type": "error",
+    "name": "SourceChainNotAllowed",
+    "inputs": [
+      {
+        "name": "srcEid",
+        "type": "uint32",
+        "internalType": "uint32"
+      },
+      {
+        "name": "sourceChainId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "SourceRouterNotAllowed",
+    "inputs": [
+      {
+        "name": "srcEid",
+        "type": "uint32",
+        "internalType": "uint32"
+      },
+      {
+        "name": "sourceContract",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
     "name": "TargetNotAllowed",
     "inputs": [
       {
         "name": "target",
         "type": "address",
         "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "UnsupportedVersion",
+    "inputs": [
+      {
+        "name": "version",
+        "type": "uint8",
+        "internalType": "uint8"
       }
     ]
   }
