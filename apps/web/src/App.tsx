@@ -10,6 +10,8 @@ import {
   LayoutDashboard,
   Layers3,
   Menu,
+  PanelLeftClose,
+  PanelLeftOpen,
   Plus,
   Search,
   Settings,
@@ -169,11 +171,18 @@ function ShellFeedback() {
 function RouterShell() {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(
+    () => window.localStorage.getItem("metron-sidebar-collapsed") === "true",
+  );
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const { wallet, connectWallet, notifications } = useMetronState();
   const unreadNotificationCount = notifications.filter((notification) => !notification.read).length;
   const currentLabel =
     routeLabels.find(({ match }) => match(location.pathname))?.label ?? "Control room";
+
+  useEffect(() => {
+    window.localStorage.setItem("metron-sidebar-collapsed", String(sidebarCollapsed));
+  }, [sidebarCollapsed]);
 
   useEffect(() => {
     setSidebarOpen(false);
@@ -207,14 +216,14 @@ function RouterShell() {
       patternMask="fade"
       glow="crimson"
     >
-      <div className="app-shell">
+      <div className={`app-shell${sidebarCollapsed ? " is-sidebar-collapsed" : ""}`}>
         <button
           className={`app-scrim${sidebarOpen ? " is-visible" : ""}`}
           aria-label="Close navigation"
           onClick={() => setSidebarOpen(false)}
         />
         <aside
-          className={`app-sidebar${sidebarOpen ? " is-open" : ""}`}
+          className={`app-sidebar${sidebarOpen ? " is-open" : ""}${sidebarCollapsed ? " is-collapsed" : ""}`}
           aria-label="Primary navigation"
         >
           <div className="app-sidebar__top">
@@ -222,13 +231,29 @@ function RouterShell() {
               <span className="wordmark-mark" aria-hidden="true" />
               <span>METRON</span>
             </Link>
-            <button
-              className="app-sidebar__close"
-              aria-label="Close navigation"
-              onClick={() => setSidebarOpen(false)}
-            >
-              <X size={17} aria-hidden="true" />
-            </button>
+            <div className="app-sidebar__top-actions">
+              <button
+                className="app-sidebar__collapse"
+                type="button"
+                aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+                aria-expanded={!sidebarCollapsed}
+                title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+                onClick={() => setSidebarCollapsed((collapsed) => !collapsed)}
+              >
+                {sidebarCollapsed ? (
+                  <PanelLeftOpen size={16} aria-hidden="true" />
+                ) : (
+                  <PanelLeftClose size={16} aria-hidden="true" />
+                )}
+              </button>
+              <button
+                className="app-sidebar__close"
+                aria-label="Close navigation"
+                onClick={() => setSidebarOpen(false)}
+              >
+                <X size={17} aria-hidden="true" />
+              </button>
+            </div>
           </div>
 
           <div className="app-sidebar__context">
@@ -249,6 +274,8 @@ function RouterShell() {
                     to={to}
                     end={to === "/dashboard" || to === "/intent/new"}
                     className={({ isActive }) => `app-nav__item${isActive ? " is-active" : ""}`}
+                    aria-label={label}
+                    title={sidebarCollapsed ? label : undefined}
                     aria-current={
                       location.pathname === to ||
                       (to !== "/dashboard" && location.pathname.startsWith(`${to}/`))
@@ -266,7 +293,7 @@ function RouterShell() {
           </nav>
 
           <div className="app-sidebar__footer">
-            <Link className="app-emergency-button" to="/emergency">
+            <Link className="app-emergency-button" to="/emergency" title={sidebarCollapsed ? "Emergency controls" : undefined}>
               <Siren size={15} aria-hidden="true" />
               <span>Emergency controls</span>
             </Link>
