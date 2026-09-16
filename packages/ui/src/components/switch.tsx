@@ -21,12 +21,13 @@ export type SwitchProps = Omit<
   ComponentPropsWithRef<"input">,
   "children" | "type"
 > & {
-  label: ReactNode;
-  description?: ReactNode;
-  error?: ReactNode;
-  loading?: boolean;
-  loadingLabel?: ReactNode;
-  containerClassName?: string;
+  label?: ReactNode | undefined;
+  description?: ReactNode | undefined;
+  error?: ReactNode | undefined;
+  loading?: boolean | undefined;
+  loadingLabel?: ReactNode | undefined;
+  containerClassName?: string | undefined;
+  onCheckedChange?: ((checked: boolean) => void) | undefined;
 };
 
 /** A native checkbox with switch presentation and full form participation. */
@@ -37,9 +38,11 @@ export function Switch({
   loading = false,
   loadingLabel = "Updating",
   containerClassName,
-  className,
+  disabled,
   id,
-  disabled = false,
+  className,
+  onChange,
+  onCheckedChange,
   "aria-describedby": ariaDescribedBy,
   "aria-invalid": ariaInvalid,
   "aria-busy": ariaBusy,
@@ -58,6 +61,10 @@ export function Switch({
   );
   const isDisabled = disabled || loading;
 
+  const handleChange: ComponentPropsWithRef<"input">["onChange"] = (e) => {
+    onChange?.(e);
+    onCheckedChange?.(e.target.checked);
+  };
   return (
     <div
       className={cn(
@@ -78,6 +85,7 @@ export function Switch({
             type="checkbox"
             role="switch"
             disabled={isDisabled}
+            onChange={handleChange}
             aria-describedby={describedBy}
             aria-invalid={ariaInvalid ?? (showError || undefined)}
             aria-busy={loading ? true : ariaBusy}
