@@ -81,16 +81,20 @@ export {
   Dialog,
   DialogBody,
   DialogClose,
+  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
   type DialogBodyProps,
   type DialogCloseProps,
+  type DialogContentProps,
   type DialogDescriptionProps,
   type DialogProps,
   type DialogSectionProps,
   type DialogTitleProps,
+  type DialogTriggerProps,
 } from "./components/dialog.js";
 export {
   DropdownMenu,
@@ -114,3 +118,107 @@ export {
   type BackgroundPatternProps,
   type BackgroundPatternVariant,
 } from "./components/background.js";
+export {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+  type AccordionContentProps,
+  type AccordionItemProps,
+  type AccordionProps,
+  type AccordionTriggerProps,
+} from "./components/accordion.js";
+export { AspectRatio, type AspectRatioProps } from "./components/aspect-ratio.js";
+export {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+  type CollapsibleContentProps,
+  type CollapsibleProps,
+  type CollapsibleTriggerProps,
+} from "./components/collapsible.js";
+export { Separator, type SeparatorProps } from "./components/separator.js";
+export {
+  DirectionContainer,
+  DirectionProvider,
+  useDirection,
+  type Direction,
+  type DirectionProps,
+  type DirectionProviderProps,
+} from "./components/direction.js";
+export {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+  type AlertDialogActionProps,
+  type AlertDialogContentProps,
+  type AlertDialogProps,
+  type AlertDialogTriggerProps,
+} from "./components/alert-dialog.js";
+export {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+  type DrawerCloseProps,
+  type DrawerContentProps,
+  type DrawerProps,
+  type DrawerTriggerProps,
+} from "./components/drawer.js";
+export {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+  type SheetCloseProps,
+  type SheetContentProps,
+  type SheetProps,
+  type SheetTriggerProps,
+} from "./components/sheet.js";
+export {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+  type ResizableHandleProps,
+  type ResizablePanelGroupProps,
+  type ResizablePanelProps,
+} from "./components/resizable.js";
+export {
+  ScrollArea,
+  ScrollBar,
+  type ScrollAreaProps,
+  type ScrollBarProps,
+} from "./components/scroll-area.js";
+export {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarTrigger,
+  useSidebar,
+  type SidebarMenuButtonProps,
+  type SidebarProps,
+  type SidebarProviderProps,
+  type SidebarTriggerProps,
+} from "./components/sidebar.js";

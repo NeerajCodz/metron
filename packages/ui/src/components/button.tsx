@@ -27,14 +27,14 @@ export type ButtonSize = "sm" | "md" | "lg";
 
 export interface ButtonBaseProps {
   children: ReactNode;
-  variant?: ButtonVariant;
-  size?: ButtonSize;
-  leadingIcon?: ReactNode;
-  trailingIcon?: ReactNode;
-  fullWidth?: boolean;
-  loading?: boolean;
-  loadingLabel?: ReactNode;
-  className?: string;
+  variant?: ButtonVariant | undefined;
+  size?: ButtonSize | undefined;
+  leadingIcon?: ReactNode | undefined;
+  trailingIcon?: ReactNode | undefined;
+  fullWidth?: boolean | undefined;
+  loading?: boolean | undefined;
+  loadingLabel?: ReactNode | undefined;
+  className?: string | undefined;
 }
 
 export interface ButtonButtonProps
@@ -55,10 +55,10 @@ export type ButtonProps = ButtonButtonProps | ButtonAnchorProps;
 export interface IconButtonBaseProps {
   icon: ReactNode;
   accessibleLabel: string;
-  variant?: ButtonVariant;
-  size?: ButtonSize;
-  loading?: boolean;
-  className?: string;
+  variant?: ButtonVariant | undefined;
+  size?: ButtonSize | undefined;
+  loading?: boolean | undefined;
+  className?: string | undefined;
 }
 
 export interface IconButtonButtonProps
