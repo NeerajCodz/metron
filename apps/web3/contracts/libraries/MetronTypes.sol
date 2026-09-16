@@ -47,6 +47,7 @@ library MetronTypes {
 
     struct IntentAuthorization {
         address owner;
+        bytes32 traceId;
         bytes32 commitment;
         bytes32 policyHash;
         uint256 nonce;
