@@ -75,7 +75,8 @@ select {
 }
 
 .showcase__section {
-  padding: clamp(4rem, 9vw, 9rem) clamp(0.5rem, 5vw, 5rem);
+  scroll-margin-top: 6.5rem;
+  padding: clamp(3.5rem, 7vw, 7rem) clamp(0.5rem, 5vw, 5rem);
   border-top: 1px solid rgb(242 241 237 / 10%);
 }
 
