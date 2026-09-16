@@ -376,3 +376,102 @@ export {
   type ContextMenuProps,
   type ContextMenuTriggerProps,
 } from "./components/context-menu.js";
+export {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+  type AlertProps,
+  type AlertVariant,
+} from "./components/alert.js";
+export {
+  Avatar,
+  AvatarFallback,
+  AvatarGroup,
+  AvatarImage,
+  type AvatarFallbackProps,
+  type AvatarGroupProps,
+  type AvatarImageProps,
+  type AvatarProps,
+  type AvatarSize,
+} from "./components/avatar.js";
+export {
+  Kbd,
+  KbdGroup,
+  type KbdGroupProps,
+  type KbdProps,
+} from "./components/kbd.js";
+export {
+  Marker,
+  PulseMarker,
+  type MarkerProps,
+  type MarkerTone,
+} from "./components/marker.js";
+export {
+  Spinner,
+  type SpinnerProps,
+  type SpinnerSize,
+  type SpinnerTone,
+} from "./components/spinner.js";
+export {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "./components/table.js";
+export {
+  DataTable,
+  DataTableColumnHeader,
+  type DataTableColumn,
+  type DataTableProps,
+} from "./components/data-table.js";
+export {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+  type TabsContentProps,
+  type TabsProps,
+  type TabsTriggerProps,
+} from "./components/tabs.js";
+export {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+  ItemTitle,
+  type ItemProps,
+} from "./components/item.js";
+export {
+  Empty,
+  EmptyAction,
+  EmptyDescription,
+  EmptyTitle,
+  type EmptyProps,
+} from "./components/empty.js";
+export { Calendar, type CalendarProps } from "./components/calendar.js";
+export { DatePicker, type DatePickerProps } from "./components/date-picker.js";
+export {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+  type CarouselProps,
+} from "./components/carousel.js";
+export {
+  BarChart,
+  ChartContainer,
+  ChartTooltip,
+  DonutChart,
+  Sparkline,
+  type BarChartProps,
+  type ChartContainerProps,
+  type ChartTooltipProps,
+  type DonutChartProps,
+  type SparklineProps,
+} from "./components/chart.js";

@@ -353,3 +353,287 @@
     -webkit-backdrop-filter: none;
   }
 }
+
+/* Table (Shadcn Table) */
+.metron-table-container {
+  position: relative;
+  width: 100%;
+  overflow: auto;
+  border-radius: var(--metron-radius-control);
+  border: 1px solid var(--metron-carbon-border);
+  background: rgba(12, 12, 15, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.metron-table {
+  width: 100%;
+  caption-side: bottom;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  text-align: left;
+}
+
+.metron-table-header {
+  border-bottom: 1px solid var(--metron-border);
+  background: rgba(242, 241, 237, 0.03);
+}
+
+.metron-table-head {
+  height: 2.75rem;
+  padding: 0 1rem;
+  font-family: var(--metron-font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--metron-pearl-dim);
+  vertical-align: middle;
+}
+
+.metron-table-row {
+  border-bottom: 1px solid var(--metron-border);
+  transition: background-color var(--metron-duration-fast) ease;
+}
+
+.metron-table-row:hover {
+  background: rgba(242, 241, 237, 0.04);
+}
+
+.metron-table-row[data-state="selected"] {
+  background: rgba(179, 143, 111, 0.1);
+}
+
+.metron-table-cell {
+  padding: 0.875rem 1rem;
+  vertical-align: middle;
+  color: var(--metron-pearl);
+}
+
+.metron-table-footer {
+  border-top: 1px solid var(--metron-border);
+  background: rgba(242, 241, 237, 0.04);
+  font-weight: 600;
+}
+
+.metron-table-caption {
+  margin-top: 0.75rem;
+  font-size: 0.8125rem;
+  color: var(--metron-pearl-dim);
+  text-align: center;
+}
+
+/* Tabs (Shadcn Tabs) */
+.metron-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.metron-tabs-list {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border-radius: var(--metron-radius-control);
+  background: rgba(14, 14, 18, 0.7);
+  border: 1px solid var(--metron-carbon-border);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  width: fit-content;
+}
+
+.metron-tabs-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 0.95rem;
+  border-radius: calc(var(--metron-radius-control) - 0.25rem);
+  font-size: 0.875rem;
+  font-weight: 550;
+  color: var(--metron-pearl-muted);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  transition: all var(--metron-duration-fast) var(--metron-ease);
+  user-select: none;
+}
+
+.metron-tabs-trigger:hover {
+  color: var(--metron-pearl);
+}
+
+.metron-tabs-trigger[data-state="active"] {
+  background: rgba(242, 241, 237, 0.12);
+  color: var(--metron-pearl);
+  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.2), 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.metron-tabs-content {
+  outline: none;
+}
+
+/* Item (List Item Component) */
+.metron-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.875rem 1rem;
+  border-radius: var(--metron-radius-control);
+  background: rgba(14, 14, 18, 0.5);
+  border: 1px solid var(--metron-carbon-border);
+  transition: all var(--metron-duration-fast) ease;
+}
+
+.metron-item:hover {
+  background: rgba(20, 20, 26, 0.7);
+  border-color: var(--metron-border);
+}
+
+.metron-item-media {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.metron-item-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.metron-item-title {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--metron-pearl);
+}
+
+.metron-item-description {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--metron-pearl-muted);
+}
+
+.metron-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+/* Calendar */
+.metron-calendar {
+  padding: 1rem;
+  border-radius: var(--metron-radius-card);
+  background: linear-gradient(180deg, rgba(16, 16, 20, 0.92) 0%, rgba(10, 10, 13, 0.96) 100%);
+  border: 1px solid var(--metron-border-strong);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  width: fit-content;
+}
+
+.metron-calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.85rem;
+}
+
+.metron-calendar-title {
+  font-weight: 650;
+  font-size: 0.9375rem;
+  color: var(--metron-pearl);
+}
+
+.metron-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+  text-align: center;
+}
+
+.metron-calendar-weekday {
+  font-family: var(--metron-font-mono);
+  font-size: 0.72rem;
+  color: var(--metron-pearl-dim);
+  padding: 0.35rem 0;
+}
+
+.metron-calendar-day {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  color: var(--metron-pearl);
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all var(--metron-duration-fast) ease;
+}
+
+.metron-calendar-day:hover {
+  background: rgba(242, 241, 237, 0.08);
+}
+
+.metron-calendar-day[data-selected="true"] {
+  background: var(--metron-sand);
+  color: var(--metron-ink);
+  font-weight: 600;
+}
+
+.metron-calendar-day[data-today="true"] {
+  border-color: var(--metron-sand);
+}
+
+/* Carousel */
+.metron-carousel {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.metron-carousel-content {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.metron-carousel-content::-webkit-scrollbar {
+  display: none;
+}
+
+.metron-carousel-item {
+  flex: 0 0 100%;
+  min-width: 0;
+  scroll-snap-align: start;
+}
+
+/* Chart */
+.metron-chart-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.metron-chart-tooltip {
+  border-radius: var(--metron-radius-control);
+  background: rgba(14, 14, 18, 0.9);
+  border: 1px solid var(--metron-border-strong);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 0.5rem 0.75rem;
+  color: var(--metron-pearl);
+  font-size: 0.8125rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+}
