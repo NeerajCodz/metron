@@ -111,9 +111,8 @@ contract CoreLifecycleIntegrationTest is Test {
         });
 
         vm.prank(keeper);
-        (, bytes32 positionId) = strategyExecutor.executeStrategy(
-            intentId, STRATEGY_ID, actions, block.timestamp + 10 minutes
-        );
+        (, bytes32 positionId) =
+            strategyExecutor.executeStrategy(intentId, STRATEGY_ID, actions, block.timestamp + 10 minutes);
 
         assertEq(vault.availableBalance(owner, address(outputToken)), OUTPUT_AMOUNT);
         assertEq(uint256(positionManager.getPosition(positionId).status), uint256(MetronTypes.PositionStatus.ACTIVE));

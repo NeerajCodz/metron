@@ -13,6 +13,8 @@ MODEL_VERSION = "risk-deterministic-v1"
 MarketRegime = Literal[
     "stable", "trending", "high_volatility", "liquidity_stress", "flash_crash", "recovery"
 ]
+
+
 class RiskFeatures(BaseModel):
     collateral_usd: Decimal = Field(ge=0)
     debt_usd: Decimal = Field(ge=0)
@@ -45,6 +47,7 @@ class LiquidationPrediction(BaseModel):
     prediction_id: str
     model_version: str = MODEL_VERSION
     feature_schema_version: str = FEATURE_SCHEMA_VERSION
+    dataset_fingerprint: str | None = None
     generated_at: int
     horizons: dict[str, int]
     confidence_bps: int = Field(ge=0, le=10_000)
@@ -63,6 +66,7 @@ class RegimePrediction(BaseModel):
     position_id: str | None = None
     model_version: str = MODEL_VERSION
     feature_schema_version: str = FEATURE_SCHEMA_VERSION
+    dataset_fingerprint: str | None = None
     generated_at: int
     probabilities_bps: dict[str, int]
     selected_regime: MarketRegime
@@ -120,6 +124,7 @@ class ExplanationResponse(BaseModel):
     deterministic_calculations: list[str]
     model_predictions: list[str]
     scenario_assumptions: list[str]
+
 
 class RecoveryPolicy(BaseModel):
     allowed_action_types: set[str] = Field(min_length=1)
@@ -179,6 +184,8 @@ class CascadeRequest(BaseModel):
     forced_selling_usd: Decimal = Field(ge=0)
     market_depth_usd: Decimal = Field(gt=0)
     price_impact_slope_bps: int = Field(ge=0, le=100_000)
+    propagation_factor_bps: int = Field(default=10_000, ge=0, le=10_000)
+    max_rounds: int = Field(default=8, ge=1, le=32)
     positions: list[CascadePosition] = Field(min_length=1, max_length=1000)
 
 
@@ -192,6 +199,8 @@ class CascadeResponse(BaseModel):
     newly_liquidatable_positions: list[str]
     affected_position_count: int
     secondary_exposure_usd: Decimal
+    rounds: int
+    converged: bool
 
 
 class RecommendationRequest(BaseModel):
@@ -216,12 +225,18 @@ class IntentDraftRequest(BaseModel):
 class IntentDraftResponse(BaseModel):
     schema_version: Literal["1.0.0"] = RISK_SCHEMA_VERSION
     trace_id: str
+    intent_type: Literal["yield", "stable_yield", "lending", "liquidity", "protection"]
     objective: dict[str, int]
     risk: dict[str, int]
+    exposure: dict[str, int]
+    automation: dict[str, bool]
     assets: list[str]
     chains: list[int]
+    protocols: list[str]
+    ambiguities: list[str] = Field(default_factory=list)
     source_text: str
     requires_approval: bool = True
+
 
 class ThresholdRequest(BaseModel):
     trace_id: str = Field(min_length=1)
@@ -229,6 +244,9 @@ class ThresholdRequest(BaseModel):
     user_max_probability_bps: int = Field(ge=0, le=10_000)
     administrator_max_probability_bps: int = Field(ge=0, le=10_000)
     hysteresis_bps: int = Field(ge=0, le=10_000)
+    market_regime: MarketRegime | None = None
+    liquidity_stress_bps: int = Field(default=0, ge=0, le=10_000)
+    protocol_risk_bps: int = Field(default=0, ge=0, le=10_000)
 
 
 class ThresholdResponse(BaseModel):
@@ -236,6 +254,7 @@ class ThresholdResponse(BaseModel):
     recommended_intervention_bps: int = Field(ge=0, le=10_000)
     intervention_required: bool
     rationale: list[str] = Field(min_length=1)
+
 
 class LiquidityEstimateRequest(BaseModel):
     trace_id: str = Field(min_length=1)
@@ -286,6 +305,7 @@ class OptimizationResponse(BaseModel):
     resulting_delta_wad: int
     rejected_opportunities: list[dict[str, str]]
 
+
 class ScenarioDraftRequest(BaseModel):
     trace_id: str = Field(min_length=1)
     text: str = Field(min_length=1, max_length=4000)
@@ -298,6 +318,7 @@ class ScenarioDraftResponse(BaseModel):
     source_text: str
     requires_approval: bool = True
 
+
 class PositionAnswerRequest(BaseModel):
     trace_id: str = Field(min_length=1)
     question: str = Field(min_length=1, max_length=1000)
@@ -309,3 +330,4 @@ class PositionAnswerResponse(BaseModel):
     trace_id: str
     answer: str
     provenance: list[str] = Field(min_length=1)
+    refusal_reason: str | None = None

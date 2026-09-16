@@ -17,10 +17,25 @@ export interface KeeperObservation {
   crossChainTimedOut: boolean;
   riskScoreBps: number;
   maximumRiskScoreBps: number;
+  observedYieldBps?: number;
+  targetYieldBps?: number;
+  observedBorrowCostBps?: number;
+  maximumBorrowCostBps?: number;
+  observedGasUsd?: number;
+  maximumGasUsd?: number;
+  opportunityDecayBps?: number;
+  maximumOpportunityDecayBps?: number;
 }
 
 export type KeeperTriggerKind =
-  "emergency_unwind" | "hedge_rebalance" | "lp_recenter" | "message_recovery" | "risk_restriction";
+  | "emergency_unwind"
+  | "hedge_rebalance"
+  | "lp_recenter"
+  | "message_recovery"
+  | "yield_rebalance"
+  | "borrow_cost_reduction"
+  | "execution_requote"
+  | "risk_restriction";
 
 export interface KeeperTrigger {
   key: string;
@@ -55,12 +70,36 @@ export function evaluateKeeperObservation(observation: KeeperObservation): Keepe
   if (observation.lpDriftBps > observation.maximumLpDriftBps) {
     add("lp_recenter", "liquidity position drift exceeds the configured bound");
   }
+  if (
+    observation.observedYieldBps !== undefined &&
+    observation.targetYieldBps !== undefined &&
+    observation.observedYieldBps < observation.targetYieldBps
+  ) {
+    add("yield_rebalance", "observed yield is below the strategy target");
+  }
+  if (
+    observation.observedBorrowCostBps !== undefined &&
+    observation.maximumBorrowCostBps !== undefined &&
+    observation.observedBorrowCostBps > observation.maximumBorrowCostBps
+  ) {
+    add("borrow_cost_reduction", "borrowing cost exceeds the configured bound");
+  }
+  if (
+    (observation.observedGasUsd !== undefined &&
+      observation.maximumGasUsd !== undefined &&
+      observation.observedGasUsd > observation.maximumGasUsd) ||
+    (observation.opportunityDecayBps !== undefined &&
+      observation.maximumOpportunityDecayBps !== undefined &&
+      observation.opportunityDecayBps > observation.maximumOpportunityDecayBps)
+  ) {
+    add("execution_requote", "execution cost or opportunity decay exceeds the configured bound");
+  }
   if (observation.crossChainTimedOut) {
     add("message_recovery", "cross-chain message exceeded its timeout");
   }
   if (
     observation.volatilityBps > observation.maximumVolatilityBps ||
-    observation.stablecoinDeviationBps > observation.maximumStablecoinDeviationBps ||
+    Math.abs(observation.stablecoinDeviationBps) > observation.maximumStablecoinDeviationBps ||
     !observation.protocolHealthy ||
     observation.riskScoreBps > observation.maximumRiskScoreBps
   ) {

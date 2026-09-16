@@ -39,7 +39,12 @@ export class MetronAiClient {
 }
 
 export type ConvexOperation =
-  "intents.get" | "intents.listMine" | "positions.get" | "positions.listMine" | "solvers.list";
+  | "intents.get"
+  | "intents.listMine"
+  | "positions.get"
+  | "positions.listMine"
+  | "positions.timeline"
+  | "solvers.list";
 export type ConvexTransport = <TResponse>(
   operation: ConvexOperation,
   input: Record<string, unknown>,
@@ -62,6 +67,13 @@ export class MetronConvexClient {
 
   listPositions<TResponse>(): Promise<TResponse> {
     return this.transport("positions.listMine", {});
+  }
+
+  getPositionTimeline<TResponse>(positionId: PositionId, limit?: number): Promise<TResponse> {
+    return this.transport("positions.timeline", {
+      positionId,
+      ...(limit === undefined ? {} : { limit }),
+    });
   }
 
   listSolvers<TResponse>(): Promise<TResponse> {

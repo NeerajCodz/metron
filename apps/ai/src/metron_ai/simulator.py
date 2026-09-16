@@ -49,8 +49,9 @@ def run_simulation(request: SimulationRequest, generated_at: int) -> SimulationR
             },
         )
         probability = int(
-            (_base_probability(type("Request", (), {"features": shocked})()) * _BPS)
-            .to_integral_value()
+            (
+                _base_probability(type("Request", (), {"features": shocked})()) * _BPS
+            ).to_integral_value()
         )
         loss = max(
             0,

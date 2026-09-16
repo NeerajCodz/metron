@@ -11,14 +11,15 @@ The following checks passed on the current tree:
 - `pnpm turbo run typecheck --filter='!@metron/ui'`
 - `pnpm turbo run test --filter='!@metron/ui'`
 - `pnpm turbo run build --filter='!@metron/ui'`
-- `pnpm check:abi`, covering 153 generated contract ABIs
-- Foundry regression, covering 21 suites and 83 Solidity tests, including the direct core custody lifecycle driver
-- Web3 TypeScript tests, covering 5 files and 11 tests
-- SDK tests, covering 4 tests, including proof-runner and public-input encoding behavior
-- AI tests, covering 12 tests
-- `node --check apps/web3/scripts/zk.mjs`
-
-The AI service was exercised over HTTP. `/health` returned 200. A protected request without `x-metron-service-token` returned 401. The same request with the configured token returned 200 and preserved request provenance in the response.
+- Foundry regression, covering 21 suites and 83 Solidity tests, including the direct core custody lifecycle driver.
+- Web3 TypeScript tests, covering 6 files and 15 tests, including composed cross-chain route generation, LP metrics, and negative stablecoin depeg detection.
+- Web3 lint and typecheck.
+- Convex backend lint and typecheck, including protocol observation ingestion and position timeline queries.
+- SDK tests, covering 4 tests, including proof-runner and public-input encoding behavior.
+- AI tests, covering 17 tests, plus Ruff and mypy checks.
+- `uv run metron-generate-dataset --rows 600 --seed 13` and `uv run metron-train-models ...`, producing a schema-versioned Faker/NumPy dataset and JSON model artifacts with held-out metrics.
+- Trained liquidation and regime inference through the risk API, with dataset fingerprint provenance and `fallback_used: false`.
+- `node --check apps/web3/scripts/zk.mjs`.
 
 The runtime service was exercised over HTTP. `/health` returned `{"service":"web3-runtime","status":"alive"}`. `/ready` returned `ready: true` with `financialReadiness: false` because no production chain credentials were configured.
 

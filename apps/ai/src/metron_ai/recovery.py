@@ -87,12 +87,9 @@ def rank_recovery(request: RecoveryRequest, generated_at: int) -> RecoveryRespon
             update={"health_factor_wad": int(resulting_health * _WAD)}
         )
         risk_request = type("RiskRequest", (), {"features": risk_features})()
-        probability = int(
-            (_base_probability(risk_request) * _BPS).to_integral_value()
-        )
+        probability = int((_base_probability(risk_request) * _BPS).to_integral_value())
         expected_cost = _usd(
-            features.collateral_usd * Decimal("0.0005")
-            + resulting_debt * Decimal("0.0002")
+            features.collateral_usd * Decimal("0.0005") + resulting_debt * Decimal("0.0002")
         )
         expected_loss = _usd(sold * Decimal("0.01") + expected_cost)
         if action_type in {"swap_collateral", "combined"}:

@@ -1,4 +1,4 @@
-import type { Address, CanonicalIntent, SolverRoute } from "@metron/types";
+import type { Address, CanonicalIntent, RouteAction, SolverRoute } from "@metron/types";
 import { PROTOCOL_IDS } from "@metron/config";
 
 export interface RouteMarketSnapshot {
@@ -26,6 +26,9 @@ export interface RouteBuildContext {
   scoreVersion: string;
   now: number;
   markets: readonly RouteMarketSnapshot[];
+  bridgeTarget?: Address;
+  hedgeTarget?: Address;
+  destinationMarkets?: readonly RouteMarketSnapshot[];
 }
 
 function routeId(context: RouteBuildContext, kind: string, market: RouteMarketSnapshot): string {
@@ -41,7 +44,7 @@ function actionTarget(
   asset: Address,
   amount: string,
   actionType: "supply" | "add_liquidity",
-) {
+): RouteAction {
   return {
     actionIndex: 0,
     chainId: 0,
@@ -52,6 +55,13 @@ function actionTarget(
     amount,
     calldata: asHex("0x"),
   };
+}
+
+function actionWithIndex(
+  actionIndex: number,
+  action: Omit<RouteAction, "actionIndex">,
+): RouteAction {
+  return { actionIndex, ...action };
 }
 
 export function buildCandidateRoutes(
@@ -118,6 +128,134 @@ export function buildCandidateRoutes(
         resultingDeltaWad: market.resultingDeltaWad,
         resultingHealthFactorWad: market.resultingHealthFactorWad,
         liquidityScoreBps: market.liquidityScoreBps,
+        validityDeadline: expiry,
+        scoreVersion: context.scoreVersion,
+      });
+    }
+  }
+  return routes;
+}
+
+function average(left: number, right: number): number {
+  return Math.round((left + right) / 2);
+}
+
+/**
+ * Builds a composable strategy candidate instead of treating each protocol
+ * action as a separate strategy. The caller still supplies executable targets
+ * and market observations; this function only assembles and scores the graph.
+ */
+export function buildComposedCandidateRoutes(
+  intent: CanonicalIntent,
+  context: RouteBuildContext,
+): SolverRoute[] {
+  const destinations = context.destinationMarkets ?? context.markets;
+  const allowedChains = new Set(intent.chains);
+  const allowedProtocols = new Set(intent.protocols);
+  const allowedAssets = new Set(intent.assets.map((asset) => asset.toLowerCase()));
+  const expiry = Math.min(intent.expiresAt, context.now + 300);
+  const routes: SolverRoute[] = [];
+
+  if (
+    !context.hedgeTarget ||
+    !allowedProtocols.has(PROTOCOL_IDS.aaveV3) ||
+    !allowedProtocols.has(PROTOCOL_IDS.uniswapV4)
+  ) {
+    return routes;
+  }
+
+  for (const source of context.markets) {
+    for (const destination of destinations) {
+      if (
+        !allowedChains.has(source.chainId) ||
+        !allowedChains.has(destination.chainId) ||
+        !allowedAssets.has(source.asset.toLowerCase()) ||
+        !allowedAssets.has(destination.asset.toLowerCase())
+      ) {
+        continue;
+      }
+      if (
+        source.chainId !== destination.chainId &&
+        source.asset.toLowerCase() !== destination.asset.toLowerCase()
+      ) {
+        continue;
+      }
+
+      const crossChain = source.chainId !== destination.chainId;
+      const prefix = `${context.strategyPrefix}:composed:${source.chainId}:${destination.chainId}`;
+      const actions: RouteAction[] = [];
+      if (crossChain) {
+        if (!context.bridgeTarget) {
+          continue;
+        }
+        actions.push(
+          actionWithIndex(0, {
+            chainId: source.chainId,
+            protocol: "layerzero-v2",
+            actionType: "cross_chain_message",
+            target: context.bridgeTarget,
+            assetIn: source.asset,
+            amount: "0",
+            calldata: asHex("0x"),
+          }),
+        );
+      }
+      const destinationIndex = actions.length;
+      actions.push(
+        actionWithIndex(destinationIndex, {
+          chainId: destination.chainId,
+          protocol: PROTOCOL_IDS.aaveV3,
+          actionType: "supply",
+          target: destination.lendingTarget,
+          assetIn: destination.asset,
+          amount: "0",
+          calldata: asHex("0x"),
+        }),
+        actionWithIndex(destinationIndex + 1, {
+          chainId: destination.chainId,
+          protocol: PROTOCOL_IDS.uniswapV4,
+          actionType: "add_liquidity",
+          target: destination.liquidityTarget,
+          assetIn: destination.asset,
+          amount: "0",
+          calldata: asHex("0x"),
+        }),
+        actionWithIndex(destinationIndex + 2, {
+          chainId: destination.chainId,
+          protocol: "hedge",
+          actionType: "adjust_hedge",
+          target: context.hedgeTarget,
+          assetIn: destination.asset,
+          amount: "0",
+          calldata: asHex("0x"),
+        }),
+      );
+      routes.push({
+        schemaVersion: "1.0.0",
+        routeId: `${prefix}:${source.asset.toLowerCase()}`,
+        solverId: context.solverId,
+        intentId: context.intentId,
+        strategyId: `${prefix}:strategy`,
+        actions,
+        expectedNetApyBps: average(source.expectedNetApyBps, destination.expectedNetApyBps),
+        expectedDrawdownBps: Math.max(source.expectedDrawdownBps, destination.expectedDrawdownBps),
+        expectedImpermanentLossBps: Math.max(
+          source.expectedImpermanentLossBps,
+          destination.expectedImpermanentLossBps,
+        ),
+        liquidationProbabilityBps: Math.max(
+          source.liquidationProbabilityBps,
+          destination.liquidationProbabilityBps,
+        ),
+        estimatedGasUsd: source.estimatedGasUsd,
+        estimatedSlippageBps: Math.max(
+          source.estimatedSlippageBps,
+          destination.estimatedSlippageBps,
+        ),
+        bridgeCostUsd: crossChain ? source.bridgeCostUsd : "0",
+        resultingDeltaWad: destination.resultingDeltaWad,
+        resultingHealthFactorWad: destination.resultingHealthFactorWad,
+        liquidityScoreBps: Math.min(source.liquidityScoreBps, destination.liquidityScoreBps),
         validityDeadline: expiry,
         scoreVersion: context.scoreVersion,
       });

@@ -34,6 +34,26 @@ describe("keeper runtime", () => {
     ]);
   });
 
+  it("treats negative stablecoin deviations as depegs", () => {
+    const triggers = evaluateKeeperObservation({
+      ...observation,
+      observedDeltaWad: 0n,
+      deltaToleranceWad: 100n,
+      healthFactorWad: 300n,
+      minimumHealthFactorWad: 200n,
+      lpDriftBps: 0,
+      maximumLpDriftBps: 100,
+      volatilityBps: 0,
+      maximumVolatilityBps: 1000,
+      stablecoinDeviationBps: -200,
+      protocolHealthy: true,
+      crossChainTimedOut: false,
+      riskScoreBps: 0,
+      maximumRiskScoreBps: 5000,
+    });
+    expect(triggers.map((trigger) => trigger.kind)).toEqual(["risk_restriction"]);
+  });
+
   it("does not duplicate successful delivery and retries failed delivery", async () => {
     const runtime = new KeeperRuntime();
     let attempts = 0;

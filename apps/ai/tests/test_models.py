@@ -24,7 +24,12 @@ from metron_ai.models import (
     StressScenario,
 )
 from metron_ai.optimization import estimate_liquidity, optimize_allocation
-from metron_ai.recommendations import parse_scenario_draft, recommend
+from metron_ai.recommendations import (
+    parse_intent_draft,
+    parse_scenario_draft,
+    recommend,
+    recommend_threshold,
+)
 from metron_ai.recovery import rank_recovery
 from metron_ai.risk_model import predict_liquidation, predict_regime
 from metron_ai.settings import get_settings
@@ -136,6 +141,7 @@ async def test_prediction_endpoint_returns_versioned_output(
     assert body["trace_id"] == "trace-5"
     get_settings.cache_clear()
 
+
 def test_recovery_ranking_honors_user_policy(features: RiskFeatures) -> None:
     request = RecoveryRequest(
         position_id="position-2",
@@ -183,10 +189,12 @@ def test_cascade_reports_depth_impact_and_affected_positions() -> None:
         ],
     )
     result = simulate_cascade(request, 1_700_000_000)
-    assert result.consumed_depth_usd == Decimal("5000")
-    assert result.secondary_price_impact_bps == 500
+    assert result.consumed_depth_usd == Decimal("5900")
+    assert result.secondary_price_impact_bps == 590
     assert result.newly_liquidatable_positions == ["unsafe"]
     assert result.secondary_exposure_usd == Decimal("900.000000")
+    assert result.rounds == 2
+    assert result.converged is True
 
 
 def test_recommendation_never_escapes_policy() -> None:
@@ -200,6 +208,7 @@ def test_recommendation_never_escapes_policy() -> None:
         )
     )
     assert result.recommended_action_type == "repay_debt"
+
 
 def test_liquidity_estimate_and_allocation_are_bounded() -> None:
     estimate = estimate_liquidity(
@@ -244,6 +253,69 @@ def test_liquidity_estimate_and_allocation_are_bounded() -> None:
     assert [item.opportunity_id for item in allocation.allocations] == ["safe"]
     assert allocation.rejected_opportunities[0]["reason"] == "RISK_LIMIT_EXCEEDED"
 
+
+def test_intent_parser_extracts_constraints_and_requires_approval() -> None:
+    from metron_ai.models import IntentDraftRequest
+
+    draft = parse_intent_draft(
+        IntentDraftRequest(
+            trace_id="trace-intent",
+            text=(
+                "target 12% APY, max 5% drawdown, max 2% impermanent loss, "
+                "delta-neutral on Arbitrum using Aave and Uniswap, automatically rebalance"
+            ),
+        )
+    )
+    assert draft.intent_type == "liquidity"
+    assert draft.objective["target_apy_min_bps"] == 1200
+    assert draft.risk["max_drawdown_bps"] == 500
+    assert draft.risk["max_impermanent_loss_bps"] == 200
+    assert draft.exposure["target_delta_wad"] == 0
+    assert 42161 in draft.chains
+    assert draft.protocols == ["aave-v3", "uniswap-v4"]
+    assert draft.automation["rebalance"] is True
+    assert draft.requires_approval is True
+
+
+def test_dynamic_threshold_moves_earlier_under_market_stress() -> None:
+    from metron_ai.models import ThresholdRequest
+
+    stable = recommend_threshold(
+        ThresholdRequest(
+            trace_id="trace-threshold-stable",
+            current_liquidation_probability_bps=500,
+            user_max_probability_bps=2000,
+            administrator_max_probability_bps=2500,
+            hysteresis_bps=100,
+            market_regime="stable",
+        )
+    )
+    stressed = recommend_threshold(
+        ThresholdRequest(
+            trace_id="trace-threshold-stressed",
+            current_liquidation_probability_bps=500,
+            user_max_probability_bps=2000,
+            administrator_max_probability_bps=2500,
+            hysteresis_bps=100,
+            market_regime="flash_crash",
+            liquidity_stress_bps=3000,
+            protocol_risk_bps=2000,
+        )
+    )
+    assert stressed.recommended_intervention_bps < stable.recommended_intervention_bps
+
+
+def test_position_answer_refuses_missing_requested_field() -> None:
+    answer = answer_position(
+        PositionAnswerRequest(
+            trace_id="trace-answer-missing",
+            question="what is the current yield?",
+            indexed_data={"health_factor_wad": 2 * 10**18},
+        )
+    )
+    assert answer.refusal_reason == "MISSING_REQUIRED_FIELD:yield_bps"
+
+
 def test_natural_language_scenario_is_an_unapproved_draft() -> None:
     draft = parse_scenario_draft(
         ScenarioDraftRequest(
@@ -255,6 +327,7 @@ def test_natural_language_scenario_is_an_unapproved_draft() -> None:
     assert draft.scenario.eth_price_shock_bps == -2000
     assert draft.scenario.stablecoin_depeg_bps == 300
     assert draft.scenario.dex_liquidity_shock_bps == 1000
+
 
 def test_position_answer_reports_only_supplied_provenance() -> None:
     answer = answer_position(

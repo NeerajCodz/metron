@@ -159,6 +159,7 @@ async def intent_draft(
     require_service_token(x_metron_service_token)
     return parse_intent_draft(request)
 
+
 @app.post("/v1/scenario/parse", response_model=ScenarioDraftResponse, tags=["drafts"])
 async def scenario_draft(
     request: ScenarioDraftRequest, x_metron_service_token: str | None = Header(default=None)
@@ -182,12 +183,14 @@ async def allocation_optimization(
     require_service_token(x_metron_service_token)
     return optimize_allocation(request)
 
+
 @app.post("/v1/position/answer", response_model=PositionAnswerResponse, tags=["explanations"])
 async def position_answer(
     request: PositionAnswerRequest, x_metron_service_token: str | None = Header(default=None)
 ) -> PositionAnswerResponse:
     require_service_token(x_metron_service_token)
     return answer_position(request)
+
 
 @app.post("/v1/explain", response_model=ExplanationResponse, tags=["explanations"])
 @app.post("/v1/explanations", response_model=ExplanationResponse, tags=["explanations"])
