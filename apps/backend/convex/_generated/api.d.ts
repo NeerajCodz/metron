@@ -1,0 +1,73 @@
+/* eslint-disable */
+/**
+ * Generated `api` utility.
+ *
+ * THIS CODE IS AUTOMATICALLY GENERATED.
+ *
+ * To regenerate, run `npx convex dev`.
+ * @module
+ */
+
+import type * as ai from "../ai.js";
+import type * as auditEvents from "../auditEvents.js";
+import type * as crossChainMessages from "../crossChainMessages.js";
+import type * as executions from "../executions.js";
+import type * as http from "../http.js";
+import type * as indexing from "../indexing.js";
+import type * as intents from "../intents.js";
+import type * as lib_auth from "../lib/auth.js";
+import type * as marketObservations from "../marketObservations.js";
+import type * as positions from "../positions.js";
+import type * as simulations from "../simulations.js";
+import type * as solvers from "../solvers.js";
+import type * as users from "../users.js";
+
+import type {
+  ApiFromModules,
+  FilterApi,
+  FunctionReference,
+} from "convex/server";
+
+declare const fullApi: ApiFromModules<{
+  ai: typeof ai;
+  auditEvents: typeof auditEvents;
+  crossChainMessages: typeof crossChainMessages;
+  executions: typeof executions;
+  http: typeof http;
+  indexing: typeof indexing;
+  intents: typeof intents;
+  "lib/auth": typeof lib_auth;
+  marketObservations: typeof marketObservations;
+  positions: typeof positions;
+  simulations: typeof simulations;
+  solvers: typeof solvers;
+  users: typeof users;
+}>;
+
+/**
+ * A utility for referencing Convex functions in your app's public API.
+ *
+ * Usage:
+ * ```js
+ * const myFunctionReference = api.myModule.myFunction;
+ * ```
+ */
+export declare const api: FilterApi<
+  typeof fullApi,
+  FunctionReference<any, "public">
+>;
+
+/**
+ * A utility for referencing Convex functions in your app's internal API.
+ *
+ * Usage:
+ * ```js
+ * const myFunctionReference = internal.myModule.myFunction;
+ * ```
+ */
+export declare const internal: FilterApi<
+  typeof fullApi,
+  FunctionReference<any, "internal">
+>;
+
+export declare const components: {};

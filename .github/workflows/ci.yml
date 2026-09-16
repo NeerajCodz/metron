@@ -36,7 +36,6 @@ jobs:
       - run: node ../../scripts/forge.mjs build
         working-directory: apps/web3
       - run: pnpm generate:abi
-      - run: pnpm --filter @metron/backend codegen
       - run: pnpm format:check
       - run: pnpm turbo run lint --filter='!@metron/ui' --filter='!@metron/web' --filter='!@metron/ai'
       - run: pnpm turbo run typecheck --filter='!@metron/ui' --filter='!@metron/web' --filter='!@metron/ai'
