@@ -136,6 +136,26 @@ contract LayerZeroAdapterTest is Test {
         endpoint.deliver(address(adapter), origin, duplicateGuid, message);
     }
 
+    function testRejectsOutOfOrderNonce() external {
+        bytes memory data = abi.encodeCall(MockRemoteTarget.execute, ());
+        bytes memory message = abi.encode(
+            keccak256("nonce"),
+            uint8(1),
+            block.chainid,
+            address(router),
+            keccak256("position"),
+            uint8(1),
+            address(target),
+            keccak256(data),
+            uint64(2),
+            uint64(block.timestamp + 1 hours),
+            data
+        );
+        LzOrigin memory origin = LzOrigin(REMOTE_EID, REMOTE_PEER, 1);
+        vm.expectRevert(abi.encodeWithSelector(RemoteExecutor.InvalidNonce.selector, uint64(0), uint64(2)));
+        endpoint.deliver(address(adapter), origin, keccak256("nonce-guid"), message);
+    }
+
     function testExpiredInboundMessageIsNotExecuted() external {
         bytes memory data = abi.encodeCall(MockRemoteTarget.execute, ());
         uint64 expiry = uint64(block.timestamp + 10);

@@ -4,6 +4,7 @@ pragma solidity 0.8.30;
 import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {Pausable} from "@openzeppelin/contracts/utils/Pausable.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {IPositionManager} from "../interfaces/IPositionManager.sol";
 import {IRiskController} from "../interfaces/IRiskController.sol";
@@ -12,6 +13,7 @@ import {IVault} from "../interfaces/IVault.sol";
 import {MetronTypes} from "../libraries/MetronTypes.sol";
 
 contract HedgeManager is AccessControl, Pausable, ReentrancyGuard {
+    using SafeERC20 for IERC20;
     bytes32 public constant KEEPER_ROLE = keccak256("KEEPER_ROLE");
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
 
@@ -146,8 +148,9 @@ contract HedgeManager is AccessControl, Pausable, ReentrancyGuard {
         adapter.execute(position.owner, inputAsset, outputAsset, inputAmount, data);
         outputAmount = IERC20(outputAsset).balanceOf(address(this)) - beforeBalance;
         if (outputAmount < minimumOutput) revert OutputBelowMinimum(minimumOutput, outputAmount);
-        IERC20(outputAsset).approve(address(vault), outputAmount);
+        IERC20(outputAsset).forceApprove(address(vault), outputAmount);
         vault.deposit(outputAsset, outputAmount, position.owner);
+        IERC20(outputAsset).forceApprove(address(vault), 0);
         policy.lastRebalancedAt = uint64(block.timestamp);
         emit HedgeRebalanced(
             positionId, executionId, traceId, observedDeltaWad, resultingDeltaWad, inputAmount, outputAmount

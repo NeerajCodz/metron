@@ -32,12 +32,14 @@ contract RemoteExecutor is AccessControl, Pausable, ReentrancyGuard, IRemoteExec
     error SourceChainNotAllowed(uint32 srcEid, uint256 sourceChainId);
     error UnsupportedVersion(uint8 version);
     error MessageAlreadyExecuted(bytes32 guid);
+    error InvalidNonce(uint64 expected, uint64 received);
 
     address public immutable adapter;
     mapping(address target => bool allowed) public allowedTargets;
     mapping(uint32 srcEid => address sourceRouter) public sourceRouters;
     mapping(uint32 srcEid => uint256 sourceChainId) public sourceChainIds;
     mapping(bytes32 guid => bool executed) public executedMessages;
+    mapping(uint32 srcEid => mapping(address sourceRouter => uint64 nextNonce)) public nextNonces;
     event TargetConfigured(address indexed target, bool allowed);
     event SourceRouterConfigured(uint32 indexed srcEid, address indexed sourceRouter);
     event RemoteExecution(bytes32 indexed guid, bytes32 indexed dispatchId, address indexed target, bool success);
@@ -92,11 +94,12 @@ contract RemoteExecutor is AccessControl, Pausable, ReentrancyGuard, IRemoteExec
         );
         if (version != 1) revert UnsupportedVersion(version);
         if (sourceChainIds[srcEid] != sourceChainId) revert SourceChainNotAllowed(srcEid, sourceChainId);
-        positionId;
-        actionType;
-        nonce;
+        if (positionId == bytes32(0) || actionType == 0) revert InvalidMessage();
         if (sourceRouters[srcEid] != sourceContract) revert SourceRouterNotAllowed(srcEid, sourceContract);
         if (payloadHash != keccak256(data)) revert InvalidMessage();
+        uint64 expectedNonce = nextNonces[srcEid][sourceContract];
+        if (nonce != expectedNonce) revert InvalidNonce(expectedNonce, nonce);
+        nextNonces[srcEid][sourceContract] = expectedNonce + 1;
         if (expiresAt <= block.timestamp) revert MessageExpired(expiresAt);
         if (!allowedTargets[target]) revert TargetNotAllowed(target);
         executedMessages[guid] = true;
