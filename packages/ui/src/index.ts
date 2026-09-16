@@ -293,3 +293,86 @@ export {
   type CommandItemProps,
   type CommandProps,
 } from "./components/command.js";
+export {
+  Breadcrumb,
+  BreadcrumbEllipsis,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+  type BreadcrumbLinkProps,
+} from "./components/breadcrumb.js";
+export {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarTrigger,
+  type MenubarContentProps,
+  type MenubarItemProps,
+  type MenubarMenuProps,
+  type MenubarProps,
+  type MenubarTriggerProps,
+} from "./components/menubar.js";
+export {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  type NavigationMenuContentProps,
+  type NavigationMenuLinkProps,
+  type NavigationMenuProps,
+  type NavigationMenuTriggerProps,
+} from "./components/navigation-menu.js";
+export {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+  type PaginationLinkProps,
+} from "./components/pagination.js";
+export {
+  Popover,
+  PopoverClose,
+  PopoverContent,
+  PopoverTrigger,
+  type PopoverCloseProps,
+  type PopoverContentProps,
+  type PopoverProps,
+  type PopoverTriggerProps,
+} from "./components/popover.js";
+export {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+  type TooltipProps,
+  type TooltipProviderProps,
+} from "./components/tooltip.js";
+export {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+  type HoverCardContentProps,
+  type HoverCardProps,
+} from "./components/hover-card.js";
+export {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuShortcut,
+  ContextMenuTrigger,
+  type ContextMenuContentProps,
+  type ContextMenuItemProps,
+  type ContextMenuProps,
+  type ContextMenuTriggerProps,
+} from "./components/context-menu.js";
