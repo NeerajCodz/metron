@@ -34,7 +34,8 @@ try {
 
 const args = ["script", script, "--broadcast", "--rpc-url", rpc, "--private-key", privateKey];
 console.log(JSON.stringify({ chain, script, admin, status: "starting" }));
-const child = spawn("node", ["scripts/forge.mjs", ...args], {
+const forgeWrapper = resolve("scripts/forge.mjs");
+const child = spawn("node", [forgeWrapper, ...args], {
   cwd: resolve("apps/web3"),
   stdio: "inherit",
   env: { ...process.env, EXPECTED_ADMIN_ADDRESS: admin },
