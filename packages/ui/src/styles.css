@@ -83,3 +83,96 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+.metron-liquid-glass {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--metron-glass-radius);
+  background:
+    linear-gradient(135deg, rgb(242 241 237 / 10%), transparent 38%),
+    linear-gradient(315deg, rgb(113 0 20 / 10%), transparent 45%),
+    var(--metron-surface);
+  box-shadow: var(--metron-glass-glow);
+  color: var(--metron-pearl);
+  transform-style: preserve-3d;
+}
+
+.metron-liquid-glass--draggable {
+  cursor: grab;
+  touch-action: none;
+}
+
+.metron-liquid-glass--draggable:active {
+  cursor: grabbing;
+}
+
+.metron-liquid-glass--expandable {
+  cursor: pointer;
+}
+
+.metron-liquid-glass:focus-visible {
+  outline: 2px solid var(--metron-focus);
+  outline-offset: 3px;
+}
+
+.metron-liquid-glass__filter {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.metron-liquid-glass__bend,
+.metron-liquid-glass__face,
+.metron-liquid-glass__edge {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.metron-liquid-glass__bend {
+  z-index: -3;
+  background: rgb(22 22 22 / 36%);
+  backdrop-filter: blur(var(--metron-glass-blur)) saturate(150%) contrast(1.05);
+  -webkit-backdrop-filter: blur(var(--metron-glass-blur)) saturate(150%) contrast(1.05);
+}
+
+.metron-liquid-glass__face {
+  z-index: -2;
+  background:
+    radial-gradient(circle at 12% 0%, rgb(242 241 237 / 18%), transparent 28%),
+    radial-gradient(circle at 88% 100%, rgb(179 143 111 / 10%), transparent 34%);
+  box-shadow:
+    inset 0 1px 0 rgb(242 241 237 / 22%),
+    inset 0 -1px 0 rgb(0 0 0 / 32%);
+}
+
+.metron-liquid-glass__edge {
+  inset: 1px;
+  z-index: -1;
+  border: 1px solid var(--metron-border);
+  box-shadow:
+    inset 1px 1px 1px rgb(242 241 237 / 7%),
+    inset -1px -1px 1px rgb(113 0 20 / 12%);
+}
+
+.metron-liquid-glass__content {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  height: 100%;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .metron-liquid-glass {
+    background: var(--metron-surface-strong);
+  }
+
+  .metron-liquid-glass__bend {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
