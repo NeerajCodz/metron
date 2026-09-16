@@ -3,6 +3,7 @@
 @import "./styles/forms.css";
 @import "./styles/feedback.css";
 @import "./styles/data.css";
+@import "./styles/states.css";
 
 :root,
 .metron-theme {
