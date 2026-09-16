@@ -2,6 +2,7 @@ import { existsSync, mkdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { resolve } from "node:path";
 import { spawnSync } from "node:child_process";
+const root = fileURLToPath(new URL("..", import.meta.url));
 
 const circuits = ["intent", "ownership", "collateral"];
 const command = process.argv[2] ?? "check";
