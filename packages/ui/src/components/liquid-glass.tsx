@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useReducedMotion, type HTMLMotionProps } from "motion/react";
+import { motion, useReducedMotion, type HTMLMotionProps, type MotionStyle } from "motion/react";
 import {
   useId,
   useState,
@@ -14,7 +14,7 @@ import { cn } from "../lib/cn.js";
 
 type BlurIntensity = "sm" | "md" | "lg" | "xl";
 type GlowIntensity = "none" | "sm" | "md" | "lg";
-type GlassStyle = CSSProperties & {
+type GlassStyle = MotionStyle & {
   "--metron-glass-radius": string;
   "--metron-glass-blur": string;
   "--metron-glass-glow": string;
@@ -38,7 +38,7 @@ export interface LiquidGlassProps
   blurIntensity?: BlurIntensity;
   glowIntensity?: GlowIntensity;
   borderRadius?: string;
-  style?: CSSProperties;
+  style?: MotionStyle;
 }
 
 const blurValues: Record<BlurIntensity, string> = {
