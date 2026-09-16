@@ -23,22 +23,22 @@ type GlassStyle = MotionStyle & {
 export interface LiquidGlassProps
   extends Omit<HTMLMotionProps<"div">, "children" | "drag" | "onClick" | "style"> {
   children: ReactNode;
-  className?: string;
-  contentClassName?: string;
-  draggable?: boolean;
-  expandable?: boolean;
-  expanded?: boolean;
-  defaultExpanded?: boolean;
-  onExpandedChange?: (expanded: boolean) => void;
-  onClick?: (event: MouseEvent<HTMLDivElement>) => void;
-  width?: CSSProperties["width"];
-  height?: CSSProperties["height"];
-  expandedWidth?: CSSProperties["width"];
-  expandedHeight?: CSSProperties["height"];
-  blurIntensity?: BlurIntensity;
-  glowIntensity?: GlowIntensity;
-  borderRadius?: string;
-  style?: MotionStyle;
+  className?: string | undefined;
+  contentClassName?: string | undefined;
+  draggable?: boolean | undefined;
+  expandable?: boolean | undefined;
+  expanded?: boolean | undefined;
+  defaultExpanded?: boolean | undefined;
+  onExpandedChange?: ((expanded: boolean) => void) | undefined;
+  onClick?: ((event: MouseEvent<HTMLDivElement>) => void) | undefined;
+  width?: CSSProperties["width"] | undefined;
+  height?: CSSProperties["height"] | undefined;
+  expandedWidth?: CSSProperties["width"] | undefined;
+  expandedHeight?: CSSProperties["height"] | undefined;
+  blurIntensity?: BlurIntensity | undefined;
+  glowIntensity?: GlowIntensity | undefined;
+  borderRadius?: string | undefined;
+  style?: MotionStyle | undefined;
 }
 
 const blurValues: Record<BlurIntensity, string> = {

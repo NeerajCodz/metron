@@ -1,8 +1,8 @@
-import type { HTMLAttributes, ReactNode } from "react";
+import type { MotionStyle } from "motion/react";
+import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
 
 import { cn } from "../lib/cn.js";
 import { LiquidGlass } from "./liquid-glass.js";
-
 export interface GlassCardProps
   extends Omit<HTMLAttributes<HTMLElement>, "title"> {
   children?: ReactNode;
@@ -27,6 +27,88 @@ export interface MetricCardProps
   changeTone?: MetricChangeTone;
   icon?: ReactNode;
 }
+
+export type CardVariant = "carbon" | "glass" | "liquid-glass" | "solid" | "outline";
+
+export interface CardProps extends HTMLAttributes<HTMLDivElement> {
+  variant?: CardVariant | undefined;
+  glow?: boolean | undefined;
+}
+
+export const Card = forwardRef<HTMLDivElement, CardProps>(
+  ({ className, variant = "carbon", glow = false, children, ...props }, ref) => {
+    if (variant === "liquid-glass") {
+      return (
+        <LiquidGlass
+          className={cn("metron-card--root metron-card--liquid-glass", className)}
+          glowIntensity={glow ? "lg" : "md"}
+          id={props.id}
+          style={props.style as MotionStyle | undefined}
+        >
+          <div ref={ref} className="metron-card__surface">{children}</div>
+        </LiquidGlass>
+      );
+    }
+
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          "metron-card--root",
+          `metron-card--${variant}`,
+          glow && "metron-card--glow",
+          className,
+        )}
+        {...props}
+      >
+        {children}
+      </div>
+    );
+  },
+);
+Card.displayName = "Card";
+
+export const CardHeader = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} className={cn("metron-card-header", className)} {...props} />
+  ),
+);
+CardHeader.displayName = "CardHeader";
+
+export const CardTitle = forwardRef<HTMLHeadingElement, HTMLAttributes<HTMLHeadingElement>>(
+  ({ className, ...props }, ref) => (
+    <h3 ref={ref} className={cn("metron-card-title", className)} {...props} />
+  ),
+);
+CardTitle.displayName = "CardTitle";
+
+export const CardDescription = forwardRef<HTMLParagraphElement, HTMLAttributes<HTMLParagraphElement>>(
+  ({ className, ...props }, ref) => (
+    <p ref={ref} className={cn("metron-card-description", className)} {...props} />
+  ),
+);
+CardDescription.displayName = "CardDescription";
+
+export const CardContent = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} className={cn("metron-card-content", className)} {...props} />
+  ),
+);
+CardContent.displayName = "CardContent";
+
+export const CardFooter = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} className={cn("metron-card-footer", className)} {...props} />
+  ),
+);
+CardFooter.displayName = "CardFooter";
+
+export const CardAction = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} className={cn("metron-card__action", className)} {...props} />
+  ),
+);
+CardAction.displayName = "CardAction";
 
 export function GlassCard({
   children,

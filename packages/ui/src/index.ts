@@ -1,6 +1,8 @@
 export {
   Button,
+  ButtonGroup,
   IconButton,
+  type ButtonGroupProps,
   type ButtonProps,
   type ButtonSize,
   type ButtonVariant,
@@ -8,8 +10,17 @@ export {
 } from "./components/button.js";
 export { Badge, type BadgeProps, type BadgeVariant } from "./components/badge.js";
 export {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
   GlassCard,
   MetricCard,
+  type CardProps,
+  type CardVariant,
   type GlassCardProps,
   type MetricCardProps,
   type MetricChangeTone,
@@ -94,3 +105,12 @@ export {
 } from "./components/navigation.js";
 export { LiquidGlass, type LiquidGlassProps } from "./components/liquid-glass.js";
 export { cn } from "./lib/cn.js";
+export {
+  BackgroundLayout,
+  BackgroundPattern,
+  type BackgroundGlow,
+  type BackgroundLayoutProps,
+  type BackgroundMask,
+  type BackgroundPatternProps,
+  type BackgroundPatternVariant,
+} from "./components/background.js";
