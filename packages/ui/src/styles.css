@@ -4,6 +4,7 @@
 @import "./styles/feedback.css";
 @import "./styles/data.css";
 @import "./styles/states.css";
+@import "./styles/overlays.css";
 
 :root,
 .metron-theme {

@@ -66,5 +66,26 @@ export {
   type EmptyStateHeadingLevel,
   type EmptyStateProps,
 } from "./components/empty-state.js";
+export {
+  Dialog,
+  DialogBody,
+  DialogClose,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  type DialogBodyProps,
+  type DialogCloseProps,
+  type DialogDescriptionProps,
+  type DialogProps,
+  type DialogSectionProps,
+  type DialogTitleProps,
+} from "./components/dialog.js";
+export {
+  DropdownMenu,
+  DropdownMenuItem,
+  type DropdownMenuItemProps,
+  type DropdownMenuProps,
+} from "./components/dropdown-menu.js";
 export { LiquidGlass, type LiquidGlassProps } from "./components/liquid-glass.js";
 export { cn } from "./lib/cn.js";

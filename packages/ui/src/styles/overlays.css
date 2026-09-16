@@ -1,0 +1,391 @@
+.metron-dialog {
+  width: min(42rem, calc(100vw - 2rem));
+  max-width: none;
+  max-height: min(48rem, calc(100dvh - 2rem));
+  padding: 0;
+  overflow: visible;
+  color: var(--metron-pearl);
+  background: transparent;
+  border: 0;
+}
+
+.metron-dialog::backdrop {
+  background:
+    radial-gradient(circle at 50% 20%, rgb(113 0 20 / 22%), transparent 38rem),
+    rgb(0 0 0 / 72%);
+  backdrop-filter: blur(8px) saturate(80%);
+  -webkit-backdrop-filter: blur(8px) saturate(80%);
+}
+
+.metron-dialog[open] {
+  animation: metron-dialog-enter var(--metron-duration-medium) var(--metron-ease) both;
+}
+
+.metron-dialog[open]::backdrop {
+  animation: metron-backdrop-enter var(--metron-duration-medium) ease-out both;
+}
+
+.metron-dialog__surface {
+  width: 100%;
+  max-height: min(48rem, calc(100dvh - 2rem));
+}
+
+.metron-dialog__surface-content {
+  display: flex;
+  max-height: inherit;
+  flex-direction: column;
+}
+
+.metron-dialog__header {
+  display: flex;
+  flex: none;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.4rem 1.5rem 1rem;
+  border-bottom: 1px solid var(--metron-border);
+}
+
+.metron-dialog__heading {
+  min-width: 0;
+  margin-right: auto;
+}
+
+.metron-dialog__title {
+  margin: 0;
+  color: var(--metron-pearl);
+  font-size: clamp(1.15rem, 1rem + 0.7vw, 1.55rem);
+  font-weight: 650;
+  line-height: 1.18;
+  letter-spacing: -0.025em;
+}
+
+.metron-dialog__description {
+  max-width: 62ch;
+  margin: 0.45rem 0 0;
+  color: var(--metron-pearl-muted);
+  font-size: 0.925rem;
+  line-height: 1.55;
+}
+
+.metron-dialog__close {
+  display: inline-grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex: none;
+  place-items: center;
+  padding: 0;
+  color: var(--metron-pearl-muted);
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+  background: rgb(242 241 237 / 6%);
+  border: 1px solid var(--metron-border);
+  border-radius: var(--metron-radius-pill);
+  transition:
+    color var(--metron-duration-fast) var(--metron-ease),
+    background-color var(--metron-duration-fast) var(--metron-ease),
+    border-color var(--metron-duration-fast) var(--metron-ease),
+    transform var(--metron-duration-fast) var(--metron-ease);
+}
+
+.metron-dialog__close:hover:not(:disabled) {
+  color: var(--metron-pearl);
+  background: var(--metron-surface-hover);
+  border-color: var(--metron-border-strong);
+}
+
+.metron-dialog__close:active:not(:disabled) {
+  transform: scale(0.94);
+}
+
+.metron-dialog__close:focus-visible {
+  outline: 2px solid var(--metron-focus);
+  outline-offset: 3px;
+}
+
+.metron-dialog__close:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.metron-dialog__body {
+  min-height: 0;
+  padding: 1.35rem 1.5rem 1.5rem;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-color: var(--metron-border-strong) transparent;
+}
+
+.metron-dialog__footer {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem 1.25rem;
+  border-top: 1px solid var(--metron-border);
+}
+
+.metron-dropdown {
+  position: relative;
+  display: inline-block;
+  color: var(--metron-pearl);
+}
+
+.metron-dropdown__summary {
+  position: relative;
+  display: inline-flex;
+  min-height: 2.65rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  padding: 0.65rem 0.85rem 0.65rem 1rem;
+  color: var(--metron-pearl);
+  font-weight: 600;
+  line-height: 1;
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+  background:
+    linear-gradient(135deg, rgb(242 241 237 / 10%), transparent 50%),
+    var(--metron-surface);
+  border: 1px solid var(--metron-border);
+  border-radius: var(--metron-radius-control);
+  box-shadow:
+    inset 0 1px 0 rgb(242 241 237 / 13%),
+    var(--metron-shadow-control);
+  backdrop-filter: blur(var(--metron-blur)) saturate(150%);
+  -webkit-backdrop-filter: blur(var(--metron-blur)) saturate(150%);
+  transition:
+    background-color var(--metron-duration-fast) var(--metron-ease),
+    border-color var(--metron-duration-fast) var(--metron-ease),
+    transform var(--metron-duration-fast) var(--metron-ease);
+}
+
+.metron-dropdown__summary::-webkit-details-marker {
+  display: none;
+}
+
+.metron-dropdown__summary:hover {
+  background-color: var(--metron-surface-hover);
+  border-color: var(--metron-border-strong);
+}
+
+.metron-dropdown__summary:active {
+  transform: scale(0.98);
+}
+
+.metron-dropdown__summary:focus-visible {
+  outline: 2px solid var(--metron-focus);
+  outline-offset: 3px;
+}
+
+.metron-dropdown__trigger {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.metron-dropdown__indicator {
+  display: inline-grid;
+  width: 1.25rem;
+  height: 1.25rem;
+  place-items: center;
+  color: var(--metron-sand);
+  font-size: 0.8rem;
+  transition: transform var(--metron-duration-medium) var(--metron-ease);
+}
+
+.metron-dropdown[open] .metron-dropdown__indicator {
+  transform: rotate(180deg);
+}
+
+.metron-dropdown__panel {
+  position: absolute;
+  top: calc(100% + 0.55rem);
+  z-index: 80;
+  width: max-content;
+  min-width: max(12rem, 100%);
+  max-width: min(22rem, calc(100vw - 2rem));
+  padding: 0.4rem;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 10% 0%, rgb(242 241 237 / 10%), transparent 55%),
+    linear-gradient(145deg, rgb(38 34 34 / 94%), rgb(19 18 18 / 96%));
+  border: 1px solid var(--metron-border-strong);
+  border-radius: var(--metron-radius-control);
+  box-shadow:
+    inset 0 1px 0 rgb(242 241 237 / 12%),
+    0 22px 64px rgb(0 0 0 / 48%),
+    0 0 28px rgb(113 0 20 / 12%);
+  backdrop-filter: blur(var(--metron-blur)) saturate(155%);
+  -webkit-backdrop-filter: blur(var(--metron-blur)) saturate(155%);
+  transform-origin: top left;
+  animation: metron-menu-enter var(--metron-duration-fast) var(--metron-ease) both;
+}
+
+.metron-dropdown--start .metron-dropdown__panel {
+  left: 0;
+}
+
+.metron-dropdown--end .metron-dropdown__panel {
+  right: 0;
+  transform-origin: top right;
+}
+
+.metron-dropdown__items {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.metron-dropdown__item {
+  display: grid;
+  width: 100%;
+  min-height: 2.5rem;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.6rem 0.7rem;
+  color: var(--metron-pearl);
+  text-align: left;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  border-radius: calc(var(--metron-radius-control) - 0.3rem);
+  transition:
+    color var(--metron-duration-fast) var(--metron-ease),
+    background-color var(--metron-duration-fast) var(--metron-ease);
+}
+
+.metron-dropdown__item:hover:not(:disabled),
+.metron-dropdown__item:focus-visible {
+  background: rgb(242 241 237 / 9%);
+  outline: none;
+}
+
+.metron-dropdown__item:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--metron-focus);
+}
+
+.metron-dropdown__item:disabled {
+  cursor: not-allowed;
+  opacity: 0.44;
+}
+
+.metron-dropdown__item--destructive {
+  color: var(--metron-danger);
+}
+
+.metron-dropdown__item--destructive:hover:not(:disabled),
+.metron-dropdown__item--destructive:focus-visible {
+  background: rgb(113 0 20 / 24%);
+}
+
+.metron-dropdown__item-icon,
+.metron-dropdown__item-trailing {
+  display: inline-grid;
+  place-items: center;
+  color: var(--metron-sand);
+}
+
+.metron-dropdown__item-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.metron-dropdown__item-trailing {
+  color: var(--metron-pearl-muted);
+  font-size: 0.8rem;
+}
+
+.metron-dropdown__item--loading .metron-dropdown__item-icon,
+.metron-dropdown__item--loading .metron-dropdown__item-trailing {
+  opacity: 0.5;
+}
+
+.metron-dropdown__error {
+  padding: 0.55rem 0.7rem 0.45rem;
+  margin-top: 0.35rem;
+  color: var(--metron-danger);
+  font-size: 0.8rem;
+  line-height: 1.4;
+  border-top: 1px solid rgb(214 90 111 / 24%);
+}
+
+@keyframes metron-dialog-enter {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem) scale(0.975);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes metron-backdrop-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes metron-menu-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-0.25rem) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .metron-dialog[open],
+  .metron-dialog[open]::backdrop,
+  .metron-dropdown__panel {
+    animation: none;
+  }
+
+  .metron-dialog__close,
+  .metron-dropdown__summary,
+  .metron-dropdown__indicator,
+  .metron-dropdown__item {
+    transition: none;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .metron-dialog::backdrop,
+  .metron-dropdown__summary,
+  .metron-dropdown__panel {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .metron-dropdown__summary,
+  .metron-dropdown__panel {
+    background: var(--metron-surface-strong);
+  }
+}
+
+@media (max-width: 36rem) {
+  .metron-dialog {
+    width: calc(100vw - 1rem);
+    max-height: calc(100dvh - 1rem);
+  }
+
+  .metron-dialog__surface {
+    max-height: calc(100dvh - 1rem);
+  }
+
+  .metron-dialog__header,
+  .metron-dialog__body,
+  .metron-dialog__footer {
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+}
