@@ -1,8 +1,16 @@
+import { encodeAbiParameters } from "viem";
 import { getAbi } from "@metron/abi";
 import { computeBidCommitment, hashRouteJson } from "@metron/protocol";
 import type { PositionId } from "@metron/types";
-import type { Abi, Address, Hash, PublicClient, WalletClient } from "viem";
+import type { Abi, Address, Hash, Hex, PublicClient, WalletClient } from "viem";
 import type { MetronAiClient, MetronConvexClient } from "./clients.js";
+
+export type ZkCircuit = "intent" | "ownership" | "collateral";
+export interface ZkProof {
+  proof: Hex;
+  publicInputs: readonly Hash[];
+}
+export type ZkProofRunner = (circuit: ZkCircuit, witness: unknown) => Promise<ZkProof>;
 
 export interface MetronContractAddresses {
   intentManager: Address;
@@ -11,7 +19,17 @@ export interface MetronContractAddresses {
   positionManager: Address;
   solverSettlement: Address;
   recoveryExecutor: Address;
+  zkIntentVerifier?: Address;
+  zkOwnershipVerifier?: Address;
+  zkCollateralVerifier?: Address;
 }
+type CoreContract =
+  | "intentManager"
+  | "intentSettlement"
+  | "vault"
+  | "positionManager"
+  | "solverSettlement"
+  | "recoveryExecutor";
 
 export interface MetronSdkOptions {
   publicClient: PublicClient;
@@ -19,6 +37,7 @@ export interface MetronSdkOptions {
   addresses: MetronContractAddresses;
   ai?: MetronAiClient;
   convex?: MetronConvexClient;
+  zkProofRunner?: ZkProofRunner;
 }
 
 export class MetronSdk {
@@ -32,6 +51,44 @@ export class MetronSdk {
 
   computeBidCommitment(intentId: Hash, solverId: Hash, routeHash: Hash, salt: Hash): Hash {
     return computeBidCommitment(intentId, solverId, routeHash, salt);
+  }
+  async generateProof(circuit: ZkCircuit, witness: unknown): Promise<ZkProof> {
+    const runner = this.options.zkProofRunner;
+    if (!runner) throw new Error("ZK proof runner is not configured");
+    return runner(circuit, witness);
+  }
+
+  encodeProofPublicInputs(publicInputs: readonly Hash[]): Hex {
+    return encodeAbiParameters([{ type: "bytes32[]" }], [publicInputs]);
+  }
+
+  async submitProof(circuit: ZkCircuit, proof: Hex, publicInputs: readonly Hash[]): Promise<Hash> {
+    const addressKey =
+      `${circuit === "intent" ? "zkIntent" : circuit === "ownership" ? "zkOwnership" : "zkCollateral"}Verifier` as const;
+    const address = this.options.addresses[addressKey];
+    if (!address) throw new Error(`${circuit} verifier address is not configured`);
+    const walletClient = this.options.walletClient;
+    const account = walletClient?.account;
+    if (!walletClient || !account) throw new Error("A connected wallet client is required");
+    const verifier =
+      circuit === "intent"
+        ? "ZKIntentVerifier"
+        : circuit === "ownership"
+          ? "ZKOwnershipVerifier"
+          : "ZKCollateralVerifier";
+    const functionName =
+      circuit === "intent"
+        ? "verifyIntent"
+        : circuit === "ownership"
+          ? "verifyOwnership"
+          : "verifyCollateral";
+    return walletClient.writeContract({
+      address,
+      abi: getAbi(verifier) as Abi,
+      functionName,
+      args: [proof, publicInputs],
+      account,
+    } as never);
   }
 
   async submitIntent(submission: unknown): Promise<Hash> {
@@ -123,7 +180,7 @@ export class MetronSdk {
   }
 
   private async read(
-    contract: keyof MetronContractAddresses,
+    contract: CoreContract,
     functionName: string,
     args: readonly unknown[],
   ): Promise<unknown> {
@@ -136,7 +193,7 @@ export class MetronSdk {
   }
 
   private async write(
-    contract: keyof MetronContractAddresses,
+    contract: CoreContract,
     functionName: string,
     args: readonly unknown[],
   ): Promise<Hash> {
@@ -153,7 +210,7 @@ export class MetronSdk {
   }
 }
 
-function contractName(contract: keyof MetronContractAddresses): string {
+function contractName(contract: CoreContract): string {
   return {
     intentManager: "IntentManager",
     intentSettlement: "IntentSettlement",

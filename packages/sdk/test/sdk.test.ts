@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
+import { decodeAbiParameters } from "viem";
+import type { Hash } from "viem";
 import { MetronAiClient, MetronConvexClient } from "../clients.js";
 import { MetronSdk } from "../index.js";
-
 const addresses = {
   intentManager: "0x0000000000000000000000000000000000000001",
   intentSettlement: "0x0000000000000000000000000000000000000002",
@@ -17,6 +18,24 @@ describe("MetronSdk", () => {
     expect(sdk.hashIntentPayload({ action: "deposit", amount: 10 })).toBe(
       sdk.hashIntentPayload({ action: "deposit", amount: 10 }),
     );
+  });
+  it("runs a proof runner and round-trips ABI public inputs", async () => {
+    const publicInputs = [`0x${"11".repeat(32)}` as Hash];
+    const sdk = new MetronSdk({
+      publicClient: {} as never,
+      addresses,
+      zkProofRunner: async (circuit, witness) => {
+        expect(circuit).toBe("intent");
+        expect(witness).toEqual({ nonce: 1 });
+        return { proof: "0x1234", publicInputs };
+      },
+    });
+
+    const proof = await sdk.generateProof("intent", { nonce: 1 });
+    const encoded = sdk.encodeProofPublicInputs(proof.publicInputs);
+
+    expect(proof.proof).toBe("0x1234");
+    expect(decodeAbiParameters([{ type: "bytes32[]" }], encoded)[0]).toEqual(publicInputs);
   });
 
   it("sends authenticated AI requests through the domain client", async () => {
