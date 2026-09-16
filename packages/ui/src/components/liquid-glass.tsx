@@ -138,16 +138,21 @@ export function LiquidGlass({
         expandable && "metron-liquid-glass--expandable",
         className,
       )}
-      drag={draggable}
-      dragConstraints={draggable ? { top: 0, right: 0, bottom: 0, left: 0 } : undefined}
-      dragElastic={draggable ? 0.24 : undefined}
+      {...(draggable
+        ? {
+            drag: true,
+            dragConstraints: { top: 0, right: 0, bottom: 0, left: 0 },
+            dragElastic: 0.24,
+            ...(!reduceMotion ? { whileDrag: { scale: 1.018 } } : {}),
+          }
+        : {})}
+      {...(!reduceMotion && (draggable || expandable)
+        ? { whileHover: { scale: 1.008 }, whileTap: { scale: 0.986 } }
+        : {})}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       style={glassStyle}
       transition={{ duration: reduceMotion ? 0 : 0.34, ease: [0.2, 0.8, 0.2, 1] }}
-      whileDrag={reduceMotion ? undefined : { scale: 1.018 }}
-      whileHover={reduceMotion || (!draggable && !expandable) ? undefined : { scale: 1.008 }}
-      whileTap={reduceMotion || (!draggable && !expandable) ? undefined : { scale: 0.986 }}
     >
       <svg aria-hidden="true" className="metron-liquid-glass__filter" focusable="false">
         <defs>
