@@ -4,7 +4,6 @@ import {
   ArrowRight,
   Bot,
   Check,
-  ChevronDown,
   CircleAlert,
   Clock3,
   Gauge,
@@ -298,7 +297,7 @@ export function AutomationPage() {
       ) : null}
 
       <section aria-labelledby="active-automation-heading">
-        <SectionHeading eyebrow="01 / Active strategies" title="Active automation" detail="Execution status across your strategy book" />
+        <SectionHeading id="active-automation-heading" eyebrow="01 / Active strategies" title="Active automation" detail="Execution status across your strategy book" />
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 14 }}>
           {strategies.map((strategy) => {
             const isRunning = strategy.status === "Running";
@@ -350,7 +349,7 @@ export function AutomationPage() {
       </section>
 
       <section aria-labelledby="rule-builder-heading">
-        <SectionHeading eyebrow="02 / Rule builder" title="Guardrails that act" detail="Rules are evaluated in order before every automated action" />
+        <SectionHeading id="rule-builder-heading" eyebrow="02 / Rule builder" title="Guardrails that act" detail="Rules are evaluated in order before every automated action" />
         <GlassCard
           className="web-page-automation__rule-builder"
           title="Execution rules"
@@ -411,7 +410,7 @@ export function AutomationPage() {
         </GlassCard>
       </section>
 
-      <section aria-labelledby="policy-heading" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.2fr) minmax(280px, 0.8fr)", gap: 16, alignItems: "start" }}>
+      <section aria-label="Personal risk policy" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.2fr) minmax(280px, 0.8fr)", gap: 16, alignItems: "start" }}>
         <GlassCard
           className="web-page-automation__policy-card"
           title="Personal risk policy"
@@ -486,7 +485,7 @@ export function AutomationPage() {
         </GlassCard>
       </section>
 
-      <section aria-labelledby="review-heading">
+      <section aria-label="Review your operating envelope">
         <GlassCard
           className="web-page-automation__review-card"
           header={<span style={{ display: "inline-flex", alignItems: "center", gap: 7 }}><Zap size={15} color="#bb443f" />Before the next run</span>}
