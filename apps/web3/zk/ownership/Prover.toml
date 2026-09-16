@@ -1,0 +1,10 @@
+owner_secret = 7
+nonce = 3
+sibling_0 = 11
+sibling_1 = 13
+sibling_2 = 17
+sibling_3 = 19
+path_bits = [false, false, false, false]
+root = 1121
+commitment = 58
+nullifier = 298

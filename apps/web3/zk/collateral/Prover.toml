@@ -1,0 +1,4 @@
+collateral_value = 1000
+blinding = 2
+minimum_collateral = 900
+commitment = 1202

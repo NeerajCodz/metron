@@ -1,0 +1,12 @@
+owner_secret = 1
+nonce = 2
+current_time = 50
+expiry = 100
+max_apy_bps = 20
+requested_apy_bps = 10
+max_drawdown_bps = 10
+requested_drawdown_bps = 5
+max_slippage_bps = 20
+requested_slippage_bps = 10
+allowed_chain_count = 1
+commitment = 3565

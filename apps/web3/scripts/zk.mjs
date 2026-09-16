@@ -3,9 +3,12 @@ import { fileURLToPath } from "node:url";
 import { resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 
-const root = fileURLToPath(new URL("..", import.meta.url));
 const circuits = ["intent", "ownership", "collateral"];
 const command = process.argv[2] ?? "check";
+if (!["check", "compile", "prove"].includes(command))
+  throw new Error(`unsupported zk command: ${command}`);
+const nargoBinary = process.env.METRON_NARGO_BIN ?? "nargo";
+const bbBinary = process.env.METRON_BB_BIN ?? "bb";
 const packageNames = {
   intent: "metron_intent",
   ownership: "metron_ownership",
@@ -31,18 +34,34 @@ for (const circuit of circuits) {
   const cwd = resolve(root, "zk", circuit);
   if (!existsSync(resolve(cwd, "Nargo.toml")))
     throw new Error(`missing circuit manifest: ${circuit}`);
-  run("nargo", ["check"], cwd);
+  run(nargoBinary, ["check", "--silence-warnings"], cwd);
   if (command === "compile" || command === "prove")
-    run("nargo", ["compile", "--silence-warnings"], cwd);
+    run(nargoBinary, ["compile", "--silence-warnings"], cwd);
   if (command === "prove") {
     const proverToml = resolve(cwd, "Prover.toml");
     requireFile(proverToml, `prover inputs for ${circuit}`);
+    run(nargoBinary, ["execute", "--silence-warnings", packageNames[circuit]], cwd);
     const output = resolve(root, "zk", "artifacts", circuit);
     const bytecode = resolve(cwd, "target", `${packageNames[circuit]}.json`);
+    const witness = resolve(cwd, "target", `${packageNames[circuit]}.gz`);
     mkdirSync(output, { recursive: true });
-    run("bb", ["prove", "-b", bytecode, "-w", proverToml, "-o", resolve(output, "proof")], cwd);
-    run("bb", ["write_vk", "-b", bytecode, "-o", resolve(output, "vk")], cwd);
-    run("bb", ["verify", "-k", resolve(output, "vk"), "-p", resolve(output, "proof")], cwd);
+    run(
+      bbBinary,
+      [
+        "prove",
+        "-s",
+        "ultra_honk",
+        "-b",
+        bytecode,
+        "-w",
+        witness,
+        "-o",
+        output,
+        "--write_vk",
+        "--verify",
+      ],
+      cwd,
+    );
   }
 }
 
