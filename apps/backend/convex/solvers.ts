@@ -7,6 +7,19 @@ import { internalMutation, mutation, query } from "./_generated/server.js";
 import type { Id } from "./_generated/dataModel.js";
 import { assertAddress, assertBytes32, requireUser } from "./lib/auth.js";
 
+function parseScoreTotal(scoreJson: string): bigint {
+  const payload: unknown = JSON.parse(scoreJson);
+  if (
+    payload === null ||
+    typeof payload !== "object" ||
+    !("totalScore" in payload) ||
+    typeof payload.totalScore !== "string"
+  ) {
+    throw new Error("invalid persisted route score");
+  }
+  return BigInt(payload.totalScore);
+}
+
 async function assertIntentOwner(ctx: Parameters<typeof requireUser>[0], intentId: Id<"intents">) {
   const { user } = await requireUser(ctx);
   const intent = await ctx.db.get(intentId);
@@ -205,7 +218,6 @@ export const revealBid = internalMutation({
         if (!score.constraintsSatisfied) rejectionReasons.push(...score.rejectionReasons);
       }
     }
-    const traceId = assertBytes32(commit.traceId, "traceId");
     return ctx.db.insert("solverBidReveals", {
       intentId: args.intentId,
       solverId: args.solverId,
@@ -239,8 +251,8 @@ export const selectWinner = internalMutation({
     const candidates = reveals
       .filter((reveal) => reveal.valid && reveal.scoreJson)
       .sort((left, right) => {
-        const leftScore = BigInt(JSON.parse(left.scoreJson!).totalScore);
-        const rightScore = BigInt(JSON.parse(right.scoreJson!).totalScore);
+        const leftScore = parseScoreTotal(left.scoreJson!);
+        const rightScore = parseScoreTotal(right.scoreJson!);
         if (leftScore !== rightScore) return leftScore > rightScore ? -1 : 1;
         return left.routeId.localeCompare(right.routeId);
       });

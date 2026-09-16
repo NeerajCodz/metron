@@ -2,7 +2,7 @@ import { getAbi } from "@metron/abi";
 import { computeBidCommitment, hashRouteJson } from "@metron/protocol";
 import type { PositionId } from "@metron/types";
 import type { Abi, Address, Hash, PublicClient, WalletClient } from "viem";
-import { MetronAiClient, MetronConvexClient } from "./clients.js";
+import type { MetronAiClient, MetronConvexClient } from "./clients.js";
 
 export interface MetronContractAddresses {
   intentManager: Address;
@@ -132,7 +132,7 @@ export class MetronSdk {
       abi: getAbi(contractName(contract)) as Abi,
       functionName,
       args,
-    } as never);
+    });
   }
 
   private async write(
