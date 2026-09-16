@@ -1,5 +1,5 @@
 import type { Hex } from "viem";
-import { encodeAbiParameters, keccak256, stringToHex } from "viem";
+import { computeBidCommitment, hashRouteJson } from "@metron/protocol";
 
 import type { SolverRoute } from "@metron/types";
 
@@ -10,17 +10,10 @@ export interface SealedBid {
 }
 
 export function hashRoute(route: SolverRoute): Hex {
-  return keccak256(stringToHex(JSON.stringify(route)));
+  return hashRouteJson(JSON.stringify(route));
 }
 
-export function computeBidCommitment(intentId: Hex, solverId: Hex, routeHash: Hex, salt: Hex): Hex {
-  return keccak256(
-    encodeAbiParameters(
-      [{ type: "bytes32" }, { type: "bytes32" }, { type: "bytes32" }, { type: "bytes32" }],
-      [intentId, solverId, routeHash, salt],
-    ),
-  );
-}
+export { computeBidCommitment };
 
 export function sealBid(intentId: Hex, solverId: Hex, route: SolverRoute, salt: Hex): SealedBid {
   const routeHash = hashRoute(route);
