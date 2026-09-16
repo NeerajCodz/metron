@@ -60,6 +60,7 @@ export function SparklineChart({
   style,
   ...props
 }: SparklineChartProps) {
+  const points = normalizeSparklineData(data);
   let minimum = 0;
   let maximum = 1;
   if (points.length > 0) {
@@ -188,6 +189,9 @@ export interface AllocationDatum {
   description?: string;
 }
 
+export type AllocationSegment = AllocationDatum;
+export type AllocationItem = AllocationDatum;
+
 export interface AllocationChartProps extends Omit<HTMLAttributes<HTMLElement>, "children"> {
   /** Allocation slices. `items`, `segments`, and `allocations` are accepted as aliases for data integrations. */
   data?: readonly AllocationDatum[];
@@ -265,7 +269,7 @@ export function AllocationChart({
 
   return (
     <figure className={className} style={rootStyle} aria-label={accessibleLabel} {...props}>
-      <div role="img" aria-label={accessibleLabel} style={barStyle}>
+      <div style={barStyle}>
         {normalized.map((item, index) => {
           const percentage = (item.value / chartTotal) * 100;
           const segmentStyle: CustomProperties = {

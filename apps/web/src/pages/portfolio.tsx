@@ -1,10 +1,11 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import {
   ArrowDownLeft,
   ArrowUpRight,
   ChevronDown,
   ChevronRight,
   CircleDollarSign,
+  Coins,
   Ellipsis,
   ExternalLink,
   Filter,
@@ -42,24 +43,24 @@ type Position = {
   apy: string;
   health: string;
   healthTone: "success" | "warning" | "danger";
-  icon: string;
+  icon: ReactNode;
 };
 
 const chainData: Record<Exclude<Chain, "All chains">, { value: number; pnl: number; positions: number; supplied: string; borrowed: string; color: string }> = {
-  Ethereum: { value: 96420.18, pnl: 2160.44, positions: 8, supplied: "$54,180", borrowed: "$12,600", color: "#b38f6f" },
-  Arbitrum: { value: 41280.55, pnl: 984.33, positions: 5, supplied: "$26,420", borrowed: "$7,810", color: "#8e9bb5" },
-  Base: { value: 22415.09, pnl: 338.02, positions: 3, supplied: "$16,790", borrowed: "$2,140", color: "#9b1730" },
-  Solana: { value: 16090.72, pnl: -118.9, positions: 4, supplied: "$10,880", borrowed: "$1,220", color: "#7c9e8d" },
+  Ethereum: { value: 96420.18, pnl: 2160.44, positions: 2, supplied: "$54,180", borrowed: "$12,600", color: "#b38f6f" },
+  Arbitrum: { value: 41280.55, pnl: 984.33, positions: 2, supplied: "$26,420", borrowed: "$7,810", color: "#8e9bb5" },
+  Base: { value: 22415.09, pnl: 338.02, positions: 2, supplied: "$16,790", borrowed: "$2,140", color: "#9b1730" },
+  Solana: { value: 16090.72, pnl: -118.9, positions: 2, supplied: "$10,880", borrowed: "$1,220", color: "#7c9e8d" },
 };
 
-const positions: Position[] = [
-  { id: "eth-aave", asset: "Ethereum", symbol: "ETH", protocol: "Aave v3", chain: "Ethereum", type: "Supply", balance: "18.42 ETH", value: 59184.32, pnl: 1842.2, apy: "3.84%", health: "Healthy", healthTone: "success", icon: "Ξ" },
-  { id: "usdc-morpho", asset: "USD Coin", symbol: "USDC", protocol: "Morpho Blue", chain: "Ethereum", type: "Lend", balance: "21,400 USDC", value: 21400, pnl: 318.12, apy: "8.21%", health: "Healthy", healthTone: "success", icon: "$" },
-  { id: "arb-gmx", asset: "ETH / USDC", symbol: "LP", protocol: "GMX", chain: "Arbitrum", type: "Liquidity", balance: "0.84 LP", value: 16280.55, pnl: 720.14, apy: "14.62%", health: "Healthy", healthTone: "success", icon: "G" },
-  { id: "arb-eth", asset: "Ethereum", symbol: "ETH", protocol: "Radiant", chain: "Arbitrum", type: "Collateral", balance: "7.76 ETH", value: 24920, pnl: 264.19, apy: "2.18%", health: "Watch", healthTone: "warning", icon: "Ξ" },
-  { id: "base-aero", asset: "ETH / USDC", symbol: "LP", protocol: "Aerodrome", chain: "Base", type: "Liquidity", balance: "1.12 LP", value: 12415.09, pnl: 298.82, apy: "18.40%", health: "Healthy", healthTone: "success", icon: "A" },
-  { id: "base-usdc", asset: "USD Coin", symbol: "USDC", protocol: "Moonwell", chain: "Base", type: "Supply", balance: "10,000 USDC", value: 10000, pnl: 39.2, apy: "5.74%", health: "Healthy", healthTone: "success", icon: "$" },
-  { id: "sol-jup", asset: "SOL / USDC", symbol: "LP", protocol: "Jupiter", chain: "Solana", type: "Liquidity", balance: "42.8 LP", value: 10790.72, pnl: -84.2, apy: "11.20%", health: "Watch", healthTone: "warning", icon: "J" },
+  { id: "eth-aave", asset: "Ethereum", symbol: "ETH", protocol: "Aave v3", chain: "Ethereum", type: "Supply", balance: "18.42 ETH", value: 59184.32, pnl: 1842.2, apy: "3.84%", health: "Healthy", healthTone: "success", icon: <Coins size={14} /> },
+  { id: "usdc-morpho", asset: "USD Coin", symbol: "USDC", protocol: "Morpho Blue", chain: "Ethereum", type: "Lend", balance: "21,400 USDC", value: 21400, pnl: 318.12, apy: "8.21%", health: "Healthy", healthTone: "success", icon: <CircleDollarSign size={14} /> },
+  { id: "arb-gmx", asset: "ETH / USDC", symbol: "LP", protocol: "GMX", chain: "Arbitrum", type: "Liquidity", balance: "0.84 LP", value: 16280.55, pnl: 720.14, apy: "14.62%", health: "Healthy", healthTone: "success", icon: <Layers3 size={14} /> },
+  { id: "arb-eth", asset: "Ethereum", symbol: "ETH", protocol: "Radiant", chain: "Arbitrum", type: "Collateral", balance: "7.76 ETH", value: 24920, pnl: 264.19, apy: "2.18%", health: "Watch", healthTone: "warning", icon: <Coins size={14} /> },
+  { id: "base-aero", asset: "ETH / USDC", symbol: "LP", protocol: "Aerodrome", chain: "Base", type: "Liquidity", balance: "1.12 LP", value: 12415.09, pnl: 298.82, apy: "18.40%", health: "Healthy", healthTone: "success", icon: <Layers3 size={14} /> },
+  { id: "base-usdc", asset: "USD Coin", symbol: "USDC", protocol: "Moonwell", chain: "Base", type: "Supply", balance: "10,000 USDC", value: 10000, pnl: 39.2, apy: "5.74%", health: "Healthy", healthTone: "success", icon: <CircleDollarSign size={14} /> },
+  { id: "sol-jup", asset: "SOL / USDC", symbol: "LP", protocol: "Jupiter", chain: "Solana", type: "Liquidity", balance: "42.8 LP", value: 10790.72, pnl: -84.2, apy: "11.20%", health: "Watch", healthTone: "warning", icon: <Layers3 size={14} /> },
+  { id: "sol-sol", asset: "Solana", symbol: "SOL", protocol: "Marinade", chain: "Solana", type: "Stake", balance: "29.4 SOL", value: 5300, pnl: -34.7, apy: "7.18%", health: "Healthy", healthTone: "success", icon: <Network size={14} /> },
   { id: "sol-sol", asset: "Solana", symbol: "SOL", protocol: "Marinade", chain: "Solana", type: "Stake", balance: "29.4 SOL", value: 5300, pnl: -34.7, apy: "7.18%", health: "Healthy", healthTone: "success", icon: "S" },
 ];
 
