@@ -100,14 +100,54 @@ type BooleanSetting = {
 }[keyof SettingsState];
 
 const tabs: Array<{ id: SettingsTab; label: string; description: string; icon: ReactNode }> = [
-  { id: "general", label: "General", description: "Display and account defaults", icon: <Settings2 size={16} /> },
-  { id: "wallet", label: "Wallet", description: "Connected accounts and signing", icon: <WalletCards size={16} /> },
-  { id: "security", label: "Security", description: "Sign-in and transaction safety", icon: <ShieldCheck size={16} /> },
-  { id: "privacy", label: "Privacy", description: "Data and visibility controls", icon: <EyeOff size={16} /> },
-  { id: "notifications", label: "Notifications", description: "Alerts and delivery", icon: <Bell size={16} /> },
-  { id: "automation", label: "Automation", description: "Rules and execution limits", icon: <Bot size={16} /> },
-  { id: "protocols", label: "Protocols", description: "Protocol access and permissions", icon: <Network size={16} /> },
-  { id: "chains", label: "Chains", description: "Networks and RPC health", icon: <Globe2 size={16} /> },
+  {
+    id: "general",
+    label: "General",
+    description: "Display and account defaults",
+    icon: <Settings2 size={16} />,
+  },
+  {
+    id: "wallet",
+    label: "Wallet",
+    description: "Connected accounts and signing",
+    icon: <WalletCards size={16} />,
+  },
+  {
+    id: "security",
+    label: "Security",
+    description: "Sign-in and transaction safety",
+    icon: <ShieldCheck size={16} />,
+  },
+  {
+    id: "privacy",
+    label: "Privacy",
+    description: "Data and visibility controls",
+    icon: <EyeOff size={16} />,
+  },
+  {
+    id: "notifications",
+    label: "Notifications",
+    description: "Alerts and delivery",
+    icon: <Bell size={16} />,
+  },
+  {
+    id: "automation",
+    label: "Automation",
+    description: "Rules and execution limits",
+    icon: <Bot size={16} />,
+  },
+  {
+    id: "protocols",
+    label: "Protocols",
+    description: "Protocol access and permissions",
+    icon: <Network size={16} />,
+  },
+  {
+    id: "chains",
+    label: "Chains",
+    description: "Networks and RPC health",
+    icon: <Globe2 size={16} />,
+  },
 ];
 
 const initialSettings: SettingsState = {
@@ -149,18 +189,91 @@ const initialSettings: SettingsState = {
 };
 
 const protocolRows = [
-  { key: "aave" as const, name: "Aave v3", detail: "Lending and borrowing", risk: "Low", volume: "$1.84M", icon: <Database size={18} /> },
-  { key: "uniswap" as const, name: "Uniswap", detail: "Spot swaps and routing", risk: "Low", volume: "$924K", icon: <RefreshCw size={18} /> },
-  { key: "morpho" as const, name: "Morpho", detail: "Optimized lending markets", risk: "Medium", volume: "$416K", icon: <Activity size={18} /> },
-  { key: "curve" as const, name: "Curve", detail: "Stable asset liquidity", risk: "Medium", volume: "$98K", icon: <SlidersHorizontal size={18} /> },
+  {
+    key: "aave" as const,
+    name: "Aave v3",
+    detail: "Lending and borrowing",
+    risk: "Low",
+    volume: "$1.84M",
+    icon: <Database size={18} />,
+  },
+  {
+    key: "uniswap" as const,
+    name: "Uniswap",
+    detail: "Spot swaps and routing",
+    risk: "Low",
+    volume: "$924K",
+    icon: <RefreshCw size={18} />,
+  },
+  {
+    key: "morpho" as const,
+    name: "Morpho",
+    detail: "Optimized lending markets",
+    risk: "Medium",
+    volume: "$416K",
+    icon: <Activity size={18} />,
+  },
+  {
+    key: "curve" as const,
+    name: "Curve",
+    detail: "Stable asset liquidity",
+    risk: "Medium",
+    volume: "$98K",
+    icon: <SlidersHorizontal size={18} />,
+  },
 ];
 
 const chainRows = [
-  { key: "ethereum" as const, name: "Ethereum", symbol: "ETH", detail: "Mainnet", latency: "38 ms", block: "22,891,403", status: "Operational", icon: <Zap size={18} /> },
-  { key: "arbitrum" as const, name: "Arbitrum One", symbol: "ARB", detail: "Rollup", latency: "21 ms", block: "358,114,220", status: "Operational", icon: <Network size={18} /> },
-  { key: "base" as const, name: "Base", symbol: "ETH", detail: "Rollup", latency: "26 ms", block: "32,902,114", status: "Operational", icon: <PlugZap size={18} /> },
-  { key: "optimism" as const, name: "Optimism", symbol: "OP", detail: "Rollup", latency: "64 ms", block: "129,442,083", status: "Degraded", icon: <CircleAlert size={18} /> },
-  { key: "polygon" as const, name: "Polygon", symbol: "POL", detail: "Sidechain", latency: "52 ms", block: "61,729,110", status: "Operational", icon: <Server size={18} /> },
+  {
+    key: "ethereum" as const,
+    name: "Ethereum",
+    symbol: "ETH",
+    detail: "Mainnet",
+    latency: "38 ms",
+    block: "22,891,403",
+    status: "Operational",
+    icon: <Zap size={18} />,
+  },
+  {
+    key: "arbitrum" as const,
+    name: "Arbitrum One",
+    symbol: "ARB",
+    detail: "Rollup",
+    latency: "21 ms",
+    block: "358,114,220",
+    status: "Operational",
+    icon: <Network size={18} />,
+  },
+  {
+    key: "base" as const,
+    name: "Base",
+    symbol: "ETH",
+    detail: "Rollup",
+    latency: "26 ms",
+    block: "32,902,114",
+    status: "Operational",
+    icon: <PlugZap size={18} />,
+  },
+  {
+    key: "optimism" as const,
+    name: "Optimism",
+    symbol: "OP",
+    detail: "Rollup",
+    latency: "64 ms",
+    block: "129,442,083",
+    status: "Degraded",
+    icon: <CircleAlert size={18} />,
+  },
+  {
+    key: "polygon" as const,
+    name: "Polygon",
+    symbol: "POL",
+    detail: "Sidechain",
+    latency: "52 ms",
+    block: "61,729,110",
+    status: "Operational",
+    icon: <Server size={18} />,
+  },
 ];
 
 function SettingRow({
@@ -185,8 +298,13 @@ function SettingRow({
   );
 }
 
-
-function StatusLine({ children, tone = "success" }: { children: ReactNode; tone?: "success" | "warning" | "neutral" }) {
+function StatusLine({
+  children,
+  tone = "success",
+}: {
+  children: ReactNode;
+  tone?: "success" | "warning" | "neutral";
+}) {
   return (
     <span className={`web-page-settings__status web-page-settings__status--${tone}`}>
       <span className="web-page-settings__status-dot" aria-hidden="true" />
@@ -242,24 +360,44 @@ export function SettingsPage() {
 
   const renderGeneral = () => (
     <>
-      <GlassCard className="web-page-settings__card" title="Workspace defaults" description="Shape the control room around how you monitor positions and act on risk.">
+      <GlassCard
+        className="web-page-settings__card"
+        title="Workspace defaults"
+        description="Shape the control room around how you monitor positions and act on risk."
+      >
         <div className="web-page-settings__form-grid">
           <Field label="Interface theme" description="Choose the appearance used across Metron.">
-            <Select value={settings.theme} onChange={(event) => updateSetting("theme", event.target.value as SettingsState["theme"])}>
+            <Select
+              value={settings.theme}
+              onChange={(event) =>
+                updateSetting("theme", event.target.value as SettingsState["theme"])
+              }
+            >
               <option value="dark">Dark carbon</option>
               <option value="system">Use system setting</option>
               <option value="light">Light (preview)</option>
             </Select>
           </Field>
-          <Field label="Display currency" description="Used for portfolio values and activity summaries.">
-            <Select value={settings.currency} onChange={(event) => updateSetting("currency", event.target.value as SettingsState["currency"])}>
+          <Field
+            label="Display currency"
+            description="Used for portfolio values and activity summaries."
+          >
+            <Select
+              value={settings.currency}
+              onChange={(event) =>
+                updateSetting("currency", event.target.value as SettingsState["currency"])
+              }
+            >
               <option value="USD">USD</option>
               <option value="EUR">EUR</option>
               <option value="GBP">GBP</option>
             </Select>
           </Field>
           <Field label="Timezone" description="Applied to automation windows and exports.">
-            <Select value={settings.timezone} onChange={(event) => updateSetting("timezone", event.target.value)}>
+            <Select
+              value={settings.timezone}
+              onChange={(event) => updateSetting("timezone", event.target.value)}
+            >
               <option value="UTC">UTC</option>
               <option value="America/New_York">Eastern time</option>
               <option value="Europe/London">London</option>
@@ -267,22 +405,57 @@ export function SettingsPage() {
             </Select>
           </Field>
           <Field label="Wallet label" description="A local name for the connected account.">
-            <Input value={settings.walletLabel} onChange={(event) => updateSetting("walletLabel", event.target.value)} />
+            <Input
+              value={settings.walletLabel}
+              onChange={(event) => updateSetting("walletLabel", event.target.value)}
+            />
           </Field>
         </div>
         <div className="web-page-settings__rule" />
-        <SettingRow title="Compact data density" description="Fit more rows into tables and activity feeds.">
-          <Switch label="" aria-label="Compact data density" checked={settings.compactMode} onCheckedChange={() => toggleSetting("compactMode")} />
+        <SettingRow
+          title="Compact data density"
+          description="Fit more rows into tables and activity feeds."
+        >
+          <Switch
+            label=""
+            aria-label="Compact data density"
+            checked={settings.compactMode}
+            onCheckedChange={() => toggleSetting("compactMode")}
+          />
         </SettingRow>
-        <SettingRow title="Show net worth in navigation" description="Keep your total balance visible beside the workspace switcher.">
-          <Switch label="" aria-label="Show net worth in navigation" checked={settings.showNetWorth} onCheckedChange={() => toggleSetting("showNetWorth")} />
+        <SettingRow
+          title="Show net worth in navigation"
+          description="Keep your total balance visible beside the workspace switcher."
+        >
+          <Switch
+            label=""
+            aria-label="Show net worth in navigation"
+            checked={settings.showNetWorth}
+            onCheckedChange={() => toggleSetting("showNetWorth")}
+          />
         </SettingRow>
       </GlassCard>
-      <GlassCard className="web-page-settings__card" title="Operator profile" description="This profile stays local to your Metron workspace.">
+      <GlassCard
+        className="web-page-settings__card"
+        title="Operator profile"
+        description="This profile stays local to your Metron workspace."
+      >
         <DataList layout="responsive" className="web-page-settings__data-list">
-          <DataListItem label="Workspace" value="Northstar treasury" description="Personal operator workspace" />
-          <DataListItem label="Role" value="Execution lead" description="Can propose and sign transactions" />
-          <DataListItem label="Last synced" value="17 Sep 2026, 14:42 UTC" description="All preferences are current" />
+          <DataListItem
+            label="Workspace"
+            value="Northstar treasury"
+            description="Personal operator workspace"
+          />
+          <DataListItem
+            label="Role"
+            value="Execution lead"
+            description="Can propose and sign transactions"
+          />
+          <DataListItem
+            label="Last synced"
+            value="17 Sep 2026, 14:42 UTC"
+            description="All preferences are current"
+          />
         </DataList>
       </GlassCard>
     </>
@@ -290,48 +463,138 @@ export function SettingsPage() {
 
   const renderWallet = () => (
     <>
-      <GlassCard className="web-page-settings__wallet-card" title="Connected wallet" description="The active signer used for proposals, simulations, and execution.">
+      <GlassCard
+        className="web-page-settings__wallet-card"
+        title="Connected wallet"
+        description="The active signer used for proposals, simulations, and execution."
+      >
         {walletConnected ? (
           <>
             <div className="web-page-settings__wallet-hero">
-              <div className="web-page-settings__wallet-mark" aria-hidden="true"><Wallet size={22} /></div>
+              <div className="web-page-settings__wallet-mark" aria-hidden="true">
+                <Wallet size={22} />
+              </div>
               <div>
                 <div className="web-page-settings__wallet-name">{settings.walletLabel}</div>
                 <div className="web-page-settings__wallet-address">0x7A31...9D42</div>
               </div>
-              <Badge variant="success" leadingIcon={<CircleCheck size={13} />}>Connected</Badge>
+              <Badge variant="success" leadingIcon={<CircleCheck size={13} />}>
+                Connected
+              </Badge>
             </div>
             <div className="web-page-settings__wallet-meta">
-              <div><span>Network</span><strong>Ethereum mainnet</strong></div>
-              <div><span>Balance</span><strong>18.42 ETH</strong></div>
-              <div><span>Last signature</span><strong>7 minutes ago</strong></div>
+              <div>
+                <span>Network</span>
+                <strong>Ethereum mainnet</strong>
+              </div>
+              <div>
+                <span>Balance</span>
+                <strong>18.42 ETH</strong>
+              </div>
+              <div>
+                <span>Last signature</span>
+                <strong>7 minutes ago</strong>
+              </div>
             </div>
             <div className="web-page-settings__wallet-actions">
-              <Button variant="outline" size="sm" leadingIcon={copied ? <Check size={15} /> : <Copy size={15} />} onClick={() => void handleCopy()}>{copied ? "Copied" : "Copy address"}</Button>
-              <Button variant="quiet" size="sm" leadingIcon={<ExternalLink size={15} />} href="https://etherscan.io" target="_blank" rel="noreferrer">View on explorer</Button>
-              <Button variant="danger" size="sm" leadingIcon={<LogOut size={15} />} onClick={handleWalletAction}>Disconnect</Button>
+              <Button
+                variant="outline"
+                size="sm"
+                leadingIcon={copied ? <Check size={15} /> : <Copy size={15} />}
+                onClick={() => void handleCopy()}
+              >
+                {copied ? "Copied" : "Copy address"}
+              </Button>
+              <Button
+                variant="quiet"
+                size="sm"
+                leadingIcon={<ExternalLink size={15} />}
+                href="https://etherscan.io"
+                target="_blank"
+                rel="noreferrer"
+              >
+                View on explorer
+              </Button>
+              <Button
+                variant="danger"
+                size="sm"
+                leadingIcon={<LogOut size={15} />}
+                onClick={handleWalletAction}
+              >
+                Disconnect
+              </Button>
             </div>
           </>
         ) : (
           <div className="web-page-settings__wallet-empty">
-            <div className="web-page-settings__empty-icon"><WalletCards size={22} /></div>
-            <div><h3>No wallet connected</h3><p>Connect a signer to propose or execute transactions. Your workspace remains readable while disconnected.</p></div>
-            <Button variant="crimson" size="sm" leadingIcon={<Wallet size={15} />} onClick={handleWalletAction}>Connect wallet</Button>
+            <div className="web-page-settings__empty-icon">
+              <WalletCards size={22} />
+            </div>
+            <div>
+              <h3>No wallet connected</h3>
+              <p>
+                Connect a signer to propose or execute transactions. Your workspace remains readable
+                while disconnected.
+              </p>
+            </div>
+            <Button
+              variant="crimson"
+              size="sm"
+              leadingIcon={<Wallet size={15} />}
+              onClick={handleWalletAction}
+            >
+              Connect wallet
+            </Button>
           </div>
         )}
-        {walletFeedback ? <InlineAlert className="web-page-settings__inline-alert" variant="info" icon={<CircleAlert size={17} />} title="Wallet status">{walletFeedback}</InlineAlert> : null}
+        {walletFeedback ? (
+          <InlineAlert
+            className="web-page-settings__inline-alert"
+            variant="info"
+            icon={<CircleAlert size={17} />}
+            title="Wallet status"
+          >
+            {walletFeedback}
+          </InlineAlert>
+        ) : null}
       </GlassCard>
-      <GlassCard className="web-page-settings__card" title="Signing preferences" description="Choose how Metron prepares a transaction before it reaches your wallet.">
+      <GlassCard
+        className="web-page-settings__card"
+        title="Signing preferences"
+        description="Choose how Metron prepares a transaction before it reaches your wallet."
+      >
         <div className="web-page-settings__form-grid">
-          <Field label="Preferred signer" description="Used when more than one signing method is available.">
-            <Select value={settings.preferredWallet} onChange={(event) => updateSetting("preferredWallet", event.target.value as SettingsState["preferredWallet"])}>
+          <Field
+            label="Preferred signer"
+            description="Used when more than one signing method is available."
+          >
+            <Select
+              value={settings.preferredWallet}
+              onChange={(event) =>
+                updateSetting(
+                  "preferredWallet",
+                  event.target.value as SettingsState["preferredWallet"],
+                )
+              }
+            >
               <option value="browser">Browser wallet</option>
               <option value="ledger">Ledger hardware wallet</option>
               <option value="safe">Safe multisig</option>
             </Select>
           </Field>
-          <Field label="Session duration" description="How long a connected wallet session can remain active.">
-            <Select value={settings.sessionDuration} onChange={(event) => updateSetting("sessionDuration", event.target.value as SettingsState["sessionDuration"])}>
+          <Field
+            label="Session duration"
+            description="How long a connected wallet session can remain active."
+          >
+            <Select
+              value={settings.sessionDuration}
+              onChange={(event) =>
+                updateSetting(
+                  "sessionDuration",
+                  event.target.value as SettingsState["sessionDuration"],
+                )
+              }
+            >
               <option value="15">15 minutes</option>
               <option value="60">1 hour</option>
               <option value="240">4 hours</option>
@@ -340,8 +603,16 @@ export function SettingsPage() {
           </Field>
         </div>
         <div className="web-page-settings__rule" />
-        <SettingRow title="Simulate before signing" description="Show balance deltas, approvals, and revert risk before opening the wallet.">
-          <Switch label="" aria-label="Simulate before signing" checked={settings.requireSimulation} onCheckedChange={() => toggleSetting("requireSimulation")} />
+        <SettingRow
+          title="Simulate before signing"
+          description="Show balance deltas, approvals, and revert risk before opening the wallet."
+        >
+          <Switch
+            label=""
+            aria-label="Simulate before signing"
+            checked={settings.requireSimulation}
+            onCheckedChange={() => toggleSetting("requireSimulation")}
+          />
         </SettingRow>
       </GlassCard>
     </>
@@ -349,75 +620,280 @@ export function SettingsPage() {
 
   const renderSecurity = () => (
     <>
-      <InlineAlert className="web-page-settings__alert" variant="success" icon={<ShieldCheck size={17} />} title="Security posture: strong">Passkeys, two-factor authentication, and pre-sign simulations are active for this workspace.</InlineAlert>
-      <GlassCard className="web-page-settings__card" title="Sign-in protection" description="Protect access to the operator console independently from wallet ownership.">
-        <SettingRow title="Passkeys" description="Use a device-bound credential instead of a password when signing in.">
-          <div className="web-page-settings__control-stack"><Badge variant="success" leadingIcon={<Fingerprint size={13} />}>2 enrolled</Badge><Switch label="" aria-label="Passkeys" checked={settings.passkeys} onCheckedChange={() => toggleSetting("passkeys")} /></div>
+      <InlineAlert
+        className="web-page-settings__alert"
+        variant="success"
+        icon={<ShieldCheck size={17} />}
+        title="Security posture: strong"
+      >
+        Passkeys, two-factor authentication, and pre-sign simulations are active for this workspace.
+      </InlineAlert>
+      <GlassCard
+        className="web-page-settings__card"
+        title="Sign-in protection"
+        description="Protect access to the operator console independently from wallet ownership."
+      >
+        <SettingRow
+          title="Passkeys"
+          description="Use a device-bound credential instead of a password when signing in."
+        >
+          <div className="web-page-settings__control-stack">
+            <Badge variant="success" leadingIcon={<Fingerprint size={13} />}>
+              2 enrolled
+            </Badge>
+            <Switch
+              label=""
+              aria-label="Passkeys"
+              checked={settings.passkeys}
+              onCheckedChange={() => toggleSetting("passkeys")}
+            />
+          </div>
         </SettingRow>
-        <SettingRow title="Two-factor authentication" description="Require an authenticator code for new devices and sensitive changes.">
-          <div className="web-page-settings__control-stack"><Badge variant="success" leadingIcon={<Smartphone size={13} />}>Enabled</Badge><Switch label="" aria-label="Two-factor authentication" checked={settings.twoFactor} onCheckedChange={() => toggleSetting("twoFactor")} /></div>
+        <SettingRow
+          title="Two-factor authentication"
+          description="Require an authenticator code for new devices and sensitive changes."
+        >
+          <div className="web-page-settings__control-stack">
+            <Badge variant="success" leadingIcon={<Smartphone size={13} />}>
+              Enabled
+            </Badge>
+            <Switch
+              label=""
+              aria-label="Two-factor authentication"
+              checked={settings.twoFactor}
+              onCheckedChange={() => toggleSetting("twoFactor")}
+            />
+          </div>
         </SettingRow>
-        <SettingRow title="Sign out inactive sessions" description="End web sessions after the duration selected in wallet preferences.">
-          <Switch label="" aria-label="Sign out inactive sessions" checked={settings.signOutInactive} onCheckedChange={() => toggleSetting("signOutInactive")} />
+        <SettingRow
+          title="Sign out inactive sessions"
+          description="End web sessions after the duration selected in wallet preferences."
+        >
+          <Switch
+            label=""
+            aria-label="Sign out inactive sessions"
+            checked={settings.signOutInactive}
+            onCheckedChange={() => toggleSetting("signOutInactive")}
+          />
         </SettingRow>
       </GlassCard>
-      <GlassCard className="web-page-settings__card" title="Active sessions" description="Review where this workspace is currently open.">
+      <GlassCard
+        className="web-page-settings__card"
+        title="Active sessions"
+        description="Review where this workspace is currently open."
+      >
         <div className="web-page-settings__session-list">
-          <div className="web-page-settings__session"><div className="web-page-settings__session-icon"><Globe2 size={17} /></div><div><strong>Chrome on Windows</strong><span>Current session · London, UK · Seen now</span></div><Badge variant="success">Current</Badge></div>
-          <div className="web-page-settings__session"><div className="web-page-settings__session-icon"><Smartphone size={17} /></div><div><strong>Metron mobile preview</strong><span>iPhone · Singapore · Seen 2 hours ago</span></div><Button variant="quiet" size="sm" onClick={() => setActionNotice("Mobile preview session revoked.")}>Revoke</Button></div>
+          <div className="web-page-settings__session">
+            <div className="web-page-settings__session-icon">
+              <Globe2 size={17} />
+            </div>
+            <div>
+              <strong>Chrome on Windows</strong>
+              <span>Current session · London, UK · Seen now</span>
+            </div>
+            <Badge variant="success">Current</Badge>
+          </div>
+          <div className="web-page-settings__session">
+            <div className="web-page-settings__session-icon">
+              <Smartphone size={17} />
+            </div>
+            <div>
+              <strong>Metron mobile preview</strong>
+              <span>iPhone · Singapore · Seen 2 hours ago</span>
+            </div>
+            <Button
+              variant="quiet"
+              size="sm"
+              onClick={() => setActionNotice("Mobile preview session revoked.")}
+            >
+              Revoke
+            </Button>
+          </div>
         </div>
-        <div className="web-page-settings__card-footer"><Button variant="outline" size="sm" leadingIcon={<LockKeyhole size={15} />} onClick={() => setActionNotice("All other web sessions were revoked.")}>Revoke all other sessions</Button></div>
+        <div className="web-page-settings__card-footer">
+          <Button
+            variant="outline"
+            size="sm"
+            leadingIcon={<LockKeyhole size={15} />}
+            onClick={() => setActionNotice("All other web sessions were revoked.")}
+          >
+            Revoke all other sessions
+          </Button>
+        </div>
       </GlassCard>
     </>
   );
 
   const renderPrivacy = () => (
     <>
-      <GlassCard className="web-page-settings__card" title="Data controls" description="Choose what Metron stores and what stays only in this browser.">
-        <SettingRow title="Product analytics" description="Share anonymous interaction data to help improve navigation and reliability.">
-          <Switch label="" aria-label="Product analytics" checked={settings.analytics} onCheckedChange={() => toggleSetting("analytics")} />
+      <GlassCard
+        className="web-page-settings__card"
+        title="Data controls"
+        description="Choose what Metron stores and what stays only in this browser."
+      >
+        <SettingRow
+          title="Product analytics"
+          description="Share anonymous interaction data to help improve navigation and reliability."
+        >
+          <Switch
+            label=""
+            aria-label="Product analytics"
+            checked={settings.analytics}
+            onCheckedChange={() => toggleSetting("analytics")}
+          />
         </SettingRow>
-        <SettingRow title="Crash reports" description="Include anonymized diagnostics when a page or simulation fails.">
-          <Switch label="" aria-label="Crash reports" checked={settings.crashReports} onCheckedChange={() => toggleSetting("crashReports")} />
+        <SettingRow
+          title="Crash reports"
+          description="Include anonymized diagnostics when a page or simulation fails."
+        >
+          <Switch
+            label=""
+            aria-label="Crash reports"
+            checked={settings.crashReports}
+            onCheckedChange={() => toggleSetting("crashReports")}
+          />
         </SettingRow>
-        <SettingRow title="Public operator profile" description="Allow approved collaborators to see your display name and workspace role.">
-          <Switch label="" aria-label="Public operator profile" checked={settings.publicProfile} onCheckedChange={() => toggleSetting("publicProfile")} />
+        <SettingRow
+          title="Public operator profile"
+          description="Allow approved collaborators to see your display name and workspace role."
+        >
+          <Switch
+            label=""
+            aria-label="Public operator profile"
+            checked={settings.publicProfile}
+            onCheckedChange={() => toggleSetting("publicProfile")}
+          />
         </SettingRow>
       </GlassCard>
-      <GlassCard className="web-page-settings__card" title="Local data" description="Metron uses local storage for drafts, filters, and non-custodial display preferences.">
-        <div className="web-page-settings__privacy-callout"><div className="web-page-settings__section-icon"><Eye size={17} /></div><div><strong>Your keys never leave your signer.</strong><p>Metron cannot move funds without an explicit signature from your connected wallet or multisig.</p></div></div>
-        <div className="web-page-settings__card-footer"><Button variant="outline" size="sm" leadingIcon={<Database size={15} />} onClick={() => setActionNotice("A local data export is ready to download.")}>Download local data</Button><Button variant="quiet" size="sm" leadingIcon={<RefreshCw size={15} />} onClick={() => setActionNotice("Cached views cleared. Live data will repopulate as you browse.")}>Clear cached views</Button></div>
+      <GlassCard
+        className="web-page-settings__card"
+        title="Local data"
+        description="Metron uses local storage for drafts, filters, and non-custodial display preferences."
+      >
+        <div className="web-page-settings__privacy-callout">
+          <div className="web-page-settings__section-icon">
+            <Eye size={17} />
+          </div>
+          <div>
+            <strong>Your keys never leave your signer.</strong>
+            <p>
+              Metron cannot move funds without an explicit signature from your connected wallet or
+              multisig.
+            </p>
+          </div>
+        </div>
+        <div className="web-page-settings__card-footer">
+          <Button
+            variant="outline"
+            size="sm"
+            leadingIcon={<Database size={15} />}
+            onClick={() => setActionNotice("A local data export is ready to download.")}
+          >
+            Download local data
+          </Button>
+          <Button
+            variant="quiet"
+            size="sm"
+            leadingIcon={<RefreshCw size={15} />}
+            onClick={() =>
+              setActionNotice("Cached views cleared. Live data will repopulate as you browse.")
+            }
+          >
+            Clear cached views
+          </Button>
+        </div>
       </GlassCard>
     </>
   );
 
   const renderNotifications = () => (
     <>
-      <GlassCard className="web-page-settings__card" title="Alert delivery" description="Keep the important events close without turning every block into noise.">
-        <SettingRow title="In-app transaction alerts" description="Show confirmation, failure, and approval alerts in the activity stream.">
-          <Switch label="" aria-label="In-app transaction alerts" checked={settings.transactionAlerts} onCheckedChange={() => toggleSetting("transactionAlerts")} />
+      <GlassCard
+        className="web-page-settings__card"
+        title="Alert delivery"
+        description="Keep the important events close without turning every block into noise."
+      >
+        <SettingRow
+          title="In-app transaction alerts"
+          description="Show confirmation, failure, and approval alerts in the activity stream."
+        >
+          <Switch
+            label=""
+            aria-label="In-app transaction alerts"
+            checked={settings.transactionAlerts}
+            onCheckedChange={() => toggleSetting("transactionAlerts")}
+          />
         </SettingRow>
-        <SettingRow title="Address activity" description="Alert when a watched address receives or sends an asset.">
-          <Switch label="" aria-label="Address activity" checked={settings.addressAlerts} onCheckedChange={() => toggleSetting("addressAlerts")} />
+        <SettingRow
+          title="Address activity"
+          description="Alert when a watched address receives or sends an asset."
+        >
+          <Switch
+            label=""
+            aria-label="Address activity"
+            checked={settings.addressAlerts}
+            onCheckedChange={() => toggleSetting("addressAlerts")}
+          />
         </SettingRow>
-        <SettingRow title="Email notifications" description="Send high-priority risk and execution events to the operator inbox.">
-          <Switch label="" aria-label="Email notifications" checked={settings.emailNotifications} onCheckedChange={() => toggleSetting("emailNotifications")} />
+        <SettingRow
+          title="Email notifications"
+          description="Send high-priority risk and execution events to the operator inbox."
+        >
+          <Switch
+            label=""
+            aria-label="Email notifications"
+            checked={settings.emailNotifications}
+            onCheckedChange={() => toggleSetting("emailNotifications")}
+          />
         </SettingRow>
-        <SettingRow title="Push notifications" description="Deliver urgent alerts to registered devices.">
-          <Switch label="" aria-label="Push notifications" checked={settings.pushNotifications} onCheckedChange={() => toggleSetting("pushNotifications")} />
+        <SettingRow
+          title="Push notifications"
+          description="Deliver urgent alerts to registered devices."
+        >
+          <Switch
+            label=""
+            aria-label="Push notifications"
+            checked={settings.pushNotifications}
+            onCheckedChange={() => toggleSetting("pushNotifications")}
+          />
         </SettingRow>
       </GlassCard>
-      <GlassCard className="web-page-settings__card" title="Notification threshold" description="Set the minimum value for balance and transfer alerts.">
+      <GlassCard
+        className="web-page-settings__card"
+        title="Notification threshold"
+        description="Set the minimum value for balance and transfer alerts."
+      >
         <div className="web-page-settings__form-grid web-page-settings__form-grid--single">
-          <Field label="Minimum alert value" description="Alerts below this amount remain visible in activity but are not pushed.">
-            <Select value={settings.notificationThreshold} onChange={(event) => updateSetting("notificationThreshold", event.target.value as SettingsState["notificationThreshold"])}>
-              <option value="100">$100</option><option value="1000">$1,000</option><option value="10000">$10,000</option>
+          <Field
+            label="Minimum alert value"
+            description="Alerts below this amount remain visible in activity but are not pushed."
+          >
+            <Select
+              value={settings.notificationThreshold}
+              onChange={(event) =>
+                updateSetting(
+                  "notificationThreshold",
+                  event.target.value as SettingsState["notificationThreshold"],
+                )
+              }
+            >
+              <option value="100">$100</option>
+              <option value="1000">$1,000</option>
+              <option value="10000">$10,000</option>
             </Select>
           </Field>
         </div>
         <div className="web-page-settings__rule" />
-        <SettingRow title="Weekly digest" description="Receive a Monday summary of portfolio changes, risk, and automation runs.">
-          <Switch label="" aria-label="Weekly digest" checked={settings.weeklyDigest} onCheckedChange={() => toggleSetting("weeklyDigest")} />
+        <SettingRow
+          title="Weekly digest"
+          description="Receive a Monday summary of portfolio changes, risk, and automation runs."
+        >
+          <Switch
+            label=""
+            aria-label="Weekly digest"
+            checked={settings.weeklyDigest}
+            onCheckedChange={() => toggleSetting("weeklyDigest")}
+          />
         </SettingRow>
       </GlassCard>
     </>
@@ -425,45 +901,152 @@ export function SettingsPage() {
 
   const renderAutomation = () => (
     <>
-      <InlineAlert className="web-page-settings__alert" variant={settings.automationEnabled ? "success" : "warning"} icon={settings.automationEnabled ? <CircleCheck size={17} /> : <CircleAlert size={17} />} title={settings.automationEnabled ? "Automation is armed" : "Automation is paused"}>{settings.automationEnabled ? "Rules can submit transactions within the limits below." : "No automated rule can submit until you arm automation again."}</InlineAlert>
-      <GlassCard className="web-page-settings__card" title="Execution guardrails" description="These limits apply to every automated strategy in the workspace.">
-        <SettingRow title="Enable automation" description="Allow scheduled and event-driven rules to prepare transactions.">
-          <Switch label="" aria-label="Enable automation" checked={settings.automationEnabled} onCheckedChange={() => toggleSetting("automationEnabled")} />
+      <InlineAlert
+        className="web-page-settings__alert"
+        variant={settings.automationEnabled ? "success" : "warning"}
+        icon={settings.automationEnabled ? <CircleCheck size={17} /> : <CircleAlert size={17} />}
+        title={settings.automationEnabled ? "Automation is armed" : "Automation is paused"}
+      >
+        {settings.automationEnabled
+          ? "Rules can submit transactions within the limits below."
+          : "No automated rule can submit until you arm automation again."}
+      </InlineAlert>
+      <GlassCard
+        className="web-page-settings__card"
+        title="Execution guardrails"
+        description="These limits apply to every automated strategy in the workspace."
+      >
+        <SettingRow
+          title="Enable automation"
+          description="Allow scheduled and event-driven rules to prepare transactions."
+        >
+          <Switch
+            label=""
+            aria-label="Enable automation"
+            checked={settings.automationEnabled}
+            onCheckedChange={() => toggleSetting("automationEnabled")}
+          />
         </SettingRow>
-        <SettingRow title="Require approval above limit" description="Pause the rule and request a signature when the transaction exceeds the limit.">
-          <Switch label="" aria-label="Require approval above limit" checked={settings.automationApprovals} onCheckedChange={() => toggleSetting("automationApprovals")} />
+        <SettingRow
+          title="Require approval above limit"
+          description="Pause the rule and request a signature when the transaction exceeds the limit."
+        >
+          <Switch
+            label=""
+            aria-label="Require approval above limit"
+            checked={settings.automationApprovals}
+            onCheckedChange={() => toggleSetting("automationApprovals")}
+          />
         </SettingRow>
         <div className="web-page-settings__rule" />
         <div className="web-page-settings__form-grid">
-          <Field label="Default slippage" description="Used when a strategy does not define its own tolerance.">
-            <div className="web-page-settings__input-suffix"><Input value={settings.defaultSlippage} onChange={(event) => updateSetting("defaultSlippage", event.target.value)} inputMode="decimal" /><span>%</span></div>
+          <Field
+            label="Default slippage"
+            description="Used when a strategy does not define its own tolerance."
+          >
+            <div className="web-page-settings__input-suffix">
+              <Input
+                value={settings.defaultSlippage}
+                onChange={(event) => updateSetting("defaultSlippage", event.target.value)}
+                inputMode="decimal"
+              />
+              <span>%</span>
+            </div>
           </Field>
-          <Field label="Maximum gas price" description="Pause automated execution above this network fee.">
-            <div className="web-page-settings__input-suffix"><Input value={settings.maxGas} onChange={(event) => updateSetting("maxGas", event.target.value)} inputMode="decimal" /><span>gwei</span></div>
+          <Field
+            label="Maximum gas price"
+            description="Pause automated execution above this network fee."
+          >
+            <div className="web-page-settings__input-suffix">
+              <Input
+                value={settings.maxGas}
+                onChange={(event) => updateSetting("maxGas", event.target.value)}
+                inputMode="decimal"
+              />
+              <span>gwei</span>
+            </div>
           </Field>
         </div>
         <div className="web-page-settings__rule" />
-        <SettingRow title="MEV protection" description="Route supported swaps through private orderflow when available.">
-          <Switch label="" aria-label="MEV protection" checked={settings.mevProtection} onCheckedChange={() => toggleSetting("mevProtection")} />
+        <SettingRow
+          title="MEV protection"
+          description="Route supported swaps through private orderflow when available."
+        >
+          <Switch
+            label=""
+            aria-label="MEV protection"
+            checked={settings.mevProtection}
+            onCheckedChange={() => toggleSetting("mevProtection")}
+          />
         </SettingRow>
       </GlassCard>
-      <GlassCard className="web-page-settings__card" title="Run window" description="Automations are evaluated continuously while the workspace is active.">
-        <DataList layout="responsive" className="web-page-settings__data-list"><DataListItem label="Evaluation cadence" value="Every 30 seconds" description="Event triggers are debounced" /><DataListItem label="Quiet hours" value="23:00 to 06:00 UTC" description="Critical risk rules can still run" /><DataListItem label="Next scheduled run" value="In 12 minutes" description="Rebalance ETH / stables" /></DataList>
+      <GlassCard
+        className="web-page-settings__card"
+        title="Run window"
+        description="Automations are evaluated continuously while the workspace is active."
+      >
+        <DataList layout="responsive" className="web-page-settings__data-list">
+          <DataListItem
+            label="Evaluation cadence"
+            value="Every 30 seconds"
+            description="Event triggers are debounced"
+          />
+          <DataListItem
+            label="Quiet hours"
+            value="23:00 to 06:00 UTC"
+            description="Critical risk rules can still run"
+          />
+          <DataListItem
+            label="Next scheduled run"
+            value="In 12 minutes"
+            description="Rebalance ETH / stables"
+          />
+        </DataList>
       </GlassCard>
     </>
   );
 
   const renderProtocols = () => (
     <>
-      <InlineAlert className="web-page-settings__alert" variant="info" icon={<KeyRound size={17} />} title="Protocol permissions">Metron only requests the approvals needed for a selected action. Disabling a protocol removes it from new strategy routes.</InlineAlert>
-      <GlassCard className="web-page-settings__card" title="Approved protocols" description="Control which integrations can be used by strategies and automations.">
+      <InlineAlert
+        className="web-page-settings__alert"
+        variant="info"
+        icon={<KeyRound size={17} />}
+        title="Protocol permissions"
+      >
+        Metron only requests the approvals needed for a selected action. Disabling a protocol
+        removes it from new strategy routes.
+      </InlineAlert>
+      <GlassCard
+        className="web-page-settings__card"
+        title="Approved protocols"
+        description="Control which integrations can be used by strategies and automations."
+      >
         <div className="web-page-settings__integration-list">
           {protocolRows.map((protocol) => (
             <div className="web-page-settings__integration" key={protocol.key}>
-              <div className="web-page-settings__integration-icon" aria-hidden="true">{protocol.icon}</div>
-              <div className="web-page-settings__integration-copy"><div><strong>{protocol.name}</strong><Badge variant={protocol.risk === "Low" ? "success" : "warning"}>{protocol.risk} risk</Badge></div><span>{protocol.detail}</span></div>
-              <div className="web-page-settings__integration-meta"><strong>{protocol.volume}</strong><span>30d routed</span></div>
-              <Switch label="" aria-label={`Enable ${protocol.name}`} checked={settings[protocol.key]} onCheckedChange={() => toggleSetting(protocol.key)} />
+              <div className="web-page-settings__integration-icon" aria-hidden="true">
+                {protocol.icon}
+              </div>
+              <div className="web-page-settings__integration-copy">
+                <div>
+                  <strong>{protocol.name}</strong>
+                  <Badge variant={protocol.risk === "Low" ? "success" : "warning"}>
+                    {protocol.risk} risk
+                  </Badge>
+                </div>
+                <span>{protocol.detail}</span>
+              </div>
+              <div className="web-page-settings__integration-meta">
+                <strong>{protocol.volume}</strong>
+                <span>30d routed</span>
+              </div>
+              <Switch
+                label=""
+                aria-label={`Enable ${protocol.name}`}
+                checked={settings[protocol.key]}
+                onCheckedChange={() => toggleSetting(protocol.key)}
+              />
             </div>
           ))}
         </div>
@@ -473,34 +1056,93 @@ export function SettingsPage() {
 
   const renderChains = () => (
     <>
-      <GlassCard className="web-page-settings__card" title="Network access" description="Choose the chains available to portfolio views, routing, and automated execution.">
+      <GlassCard
+        className="web-page-settings__card"
+        title="Network access"
+        description="Choose the chains available to portfolio views, routing, and automated execution."
+      >
         <div className="web-page-settings__chain-list">
           {chainRows.map((chain) => (
             <div className="web-page-settings__chain" key={chain.key}>
-              <div className={`web-page-settings__chain-icon web-page-settings__chain-icon--${chain.key}`} aria-hidden="true">{chain.icon}</div>
-              <div className="web-page-settings__chain-copy"><div><strong>{chain.name}</strong><span>{chain.symbol} · {chain.detail}</span></div><StatusLine tone={chain.status === "Degraded" ? "warning" : "success"}>{chain.status}</StatusLine></div>
-              <div className="web-page-settings__chain-health"><span><Clock3 size={13} />{chain.latency}</span><span>Block {chain.block}</span></div>
-              <Switch label="" aria-label={`Enable ${chain.name}`} checked={settings[chain.key]} onCheckedChange={() => toggleSetting(chain.key)} />
+              <div
+                className={`web-page-settings__chain-icon web-page-settings__chain-icon--${chain.key}`}
+                aria-hidden="true"
+              >
+                {chain.icon}
+              </div>
+              <div className="web-page-settings__chain-copy">
+                <div>
+                  <strong>{chain.name}</strong>
+                  <span>
+                    {chain.symbol} · {chain.detail}
+                  </span>
+                </div>
+                <StatusLine tone={chain.status === "Degraded" ? "warning" : "success"}>
+                  {chain.status}
+                </StatusLine>
+              </div>
+              <div className="web-page-settings__chain-health">
+                <span>
+                  <Clock3 size={13} />
+                  {chain.latency}
+                </span>
+                <span>Block {chain.block}</span>
+              </div>
+              <Switch
+                label=""
+                aria-label={`Enable ${chain.name}`}
+                checked={settings[chain.key]}
+                onCheckedChange={() => toggleSetting(chain.key)}
+              />
             </div>
           ))}
         </div>
       </GlassCard>
-      <GlassCard className="web-page-settings__card" title="Custom RPC" description="Use a private endpoint for a supported chain when you need lower latency or higher limits.">
-        <div className="web-page-settings__rpc-row"><div className="web-page-settings__rpc-icon"><Link2 size={17} /></div><div><strong>Alchemy shared endpoint</strong><span>Ethereum · Read-only health check</span></div><Badge variant="neutral">Default</Badge><Button variant="outline" size="sm" trailingIcon={<ChevronRight size={14} />} onClick={() => setActionNotice("RPC endpoint management is ready for this workspace.")}>Manage endpoints</Button></div>
+      <GlassCard
+        className="web-page-settings__card"
+        title="Custom RPC"
+        description="Use a private endpoint for a supported chain when you need lower latency or higher limits."
+      >
+        <div className="web-page-settings__rpc-row">
+          <div className="web-page-settings__rpc-icon">
+            <Link2 size={17} />
+          </div>
+          <div>
+            <strong>Alchemy shared endpoint</strong>
+            <span>Ethereum · Read-only health check</span>
+          </div>
+          <Badge variant="neutral">Default</Badge>
+          <Button
+            variant="outline"
+            size="sm"
+            trailingIcon={<ChevronRight size={14} />}
+            onClick={() => setActionNotice("RPC endpoint management is ready for this workspace.")}
+          >
+            Manage endpoints
+          </Button>
+        </div>
       </GlassCard>
     </>
   );
 
   const renderTab = () => {
     switch (activeTab) {
-      case "wallet": return renderWallet();
-      case "security": return renderSecurity();
-      case "privacy": return renderPrivacy();
-      case "notifications": return renderNotifications();
-      case "automation": return renderAutomation();
-      case "protocols": return renderProtocols();
-      case "chains": return renderChains();
-      case "general": return renderGeneral();
+      case "wallet":
+        return renderWallet();
+      case "security":
+        return renderSecurity();
+      case "privacy":
+        return renderPrivacy();
+      case "notifications":
+        return renderNotifications();
+      case "automation":
+        return renderAutomation();
+      case "protocols":
+        return renderProtocols();
+      case "chains":
+        return renderChains();
+      case "general":
+        return renderGeneral();
     }
   };
 
@@ -509,45 +1151,137 @@ export function SettingsPage() {
       <style>{styles}</style>
       <header className="web-page-settings__header">
         <div className="web-page-settings__title-block">
-          <div className="web-page-settings__eyebrow"><Settings2 size={14} />Workspace control surface</div>
+          <div className="web-page-settings__eyebrow">
+            <Settings2 size={14} />
+            Workspace control surface
+          </div>
           <h1>Settings</h1>
           <p>Configure how Metron watches risk, prepares transactions, and keeps you informed.</p>
         </div>
         <div className="web-page-settings__header-actions">
-          <span className={`web-page-settings__save-state ${dirty ? "web-page-settings__save-state--dirty" : ""}`} role="status">
-            {dirty ? <><span className="web-page-settings__save-dot" />Unsaved changes</> : savedAt ? <><Check size={14} />Saved {savedAt}</> : <><CircleCheck size={14} />All changes saved</>}
+          <span
+            className={`web-page-settings__save-state ${dirty ? "web-page-settings__save-state--dirty" : ""}`}
+            role="status"
+          >
+            {dirty ? (
+              <>
+                <span className="web-page-settings__save-dot" />
+                Unsaved changes
+              </>
+            ) : savedAt ? (
+              <>
+                <Check size={14} />
+                Saved {savedAt}
+              </>
+            ) : (
+              <>
+                <CircleCheck size={14} />
+                All changes saved
+              </>
+            )}
           </span>
-          <Button variant="crimson" size="md" leadingIcon={<Save size={16} />} onClick={handleSave} disabled={!dirty}>Save changes</Button>
+          <Button
+            variant="crimson"
+            size="md"
+            leadingIcon={<Save size={16} />}
+            onClick={handleSave}
+            disabled={!dirty}
+          >
+            Save changes
+          </Button>
         </div>
       </header>
 
       <div className="web-page-settings__workspace-strip">
-        <div className="web-page-settings__workspace"><div className="web-page-settings__workspace-avatar">N</div><div><span>Workspace</span><strong>Northstar treasury</strong></div><ChevronRight size={15} aria-hidden="true" /></div>
-        <div className="web-page-settings__strip-item"><span>Environment</span><strong><StatusLine>Production</StatusLine></strong></div>
-        <div className="web-page-settings__strip-item"><span>Wallet</span><strong>{walletConnected ? "0x7A31...9D42" : "Disconnected"}</strong></div>
-        <div className="web-page-settings__strip-item"><span>Last sync</span><strong>14:42 UTC</strong></div>
+        <div className="web-page-settings__workspace">
+          <div className="web-page-settings__workspace-avatar">N</div>
+          <div>
+            <span>Workspace</span>
+            <strong>Northstar treasury</strong>
+          </div>
+          <ChevronRight size={15} aria-hidden="true" />
+        </div>
+        <div className="web-page-settings__strip-item">
+          <span>Environment</span>
+          <strong>
+            <StatusLine>Production</StatusLine>
+          </strong>
+        </div>
+        <div className="web-page-settings__strip-item">
+          <span>Wallet</span>
+          <strong>{walletConnected ? "0x7A31...9D42" : "Disconnected"}</strong>
+        </div>
+        <div className="web-page-settings__strip-item">
+          <span>Last sync</span>
+          <strong>14:42 UTC</strong>
+        </div>
       </div>
 
       <div className="web-page-settings__layout">
         <nav className="web-page-settings__tabs" aria-label="Settings sections">
           <div className="web-page-settings__tabs-label">Workspace settings</div>
           {tabs.map((tab) => (
-            <button className={`web-page-settings__tab ${activeTab === tab.id ? "web-page-settings__tab--active" : ""}`} type="button" key={tab.id} onClick={() => setActiveTab(tab.id)} aria-current={activeTab === tab.id ? "page" : undefined}>
-              <span className="web-page-settings__tab-icon" aria-hidden="true">{tab.icon}</span><span className="web-page-settings__tab-copy"><strong>{tab.label}</strong><small>{tab.description}</small></span><ChevronRight className="web-page-settings__tab-chevron" size={15} aria-hidden="true" />
+            <button
+              className={`web-page-settings__tab ${activeTab === tab.id ? "web-page-settings__tab--active" : ""}`}
+              type="button"
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              aria-current={activeTab === tab.id ? "page" : undefined}
+            >
+              <span className="web-page-settings__tab-icon" aria-hidden="true">
+                {tab.icon}
+              </span>
+              <span className="web-page-settings__tab-copy">
+                <strong>{tab.label}</strong>
+                <small>{tab.description}</small>
+              </span>
+              <ChevronRight
+                className="web-page-settings__tab-chevron"
+                size={15}
+                aria-hidden="true"
+              />
             </button>
           ))}
-          <div className="web-page-settings__tabs-footer"><div className="web-page-settings__support-icon"><MessageSquare size={15} /></div><div><strong>Need a hand?</strong><span>Read the operator guide</span></div><ExternalLink size={14} /></div>
+          <div className="web-page-settings__tabs-footer">
+            <div className="web-page-settings__support-icon">
+              <MessageSquare size={15} />
+            </div>
+            <div>
+              <strong>Need a hand?</strong>
+              <span>Read the operator guide</span>
+            </div>
+            <ExternalLink size={14} />
+          </div>
         </nav>
         <main className="web-page-settings__content">
-          <div className="web-page-settings__content-heading"><div><span className="web-page-settings__content-kicker">{tabs.find((tab) => tab.id === activeTab)?.description}</span><h2>{tabs.find((tab) => tab.id === activeTab)?.label}</h2></div><div className="web-page-settings__content-marker"><Radio size={13} />Live workspace</div></div>
-          {actionNotice ? <InlineAlert className="web-page-settings__alert" variant="success" icon={<Check size={17} />} title="Action complete">{actionNotice}</InlineAlert> : null}
+          <div className="web-page-settings__content-heading">
+            <div>
+              <span className="web-page-settings__content-kicker">
+                {tabs.find((tab) => tab.id === activeTab)?.description}
+              </span>
+              <h2>{tabs.find((tab) => tab.id === activeTab)?.label}</h2>
+            </div>
+            <div className="web-page-settings__content-marker">
+              <Radio size={13} />
+              Live workspace
+            </div>
+          </div>
+          {actionNotice ? (
+            <InlineAlert
+              className="web-page-settings__alert"
+              variant="success"
+              icon={<Check size={17} />}
+              title="Action complete"
+            >
+              {actionNotice}
+            </InlineAlert>
+          ) : null}
           {renderTab()}
         </main>
       </div>
     </div>
   );
 }
-
 
 const styles = `
 .web-page-settings { --settings-ink: #f4f0e8; --settings-muted: #9e9d99; --settings-dim: #6f716f; --settings-line: rgba(255,255,255,.1); --settings-line-strong: rgba(255,255,255,.18); --settings-surface: rgba(19,20,20,.82); --settings-sand: #d7c6a5; --settings-crimson: #d04a4a; color: var(--settings-ink); max-width: 1440px; margin: 0 auto; padding: clamp(1.5rem, 3.6vw, 3.75rem) clamp(1rem, 4vw, 4.75rem) 5rem; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }

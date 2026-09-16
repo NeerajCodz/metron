@@ -112,7 +112,10 @@ export function ExecutionPage() {
           </p>
         </div>
         <div className="web-page-execution__header-meta">
-          <Badge variant={routeConfirmed ? "success" : "sand"} leadingIcon={<CircleAlert size={13} />}>
+          <Badge
+            variant={routeConfirmed ? "success" : "sand"}
+            leadingIcon={<CircleAlert size={13} />}
+          >
             {routeConfirmed ? "Route confirmed" : "Ready to execute"}
           </Badge>
           <span className="web-page-execution__intent-id">Intent MT-2048</span>
@@ -122,7 +125,10 @@ export function ExecutionPage() {
       <main className="web-page-execution__main">
         <section className="web-page-execution__primary-grid" aria-label="Execution review">
           <div className="web-page-execution__left-column">
-            <Card variant="carbon" className="web-page-execution__card web-page-execution__step-card">
+            <Card
+              variant="carbon"
+              className="web-page-execution__card web-page-execution__step-card"
+            >
               <CardHeader>
                 <div className="web-page-execution__card-heading">
                   <div>
@@ -132,7 +138,9 @@ export function ExecutionPage() {
                       Each checkpoint must be satisfied before settlement can begin.
                     </CardDescription>
                   </div>
-                  <span className="web-page-execution__step-count">{routeConfirmed ? "4 / 4" : "3 / 4"}</span>
+                  <span className="web-page-execution__step-count">
+                    {routeConfirmed ? "4 / 4" : "3 / 4"}
+                  </span>
                 </div>
               </CardHeader>
               <CardContent>
@@ -153,7 +161,9 @@ export function ExecutionPage() {
                           <strong>{step.label}</strong>
                           <span>{step.detail}</span>
                         </span>
-                        {index < steps.length - 1 ? <span className="web-page-execution__step-line" aria-hidden="true" /> : null}
+                        {index < steps.length - 1 ? (
+                          <span className="web-page-execution__step-line" aria-hidden="true" />
+                        ) : null}
                       </li>
                     );
                   })}
@@ -165,7 +175,9 @@ export function ExecutionPage() {
               <Card variant="carbon" className="web-page-execution__card">
                 <CardHeader>
                   <div className="web-page-execution__panel-title">
-                    <span className="web-page-execution__icon-box"><Fuel size={16} /></span>
+                    <span className="web-page-execution__icon-box">
+                      <Fuel size={16} />
+                    </span>
                     <div>
                       <CardTitle>Gas budget</CardTitle>
                       <CardDescription>Protected from fee spikes</CardDescription>
@@ -174,7 +186,11 @@ export function ExecutionPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="web-page-execution__big-value">$4.82</div>
-                  <DataList layout="stacked" divided={false} className="web-page-execution__compact-list">
+                  <DataList
+                    layout="stacked"
+                    divided={false}
+                    className="web-page-execution__compact-list"
+                  >
                     <DataListItem label="Network" value="Base" />
                     <DataListItem label="Max fee" value="0.00014 ETH" />
                     <DataListItem label="Priority" value="0.00002 ETH" />
@@ -193,7 +209,9 @@ export function ExecutionPage() {
               <Card variant="carbon" className="web-page-execution__card">
                 <CardHeader>
                   <div className="web-page-execution__panel-title">
-                    <span className="web-page-execution__icon-box"><SlidersHorizontal size={16} /></span>
+                    <span className="web-page-execution__icon-box">
+                      <SlidersHorizontal size={16} />
+                    </span>
                     <div>
                       <CardTitle>Slippage guard</CardTitle>
                       <CardDescription>Worst acceptable fill</CardDescription>
@@ -206,7 +224,11 @@ export function ExecutionPage() {
                     <span style={{ width: "30%" }} />
                     <i />
                   </div>
-                  <DataList layout="stacked" divided={false} className="web-page-execution__compact-list">
+                  <DataList
+                    layout="stacked"
+                    divided={false}
+                    className="web-page-execution__compact-list"
+                  >
                     <DataListItem label="Expected fill" value="$24,981.30" />
                     <DataListItem label="Minimum received" value="24,906.35 USDC" />
                     <DataListItem label="Price impact" value="0.08%" />
@@ -214,10 +236,15 @@ export function ExecutionPage() {
                 </CardContent>
               </Card>
 
-              <Card variant="carbon" className="web-page-execution__card web-page-execution__liquidity-card">
+              <Card
+                variant="carbon"
+                className="web-page-execution__card web-page-execution__liquidity-card"
+              >
                 <CardHeader>
                   <div className="web-page-execution__panel-title">
-                    <span className="web-page-execution__icon-box"><GitBranch size={16} /></span>
+                    <span className="web-page-execution__icon-box">
+                      <GitBranch size={16} />
+                    </span>
                     <div>
                       <CardTitle>Liquidity path</CardTitle>
                       <CardDescription>Split across two deep venues</CardDescription>
@@ -226,14 +253,36 @@ export function ExecutionPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="web-page-execution__venue-row">
-                    <div><strong>Uniswap V3</strong><span>Base / 0.05% pool</span></div><b>68%</b>
+                    <div>
+                      <strong>Uniswap V3</strong>
+                      <span>Base / 0.05% pool</span>
+                    </div>
+                    <b>68%</b>
                   </div>
-                  <Progress label="Uniswap V3 allocation" value={68} valueLabel="68%" tone="accent" size="sm" />
+                  <Progress
+                    label="Uniswap V3 allocation"
+                    value={68}
+                    valueLabel="68%"
+                    tone="accent"
+                    size="sm"
+                  />
                   <div className="web-page-execution__venue-row">
-                    <div><strong>Aerodrome</strong><span>Base / volatile pool</span></div><b>32%</b>
+                    <div>
+                      <strong>Aerodrome</strong>
+                      <span>Base / volatile pool</span>
+                    </div>
+                    <b>32%</b>
                   </div>
-                  <Progress label="Aerodrome allocation" value={32} valueLabel="32%" tone="neutral" size="sm" />
-                  <p className="web-page-execution__panel-note"><CheckCircle2 size={14} /> Combined depth covers 4.6x the order size.</p>
+                  <Progress
+                    label="Aerodrome allocation"
+                    value={32}
+                    valueLabel="32%"
+                    tone="neutral"
+                    size="sm"
+                  />
+                  <p className="web-page-execution__panel-note">
+                    <CheckCircle2 size={14} /> Combined depth covers 4.6x the order size.
+                  </p>
                 </CardContent>
               </Card>
             </div>
@@ -247,32 +296,60 @@ export function ExecutionPage() {
                     <p className="web-page-execution__label">Selected route</p>
                     <CardTitle>USDC to ETH</CardTitle>
                   </div>
-                  <Badge variant="success" leadingIcon={<CheckCircle2 size={13} />}>Best execution</Badge>
+                  <Badge variant="success" leadingIcon={<CheckCircle2 size={13} />}>
+                    Best execution
+                  </Badge>
                 </div>
               </CardHeader>
               <CardContent>
                 <div className="web-page-execution__asset-flow">
                   <div className="web-page-execution__asset">
-                    <span className="web-page-execution__asset-mark web-page-execution__asset-mark--usdc">$</span>
-                    <div><strong>25,000 USDC</strong><span>From Base</span></div>
+                    <span className="web-page-execution__asset-mark web-page-execution__asset-mark--usdc">
+                      $
+                    </span>
+                    <div>
+                      <strong>25,000 USDC</strong>
+                      <span>From Base</span>
+                    </div>
                   </div>
-                  <ArrowRight className="web-page-execution__flow-arrow" size={18} aria-hidden="true" />
+                  <ArrowRight
+                    className="web-page-execution__flow-arrow"
+                    size={18}
+                    aria-hidden="true"
+                  />
                   <div className="web-page-execution__asset">
-                    <span className="web-page-execution__asset-mark web-page-execution__asset-mark--eth">Ξ</span>
-                    <div><strong>9.86 ETH</strong><span>To Ethereum</span></div>
+                    <span className="web-page-execution__asset-mark web-page-execution__asset-mark--eth">
+                      Ξ
+                    </span>
+                    <div>
+                      <strong>9.86 ETH</strong>
+                      <span>To Ethereum</span>
+                    </div>
                   </div>
                 </div>
                 <div className="web-page-execution__route-line" aria-hidden="true">
-                  <span /><span /><span /><span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
                 </div>
                 <DataList className="web-page-execution__route-list">
                   <DataListItem label="Route" value="Across bridge / Uniswap V3" />
-                  <DataListItem label="Expected arrival" value="~7 minutes" icon={<Clock3 size={15} />} />
+                  <DataListItem
+                    label="Expected arrival"
+                    value="~7 minutes"
+                    icon={<Clock3 size={15} />}
+                  />
                   <DataListItem label="You receive" value="$24,981.30 value" />
                 </DataList>
                 <div className="web-page-execution__wallet-row">
-                  <span className="web-page-execution__wallet-icon"><WalletCards size={15} /></span>
-                  <div><span>Destination wallet</span><strong>{routeAddress}</strong></div>
+                  <span className="web-page-execution__wallet-icon">
+                    <WalletCards size={15} />
+                  </span>
+                  <div>
+                    <span>Destination wallet</span>
+                    <strong>{routeAddress}</strong>
+                  </div>
                   <Button
                     variant="quiet"
                     size="sm"
@@ -287,18 +364,27 @@ export function ExecutionPage() {
                   variant="crimson"
                   size="lg"
                   fullWidth
-                  leadingIcon={routeConfirmed ? <CheckCircle2 size={17} /> : <LockKeyhole size={17} />}
+                  leadingIcon={
+                    routeConfirmed ? <CheckCircle2 size={17} /> : <LockKeyhole size={17} />
+                  }
                   onClick={() => setRouteConfirmed(true)}
                   disabled={routeConfirmed}
                 >
                   {routeConfirmed ? "Route confirmed" : "Confirm route"}
                 </Button>
                 {routeConfirmed ? (
-                  <Button variant="quiet" size="sm" fullWidth onClick={() => setRouteConfirmed(false)}>
+                  <Button
+                    variant="quiet"
+                    size="sm"
+                    fullWidth
+                    onClick={() => setRouteConfirmed(false)}
+                  >
                     Edit route
                   </Button>
                 ) : null}
-                <p className="web-page-execution__signature-note"><KeyRound size={13} /> Your wallet will ask for one signature.</p>
+                <p className="web-page-execution__signature-note">
+                  <KeyRound size={13} /> Your wallet will ask for one signature.
+                </p>
               </CardContent>
             </Card>
 
@@ -315,11 +401,16 @@ export function ExecutionPage() {
           </div>
         </section>
 
-        <section className="web-page-execution__secondary-grid" aria-label="Execution controls and status">
+        <section
+          className="web-page-execution__secondary-grid"
+          aria-label="Execution controls and status"
+        >
           <Card variant="carbon" className="web-page-execution__card">
             <CardHeader>
               <div className="web-page-execution__panel-title">
-                <span className="web-page-execution__icon-box"><Timer size={16} /></span>
+                <span className="web-page-execution__icon-box">
+                  <Timer size={16} />
+                </span>
                 <div>
                   <CardTitle>Execution window</CardTitle>
                   <CardDescription>Choose when the solver may submit.</CardDescription>
@@ -327,7 +418,9 @@ export function ExecutionPage() {
               </div>
             </CardHeader>
             <CardContent>
-              <label className="web-page-execution__select-label" htmlFor="execution-window">Submit preference</label>
+              <label className="web-page-execution__select-label" htmlFor="execution-window">
+                Submit preference
+              </label>
               <div className="web-page-execution__select-wrap">
                 <select
                   id="execution-window"
@@ -342,17 +435,29 @@ export function ExecutionPage() {
                 <ChevronDown size={15} aria-hidden="true" />
               </div>
               <div className="web-page-execution__window-summary">
-                <div><Clock3 size={15} /><span>Window opens</span><strong>Now</strong></div>
-                <div><RefreshCw size={15} /><span>Quote refresh</span><strong>02:48</strong></div>
+                <div>
+                  <Clock3 size={15} />
+                  <span>Window opens</span>
+                  <strong>Now</strong>
+                </div>
+                <div>
+                  <RefreshCw size={15} />
+                  <span>Quote refresh</span>
+                  <strong>02:48</strong>
+                </div>
               </div>
-              <p className="web-page-execution__panel-note">The quote expires in 04:32 if it is not committed.</p>
+              <p className="web-page-execution__panel-note">
+                The quote expires in 04:32 if it is not committed.
+              </p>
             </CardContent>
           </Card>
 
           <Card variant="carbon" className="web-page-execution__card">
             <CardHeader>
               <div className="web-page-execution__panel-title">
-                <span className="web-page-execution__icon-box"><ShieldCheck size={16} /></span>
+                <span className="web-page-execution__icon-box">
+                  <ShieldCheck size={16} />
+                </span>
                 <div>
                   <CardTitle>MEV commitment</CardTitle>
                   <CardDescription>Private order flow is active.</CardDescription>
@@ -362,8 +467,18 @@ export function ExecutionPage() {
             <CardContent>
               <div className="web-page-execution__commitment-row">
                 <div className="web-page-execution__commitment-status">
-                  <span className={`web-page-execution__status-dot ${mevCommitted ? "is-on" : ""}`} aria-hidden="true" />
-                  <div><strong>{mevCommitted ? "Protected commitment" : "Public mempool"}</strong><span>{mevCommitted ? "Signed bundle held by the relay." : "The route may be visible before inclusion."}</span></div>
+                  <span
+                    className={`web-page-execution__status-dot ${mevCommitted ? "is-on" : ""}`}
+                    aria-hidden="true"
+                  />
+                  <div>
+                    <strong>{mevCommitted ? "Protected commitment" : "Public mempool"}</strong>
+                    <span>
+                      {mevCommitted
+                        ? "Signed bundle held by the relay."
+                        : "The route may be visible before inclusion."}
+                    </span>
+                  </div>
                 </div>
                 <Switch
                   aria-label="Enable MEV protection"
@@ -372,19 +487,33 @@ export function ExecutionPage() {
                 />
               </div>
               <div className="web-page-execution__commitment-facts">
-                <span><LockKeyhole size={14} /> Relay: Titan Builder</span>
-                <span><Clock3 size={14} /> TTL: 18 seconds</span>
+                <span>
+                  <LockKeyhole size={14} /> Relay: Titan Builder
+                </span>
+                <span>
+                  <Clock3 size={14} /> TTL: 18 seconds
+                </span>
               </div>
-              <InlineAlert variant={mevCommitted ? "success" : "warning"} icon={mevCommitted ? <CheckCircle2 size={15} /> : <CircleAlert size={15} />}>
-                {mevCommitted ? "Sandwich protection and revert shielding are enabled." : "Turn protection back on before confirming this route."}
+              <InlineAlert
+                variant={mevCommitted ? "success" : "warning"}
+                icon={mevCommitted ? <CheckCircle2 size={15} /> : <CircleAlert size={15} />}
+              >
+                {mevCommitted
+                  ? "Sandwich protection and revert shielding are enabled."
+                  : "Turn protection back on before confirming this route."}
               </InlineAlert>
             </CardContent>
           </Card>
 
-          <Card variant="carbon" className="web-page-execution__card web-page-execution__bridge-card">
+          <Card
+            variant="carbon"
+            className="web-page-execution__card web-page-execution__bridge-card"
+          >
             <CardHeader>
               <div className="web-page-execution__panel-title">
-                <span className="web-page-execution__icon-box"><Network size={16} /></span>
+                <span className="web-page-execution__icon-box">
+                  <Network size={16} />
+                </span>
                 <div>
                   <CardTitle>Bridge status</CardTitle>
                   <CardDescription>Across intent MT-2048</CardDescription>
@@ -409,7 +538,10 @@ export function ExecutionPage() {
 
         <footer className="web-page-execution__footer-note">
           <CircleAlert size={15} />
-          <span>Review the destination chain and wallet before signing. Metron cannot reverse a confirmed bridge transaction.</span>
+          <span>
+            Review the destination chain and wallet before signing. Metron cannot reverse a
+            confirmed bridge transaction.
+          </span>
         </footer>
       </main>
     </div>

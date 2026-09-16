@@ -1,18 +1,5 @@
-import {
-  useEffect,
-  useState,
-  type CSSProperties,
-  type ReactNode,
-} from "react";
-import {
-  AlertTriangle,
-  ArrowRight,
-  Check,
-  CircleAlert,
-  ShieldAlert,
-  X,
-  Zap,
-} from "lucide-react";
+import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
+import { AlertTriangle, ArrowRight, Check, CircleAlert, ShieldAlert, X, Zap } from "lucide-react";
 import { Badge, Button, Dialog } from "@metron/ui";
 
 export interface RecoveryAction {
@@ -198,7 +185,9 @@ function ActionSummary({ action }: { action: RecoveryAction }) {
         <h3 style={{ margin: "0.3rem 0 0", color: "var(--metron-pearl)", fontSize: "1rem" }}>
           {getActionLabel(action)}
         </h3>
-        {hasValue(action.description) ? <p style={{ ...mutedTextStyle, margin: "0.35rem 0 0" }}>{action.description}</p> : null}
+        {hasValue(action.description) ? (
+          <p style={{ ...mutedTextStyle, margin: "0.35rem 0 0" }}>{action.description}</p>
+        ) : null}
       </div>
       <div style={metricGridStyle}>
         <Metric label="Amount" value={action.amount} />
@@ -279,9 +268,10 @@ export function RecoveryModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionError, setSubmissionError] = useState<ReactNode>(null);
   const effectiveSelectedId = selectedActionId ?? internalSelectedId;
-  const selectedAction = availableActions.find(
-    (candidate, index) => getActionKey(candidate, index) === effectiveSelectedId,
-  ) ?? availableActions[0];
+  const selectedAction =
+    availableActions.find(
+      (candidate, index) => getActionKey(candidate, index) === effectiveSelectedId,
+    ) ?? availableActions[0];
   const busy = loading || isSubmitting;
 
   useEffect(() => {
@@ -342,10 +332,18 @@ export function RecoveryModal({
         </div>
 
         {hasValue(currentHealthFactor) ? (
-          <div style={{ ...warningStyle, background: "color-mix(in srgb, var(--metron-sand) 10%, transparent)", borderColor: "var(--metron-border)" }}>
+          <div
+            style={{
+              ...warningStyle,
+              background: "color-mix(in srgb, var(--metron-sand) 10%, transparent)",
+              borderColor: "var(--metron-border)",
+            }}
+          >
             <CircleAlert size={19} color="var(--metron-sand)" aria-hidden="true" />
             <span style={mutedTextStyle}>
-              Current health factor: <strong style={{ color: "var(--metron-pearl)" }}>{currentHealthFactor}</strong>. The selected action stays within the deterministic policy limits.
+              Current health factor:{" "}
+              <strong style={{ color: "var(--metron-pearl)" }}>{currentHealthFactor}</strong>. The
+              selected action stays within the deterministic policy limits.
             </span>
           </div>
         ) : null}
@@ -353,8 +351,12 @@ export function RecoveryModal({
         {availableActions.length > 1 ? (
           <div style={sectionStyle}>
             <div>
-              <p className="metron-eyebrow" style={{ margin: 0 }}>Eligible actions</p>
-              <p style={{ ...mutedTextStyle, margin: "0.3rem 0 0" }}>Choose the action to authorize. The protocol enforces the final limits on-chain.</p>
+              <p className="metron-eyebrow" style={{ margin: 0 }}>
+                Eligible actions
+              </p>
+              <p style={{ ...mutedTextStyle, margin: "0.3rem 0 0" }}>
+                Choose the action to authorize. The protocol enforces the final limits on-chain.
+              </p>
             </div>
             <div role="radiogroup" aria-label="Eligible recovery actions" style={actionListStyle}>
               {availableActions.map((candidate, index) => {
@@ -369,13 +371,29 @@ export function RecoveryModal({
                     onClick={() => selectAction(candidate, index)}
                     style={{ ...actionButtonStyle, ...(selected ? actionButtonSelectedStyle : {}) }}
                   >
-                    <span style={{ display: "flex", alignItems: "center", gap: "0.55rem", fontWeight: 650 }}>
-                      <span style={{ ...checkStyle, opacity: selected ? 1 : 0.4 }} aria-hidden="true">
+                    <span
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.55rem",
+                        fontWeight: 650,
+                      }}
+                    >
+                      <span
+                        style={{ ...checkStyle, opacity: selected ? 1 : 0.4 }}
+                        aria-hidden="true"
+                      >
                         {selected ? <Check size={13} strokeWidth={3} /> : null}
                       </span>
                       {getActionLabel(candidate)}
                     </span>
-                    {hasValue(candidate.description) ? <span style={{ ...mutedTextStyle, paddingLeft: "1.75rem", fontSize: "0.8rem" }}>{candidate.description}</span> : null}
+                    {hasValue(candidate.description) ? (
+                      <span
+                        style={{ ...mutedTextStyle, paddingLeft: "1.75rem", fontSize: "0.8rem" }}
+                      >
+                        {candidate.description}
+                      </span>
+                    ) : null}
                   </button>
                 );
               })}
@@ -383,7 +401,11 @@ export function RecoveryModal({
           </div>
         ) : null}
 
-        {selectedAction ? <ActionSummary action={selectedAction} /> : <p style={mutedTextStyle}>No eligible recovery action is available for this position.</p>}
+        {selectedAction ? (
+          <ActionSummary action={selectedAction} />
+        ) : (
+          <p style={mutedTextStyle}>No eligible recovery action is available for this position.</p>
+        )}
         {children}
         {hasValue(error) || hasValue(submissionError) ? (
           <div role="alert" style={{ ...warningStyle, color: "var(--metron-pearl)" }}>
@@ -479,8 +501,12 @@ export function FlashUnwindModal({
           <Badge variant="danger" leadingIcon={<Zap size={14} aria-hidden="true" />}>
             Emergency operation
           </Badge>
-          {hasValue(positionLabel) ? <span style={{ ...mutedTextStyle, fontSize: "0.8rem" }}>{positionLabel}</span> : null}
-          {hasValue(chainName) ? <span style={{ ...mutedTextStyle, fontSize: "0.8rem" }}>on {chainName}</span> : null}
+          {hasValue(positionLabel) ? (
+            <span style={{ ...mutedTextStyle, fontSize: "0.8rem" }}>{positionLabel}</span>
+          ) : null}
+          {hasValue(chainName) ? (
+            <span style={{ ...mutedTextStyle, fontSize: "0.8rem" }}>on {chainName}</span>
+          ) : null}
         </div>
 
         <div style={warningStyle} role="note">
@@ -497,13 +523,35 @@ export function FlashUnwindModal({
 
         <div style={sectionStyle}>
           <div>
-            <p className="metron-eyebrow" style={{ margin: 0 }}>Atomic sequence</p>
-            <p style={{ ...mutedTextStyle, margin: "0.3rem 0 0" }}>If any step fails, the transaction reverts instead of leaving a partial unwind.</p>
+            <p className="metron-eyebrow" style={{ margin: 0 }}>
+              Atomic sequence
+            </p>
+            <p style={{ ...mutedTextStyle, margin: "0.3rem 0 0" }}>
+              If any step fails, the transaction reverts instead of leaving a partial unwind.
+            </p>
           </div>
           <ol style={{ display: "grid", gap: "0.5rem", margin: 0, padding: 0, listStyle: "none" }}>
             {steps.map((step, index) => (
-              <li key={`flash-unwind-step-${index}`} style={{ display: "flex", alignItems: "flex-start", gap: "0.65rem", color: "var(--metron-pearl)" }}>
-                <span style={{ ...checkStyle, width: "1.35rem", height: "1.35rem", color: "var(--metron-sand)", background: "color-mix(in srgb, var(--metron-sand) 12%, transparent)", border: "1px solid var(--metron-border)" }} aria-hidden="true">
+              <li
+                key={`flash-unwind-step-${index}`}
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "0.65rem",
+                  color: "var(--metron-pearl)",
+                }}
+              >
+                <span
+                  style={{
+                    ...checkStyle,
+                    width: "1.35rem",
+                    height: "1.35rem",
+                    color: "var(--metron-sand)",
+                    background: "color-mix(in srgb, var(--metron-sand) 12%, transparent)",
+                    border: "1px solid var(--metron-border)",
+                  }}
+                  aria-hidden="true"
+                >
                   {index + 1}
                 </span>
                 <span style={{ ...mutedTextStyle, paddingTop: "0.1rem" }}>{step}</span>
@@ -513,7 +561,15 @@ export function FlashUnwindModal({
         </div>
 
         {requireAcknowledgement ? (
-          <label style={{ display: "flex", alignItems: "flex-start", gap: "0.65rem", color: "var(--metron-pearl)", cursor: "pointer" }}>
+          <label
+            style={{
+              display: "flex",
+              alignItems: "flex-start",
+              gap: "0.65rem",
+              color: "var(--metron-pearl)",
+              cursor: "pointer",
+            }}
+          >
             <input
               type="checkbox"
               checked={acknowledged}
@@ -521,7 +577,9 @@ export function FlashUnwindModal({
               disabled={busy}
               style={{ marginTop: "0.2rem", accentColor: "var(--metron-crimson)" }}
             />
-            <span style={mutedTextStyle}>I understand this may sell collateral and close active positions on this chain.</span>
+            <span style={mutedTextStyle}>
+              I understand this may sell collateral and close active positions on this chain.
+            </span>
           </label>
         ) : null}
         {children}

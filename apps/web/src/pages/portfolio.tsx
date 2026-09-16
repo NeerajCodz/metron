@@ -18,14 +18,7 @@ import {
   WalletCards,
   X,
 } from "lucide-react";
-import {
-  Badge,
-  Button,
-  GlassCard,
-  IconButton,
-  MetricCard,
-  Progress,
-} from "@metron/ui";
+import { Badge, Button, GlassCard, IconButton, MetricCard, Progress } from "@metron/ui";
 
 const chains = ["All chains", "Ethereum", "Arbitrum", "Base", "Solana"] as const;
 type Chain = (typeof chains)[number];
@@ -46,21 +39,171 @@ type Position = {
   icon: ReactNode;
 };
 
-const chainData: Record<Exclude<Chain, "All chains">, { value: number; pnl: number; positions: number; supplied: string; borrowed: string; color: string }> = {
-  Ethereum: { value: 96420.18, pnl: 2160.44, positions: 2, supplied: "$54,180", borrowed: "$12,600", color: "#b38f6f" },
-  Arbitrum: { value: 41280.55, pnl: 984.33, positions: 2, supplied: "$26,420", borrowed: "$7,810", color: "#8e9bb5" },
-  Base: { value: 22415.09, pnl: 338.02, positions: 2, supplied: "$16,790", borrowed: "$2,140", color: "#9b1730" },
-  Solana: { value: 16090.72, pnl: -118.9, positions: 2, supplied: "$10,880", borrowed: "$1,220", color: "#7c9e8d" },
+const chainData: Record<
+  Exclude<Chain, "All chains">,
+  {
+    value: number;
+    pnl: number;
+    positions: number;
+    supplied: string;
+    borrowed: string;
+    color: string;
+  }
+> = {
+  Ethereum: {
+    value: 96420.18,
+    pnl: 2160.44,
+    positions: 2,
+    supplied: "$54,180",
+    borrowed: "$12,600",
+    color: "#b38f6f",
+  },
+  Arbitrum: {
+    value: 41280.55,
+    pnl: 984.33,
+    positions: 2,
+    supplied: "$26,420",
+    borrowed: "$7,810",
+    color: "#8e9bb5",
+  },
+  Base: {
+    value: 22415.09,
+    pnl: 338.02,
+    positions: 2,
+    supplied: "$16,790",
+    borrowed: "$2,140",
+    color: "#9b1730",
+  },
+  Solana: {
+    value: 16090.72,
+    pnl: -118.9,
+    positions: 2,
+    supplied: "$10,880",
+    borrowed: "$1,220",
+    color: "#7c9e8d",
+  },
 };
 const positions: Position[] = [
-  { id: "eth-aave", asset: "Ethereum", symbol: "ETH", protocol: "Aave v3", chain: "Ethereum", type: "Supply", balance: "18.42 ETH", value: 59184.32, pnl: 1842.2, apy: "3.84%", health: "Healthy", healthTone: "success", icon: <Coins size={14} /> },
-  { id: "usdc-morpho", asset: "USD Coin", symbol: "USDC", protocol: "Morpho Blue", chain: "Ethereum", type: "Lend", balance: "21,400 USDC", value: 21400, pnl: 318.12, apy: "8.21%", health: "Healthy", healthTone: "success", icon: <CircleDollarSign size={14} /> },
-  { id: "arb-gmx", asset: "ETH / USDC", symbol: "LP", protocol: "GMX", chain: "Arbitrum", type: "Liquidity", balance: "0.84 LP", value: 16280.55, pnl: 720.14, apy: "14.62%", health: "Healthy", healthTone: "success", icon: <Layers3 size={14} /> },
-  { id: "arb-eth", asset: "Ethereum", symbol: "ETH", protocol: "Radiant", chain: "Arbitrum", type: "Collateral", balance: "7.76 ETH", value: 24920, pnl: 264.19, apy: "2.18%", health: "Watch", healthTone: "warning", icon: <Coins size={14} /> },
-  { id: "base-aero", asset: "ETH / USDC", symbol: "LP", protocol: "Aerodrome", chain: "Base", type: "Liquidity", balance: "1.12 LP", value: 12415.09, pnl: 298.82, apy: "18.40%", health: "Healthy", healthTone: "success", icon: <Layers3 size={14} /> },
-  { id: "base-usdc", asset: "USD Coin", symbol: "USDC", protocol: "Moonwell", chain: "Base", type: "Supply", balance: "10,000 USDC", value: 10000, pnl: 39.2, apy: "5.74%", health: "Healthy", healthTone: "success", icon: <CircleDollarSign size={14} /> },
-  { id: "sol-jup", asset: "SOL / USDC", symbol: "LP", protocol: "Jupiter", chain: "Solana", type: "Liquidity", balance: "42.8 LP", value: 10790.72, pnl: -84.2, apy: "11.20%", health: "Watch", healthTone: "warning", icon: <Layers3 size={14} /> },
-  { id: "sol-sol", asset: "Solana", symbol: "SOL", protocol: "Marinade", chain: "Solana", type: "Stake", balance: "29.4 SOL", value: 5300, pnl: -34.7, apy: "7.18%", health: "Healthy", healthTone: "success", icon: <Network size={14} /> },
+  {
+    id: "eth-aave",
+    asset: "Ethereum",
+    symbol: "ETH",
+    protocol: "Aave v3",
+    chain: "Ethereum",
+    type: "Supply",
+    balance: "18.42 ETH",
+    value: 59184.32,
+    pnl: 1842.2,
+    apy: "3.84%",
+    health: "Healthy",
+    healthTone: "success",
+    icon: <Coins size={14} />,
+  },
+  {
+    id: "usdc-morpho",
+    asset: "USD Coin",
+    symbol: "USDC",
+    protocol: "Morpho Blue",
+    chain: "Ethereum",
+    type: "Lend",
+    balance: "21,400 USDC",
+    value: 21400,
+    pnl: 318.12,
+    apy: "8.21%",
+    health: "Healthy",
+    healthTone: "success",
+    icon: <CircleDollarSign size={14} />,
+  },
+  {
+    id: "arb-gmx",
+    asset: "ETH / USDC",
+    symbol: "LP",
+    protocol: "GMX",
+    chain: "Arbitrum",
+    type: "Liquidity",
+    balance: "0.84 LP",
+    value: 16280.55,
+    pnl: 720.14,
+    apy: "14.62%",
+    health: "Healthy",
+    healthTone: "success",
+    icon: <Layers3 size={14} />,
+  },
+  {
+    id: "arb-eth",
+    asset: "Ethereum",
+    symbol: "ETH",
+    protocol: "Radiant",
+    chain: "Arbitrum",
+    type: "Collateral",
+    balance: "7.76 ETH",
+    value: 24920,
+    pnl: 264.19,
+    apy: "2.18%",
+    health: "Watch",
+    healthTone: "warning",
+    icon: <Coins size={14} />,
+  },
+  {
+    id: "base-aero",
+    asset: "ETH / USDC",
+    symbol: "LP",
+    protocol: "Aerodrome",
+    chain: "Base",
+    type: "Liquidity",
+    balance: "1.12 LP",
+    value: 12415.09,
+    pnl: 298.82,
+    apy: "18.40%",
+    health: "Healthy",
+    healthTone: "success",
+    icon: <Layers3 size={14} />,
+  },
+  {
+    id: "base-usdc",
+    asset: "USD Coin",
+    symbol: "USDC",
+    protocol: "Moonwell",
+    chain: "Base",
+    type: "Supply",
+    balance: "10,000 USDC",
+    value: 10000,
+    pnl: 39.2,
+    apy: "5.74%",
+    health: "Healthy",
+    healthTone: "success",
+    icon: <CircleDollarSign size={14} />,
+  },
+  {
+    id: "sol-jup",
+    asset: "SOL / USDC",
+    symbol: "LP",
+    protocol: "Jupiter",
+    chain: "Solana",
+    type: "Liquidity",
+    balance: "42.8 LP",
+    value: 10790.72,
+    pnl: -84.2,
+    apy: "11.20%",
+    health: "Watch",
+    healthTone: "warning",
+    icon: <Layers3 size={14} />,
+  },
+  {
+    id: "sol-sol",
+    asset: "Solana",
+    symbol: "SOL",
+    protocol: "Marinade",
+    chain: "Solana",
+    type: "Stake",
+    balance: "29.4 SOL",
+    value: 5300,
+    pnl: -34.7,
+    apy: "7.18%",
+    health: "Healthy",
+    healthTone: "success",
+    icon: <Network size={14} />,
+  },
 ];
 
 const assetMix = [
@@ -72,10 +215,19 @@ const assetMix = [
 ];
 
 const formatUsd = (value: number) =>
-  new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 2 }).format(value);
+  new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 2,
+  }).format(value);
 
 const formatCompactUsd = (value: number) =>
-  new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", notation: "compact", maximumFractionDigits: 1 }).format(value);
+  new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    notation: "compact",
+    maximumFractionDigits: 1,
+  }).format(value);
 
 export function PortfolioPage() {
   const [selectedChain, setSelectedChain] = useState<Chain>("All chains");
@@ -85,7 +237,8 @@ export function PortfolioPage() {
   const [query, setQuery] = useState("");
 
   const totals = useMemo(() => {
-    const rows = selectedChain === "All chains" ? Object.values(chainData) : [chainData[selectedChain]];
+    const rows =
+      selectedChain === "All chains" ? Object.values(chainData) : [chainData[selectedChain]];
     return rows.reduce(
       (acc, chain) => ({
         value: acc.value + chain.value,
@@ -98,11 +251,21 @@ export function PortfolioPage() {
     );
   }, [selectedChain]);
 
-  const filteredPositions = useMemo(() => positions.filter((position) => {
-    const inChain = selectedChain === "All chains" || position.chain === selectedChain;
-    const search = query.trim().toLowerCase();
-    return inChain && (!search || `${position.asset} ${position.protocol} ${position.chain} ${position.type}`.toLowerCase().includes(search));
-  }), [query, selectedChain]);
+  const filteredPositions = useMemo(
+    () =>
+      positions.filter((position) => {
+        const inChain = selectedChain === "All chains" || position.chain === selectedChain;
+        const search = query.trim().toLowerCase();
+        return (
+          inChain &&
+          (!search ||
+            `${position.asset} ${position.protocol} ${position.chain} ${position.type}`
+              .toLowerCase()
+              .includes(search))
+        );
+      }),
+    [query, selectedChain],
+  );
 
   const handleAction = (action: string, position: Position) => {
     setNotice(`${action} request staged for ${position.asset} on ${position.protocol}.`);
@@ -116,11 +279,18 @@ export function PortfolioPage() {
         <div>
           <p className="web-page-portfolio__eyebrow">Capital overview</p>
           <h1>Portfolio</h1>
-          <p className="web-page-portfolio__lede">A unified view of your positions, collateral, and deployed liquidity.</p>
+          <p className="web-page-portfolio__lede">
+            A unified view of your positions, collateral, and deployed liquidity.
+          </p>
         </div>
         <div className="web-page-portfolio__header-actions">
-          <span className="web-page-portfolio__sync"><span className="web-page-portfolio__sync-dot" />Synced 2 min ago</span>
-          <Button variant="outline" size="sm" leadingIcon={<RefreshCw size={15} />}>Refresh</Button>
+          <span className="web-page-portfolio__sync">
+            <span className="web-page-portfolio__sync-dot" />
+            Synced 2 min ago
+          </span>
+          <Button variant="outline" size="sm" leadingIcon={<RefreshCw size={15} />}>
+            Refresh
+          </Button>
         </div>
       </div>
 
@@ -135,7 +305,10 @@ export function PortfolioPage() {
               className="web-page-portfolio__chain-tab"
               data-active={selectedChain === chain}
               key={chain}
-              onClick={() => { setSelectedChain(chain); setActiveMenu(null); }}
+              onClick={() => {
+                setSelectedChain(chain);
+                setActiveMenu(null);
+              }}
               role="tab"
               aria-selected={selectedChain === chain}
               type="button"
@@ -147,91 +320,327 @@ export function PortfolioPage() {
         </div>
         <label className="web-page-portfolio__chain-select-wrap">
           <span className="web-page-portfolio__sr-only">Select network</span>
-          <select className="web-page-portfolio__chain-select" value={selectedChain} onChange={(event) => setSelectedChain(event.target.value as Chain)} aria-label="Select network">
-            {chains.map((chain) => <option key={chain} value={chain}>{chain}</option>)}
+          <select
+            className="web-page-portfolio__chain-select"
+            value={selectedChain}
+            onChange={(event) => setSelectedChain(event.target.value as Chain)}
+            aria-label="Select network"
+          >
+            {chains.map((chain) => (
+              <option key={chain} value={chain}>
+                {chain}
+              </option>
+            ))}
           </select>
-          <ChevronDown className="web-page-portfolio__chain-select-icon" size={14} aria-hidden="true" />
+          <ChevronDown
+            className="web-page-portfolio__chain-select-icon"
+            size={14}
+            aria-hidden="true"
+          />
         </label>
       </section>
 
       {notice ? (
         <div className="web-page-portfolio__notice" role="status" aria-live="polite">
           <span>{notice}</span>
-          <button type="button" onClick={() => setNotice(null)} aria-label="Dismiss notification"><X size={15} /></button>
+          <button type="button" onClick={() => setNotice(null)} aria-label="Dismiss notification">
+            <X size={15} />
+          </button>
         </div>
       ) : null}
 
       <section className="web-page-portfolio__metrics" aria-label="Portfolio totals">
-        <MetricCard label="Total portfolio value" value={formatUsd(totals.value)} change="Across all connected wallets" changeTone="neutral" icon={<WalletCards size={17} />} className="web-page-portfolio__metric web-page-portfolio__metric--hero" />
-        <MetricCard label="Net performance" value={`${totals.pnl >= 0 ? "+" : "-"}${formatUsd(Math.abs(totals.pnl))}`} change="Since first deposit" changeTone={totals.pnl >= 0 ? "positive" : "negative"} icon={<LineChart size={17} />} className="web-page-portfolio__metric" />
-        <MetricCard label="Active positions" value={totals.positions} change={`${selectedChain === "All chains" ? "4 networks" : selectedChain}`} changeTone="neutral" icon={<Layers3 size={17} />} className="web-page-portfolio__metric" />
-        <MetricCard label="Net exposure" value={formatUsd(totals.supplied - totals.borrowed)} change={`${formatCompactUsd(totals.borrowed)} borrowed`} changeTone="neutral" icon={<CircleDollarSign size={17} />} className="web-page-portfolio__metric" />
+        <MetricCard
+          label="Total portfolio value"
+          value={formatUsd(totals.value)}
+          change="Across all connected wallets"
+          changeTone="neutral"
+          icon={<WalletCards size={17} />}
+          className="web-page-portfolio__metric web-page-portfolio__metric--hero"
+        />
+        <MetricCard
+          label="Net performance"
+          value={`${totals.pnl >= 0 ? "+" : "-"}${formatUsd(Math.abs(totals.pnl))}`}
+          change="Since first deposit"
+          changeTone={totals.pnl >= 0 ? "positive" : "negative"}
+          icon={<LineChart size={17} />}
+          className="web-page-portfolio__metric"
+        />
+        <MetricCard
+          label="Active positions"
+          value={totals.positions}
+          change={`${selectedChain === "All chains" ? "4 networks" : selectedChain}`}
+          changeTone="neutral"
+          icon={<Layers3 size={17} />}
+          className="web-page-portfolio__metric"
+        />
+        <MetricCard
+          label="Net exposure"
+          value={formatUsd(totals.supplied - totals.borrowed)}
+          change={`${formatCompactUsd(totals.borrowed)} borrowed`}
+          changeTone="neutral"
+          icon={<CircleDollarSign size={17} />}
+          className="web-page-portfolio__metric"
+        />
       </section>
 
       <section className="web-page-portfolio__overview-grid">
-        <GlassCard title="Allocation by chain" description="Current portfolio value by network." className="web-page-portfolio__allocation">
-          <div className="web-page-portfolio__allocation-chart" aria-label="Portfolio allocation by chain">
-            {(Object.entries(chainData) as [Exclude<Chain, "All chains">, (typeof chainData)[Exclude<Chain, "All chains">]][]).map(([chain, data]) => {
+        <GlassCard
+          title="Allocation by chain"
+          description="Current portfolio value by network."
+          className="web-page-portfolio__allocation"
+        >
+          <div
+            className="web-page-portfolio__allocation-chart"
+            aria-label="Portfolio allocation by chain"
+          >
+            {(
+              Object.entries(chainData) as [
+                Exclude<Chain, "All chains">,
+                (typeof chainData)[Exclude<Chain, "All chains">],
+              ][]
+            ).map(([chain, data]) => {
               const share = (data.value / 176206.54) * 100;
               const isSelected = selectedChain === "All chains" || selectedChain === chain;
               return (
-                <button className="web-page-portfolio__allocation-row" data-muted={!isSelected} key={chain} type="button" onClick={() => setSelectedChain(chain)}>
-                  <span className="web-page-portfolio__allocation-label"><i style={{ backgroundColor: data.color }} />{chain}</span>
-                  <span className="web-page-portfolio__allocation-track"><i style={{ width: `${share}%`, backgroundColor: data.color }} /></span>
-                  <span className="web-page-portfolio__allocation-value">{formatCompactUsd(data.value)}<small>{share.toFixed(1)}%</small></span>
+                <button
+                  className="web-page-portfolio__allocation-row"
+                  data-muted={!isSelected}
+                  key={chain}
+                  type="button"
+                  onClick={() => setSelectedChain(chain)}
+                >
+                  <span className="web-page-portfolio__allocation-label">
+                    <i style={{ backgroundColor: data.color }} />
+                    {chain}
+                  </span>
+                  <span className="web-page-portfolio__allocation-track">
+                    <i style={{ width: `${share}%`, backgroundColor: data.color }} />
+                  </span>
+                  <span className="web-page-portfolio__allocation-value">
+                    {formatCompactUsd(data.value)}
+                    <small>{share.toFixed(1)}%</small>
+                  </span>
                 </button>
               );
             })}
           </div>
-          <div className="web-page-portfolio__allocation-foot"><span>Supplied {formatCompactUsd(totals.supplied)}</span><span>Borrowed {formatCompactUsd(totals.borrowed)}</span></div>
+          <div className="web-page-portfolio__allocation-foot">
+            <span>Supplied {formatCompactUsd(totals.supplied)}</span>
+            <span>Borrowed {formatCompactUsd(totals.borrowed)}</span>
+          </div>
         </GlassCard>
 
-        <GlassCard title="Asset mix" description="Exposure by underlying asset." className="web-page-portfolio__asset-mix">
+        <GlassCard
+          title="Asset mix"
+          description="Exposure by underlying asset."
+          className="web-page-portfolio__asset-mix"
+        >
           <div className="web-page-portfolio__mix-bar" aria-label="Asset mix distribution">
-            {assetMix.map((asset) => <span key={asset.label} style={{ width: `${asset.share}%`, backgroundColor: asset.color }} title={`${asset.label}: ${asset.share}%`} />)}
+            {assetMix.map((asset) => (
+              <span
+                key={asset.label}
+                style={{ width: `${asset.share}%`, backgroundColor: asset.color }}
+                title={`${asset.label}: ${asset.share}%`}
+              />
+            ))}
           </div>
           <div className="web-page-portfolio__mix-list">
             {assetMix.map((asset) => (
               <div className="web-page-portfolio__mix-item" key={asset.label}>
-                <span className="web-page-portfolio__mix-name"><i style={{ backgroundColor: asset.color }} />{asset.label}</span>
-                <span>{asset.value}</span><b>{asset.share.toFixed(1)}%</b>
+                <span className="web-page-portfolio__mix-name">
+                  <i style={{ backgroundColor: asset.color }} />
+                  {asset.label}
+                </span>
+                <span>{asset.value}</span>
+                <b>{asset.share.toFixed(1)}%</b>
               </div>
             ))}
           </div>
         </GlassCard>
 
-        <GlassCard title="Risk posture" description="Borrowing remains within policy limits." className="web-page-portfolio__risk-card" action={<Badge variant="success">Low risk</Badge>}>
-          <div className="web-page-portfolio__risk-score"><div><span>Collateral health</span><strong>82</strong><small>/ 100</small></div><Progress label="Health score" value={82} valueLabel="82%" tone="success" size="sm" aria-label="Collateral health score" /></div>
-          <div className="web-page-portfolio__risk-grid"><span><small>Collateral</small><b>{formatCompactUsd(totals.supplied)}</b></span><span><small>Borrowed</small><b>{formatCompactUsd(totals.borrowed)}</b></span><span><small>Utilization</small><b>{((totals.borrowed / totals.supplied) * 100).toFixed(1)}%</b></span></div>
-          <Button variant="quiet" size="sm" trailingIcon={<ChevronRight size={14} />}>Open risk center</Button>
+        <GlassCard
+          title="Risk posture"
+          description="Borrowing remains within policy limits."
+          className="web-page-portfolio__risk-card"
+          action={<Badge variant="success">Low risk</Badge>}
+        >
+          <div className="web-page-portfolio__risk-score">
+            <div>
+              <span>Collateral health</span>
+              <strong>82</strong>
+              <small>/ 100</small>
+            </div>
+            <Progress
+              label="Health score"
+              value={82}
+              valueLabel="82%"
+              tone="success"
+              size="sm"
+              aria-label="Collateral health score"
+            />
+          </div>
+          <div className="web-page-portfolio__risk-grid">
+            <span>
+              <small>Collateral</small>
+              <b>{formatCompactUsd(totals.supplied)}</b>
+            </span>
+            <span>
+              <small>Borrowed</small>
+              <b>{formatCompactUsd(totals.borrowed)}</b>
+            </span>
+            <span>
+              <small>Utilization</small>
+              <b>{((totals.borrowed / totals.supplied) * 100).toFixed(1)}%</b>
+            </span>
+          </div>
+          <Button variant="quiet" size="sm" trailingIcon={<ChevronRight size={14} />}>
+            Open risk center
+          </Button>
         </GlassCard>
       </section>
 
-      <section className="web-page-portfolio__positions-section" aria-labelledby="positions-heading">
+      <section
+        className="web-page-portfolio__positions-section"
+        aria-labelledby="positions-heading"
+      >
         <div className="web-page-portfolio__section-header">
-          <div><p className="web-page-portfolio__eyebrow">Live inventory</p><h2 id="positions-heading">Positions</h2></div>
+          <div>
+            <p className="web-page-portfolio__eyebrow">Live inventory</p>
+            <h2 id="positions-heading">Positions</h2>
+          </div>
           <div className="web-page-portfolio__table-tools">
-            <label className="web-page-portfolio__search"><Search size={15} aria-hidden="true" /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search positions" aria-label="Search positions" /></label>
-            <Button variant="outline" size="sm" leadingIcon={<SlidersHorizontal size={15} />}>Filter</Button>
+            <label className="web-page-portfolio__search">
+              <Search size={15} aria-hidden="true" />
+              <input
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Search positions"
+                aria-label="Search positions"
+              />
+            </label>
+            <Button variant="outline" size="sm" leadingIcon={<SlidersHorizontal size={15} />}>
+              Filter
+            </Button>
           </div>
         </div>
         {filteredPositions.length === 0 ? (
-          <GlassCard className="web-page-portfolio__empty"><div className="web-page-portfolio__empty-icon"><Filter size={20} /></div><h3>No positions match</h3><p>Try another network or clear the search filter.</p><Button variant="quiet" size="sm" onClick={() => { setQuery(""); setSelectedChain("All chains"); }}>Clear filters</Button></GlassCard>
+          <GlassCard className="web-page-portfolio__empty">
+            <div className="web-page-portfolio__empty-icon">
+              <Filter size={20} />
+            </div>
+            <h3>No positions match</h3>
+            <p>Try another network or clear the search filter.</p>
+            <Button
+              variant="quiet"
+              size="sm"
+              onClick={() => {
+                setQuery("");
+                setSelectedChain("All chains");
+              }}
+            >
+              Clear filters
+            </Button>
+          </GlassCard>
         ) : (
           <div className="web-page-portfolio__table-wrap">
             <table className="web-page-portfolio__table">
-              <thead><tr><th scope="col">Position</th><th scope="col">Network</th><th scope="col">Balance</th><th scope="col">Value</th><th scope="col">P&amp;L</th><th scope="col">APY</th><th scope="col">Health</th><th scope="col"><span className="web-page-portfolio__sr-only">Actions</span></th></tr></thead>
+              <thead>
+                <tr>
+                  <th scope="col">Position</th>
+                  <th scope="col">Network</th>
+                  <th scope="col">Balance</th>
+                  <th scope="col">Value</th>
+                  <th scope="col">P&amp;L</th>
+                  <th scope="col">APY</th>
+                  <th scope="col">Health</th>
+                  <th scope="col">
+                    <span className="web-page-portfolio__sr-only">Actions</span>
+                  </th>
+                </tr>
+              </thead>
               <tbody>
                 {filteredPositions.map((position) => (
                   <tr key={position.id} data-selected={selectedPosition?.id === position.id}>
-                    <td><div className="web-page-portfolio__position-name"><span className="web-page-portfolio__asset-icon">{position.icon}</span><span><b>{position.asset}</b><small>{position.protocol} · {position.type}</small></span></div></td>
-                    <td><span className="web-page-portfolio__network"><i style={{ backgroundColor: chainData[position.chain].color }} />{position.chain}</span></td>
+                    <td>
+                      <div className="web-page-portfolio__position-name">
+                        <span className="web-page-portfolio__asset-icon">{position.icon}</span>
+                        <span>
+                          <b>{position.asset}</b>
+                          <small>
+                            {position.protocol} · {position.type}
+                          </small>
+                        </span>
+                      </div>
+                    </td>
+                    <td>
+                      <span className="web-page-portfolio__network">
+                        <i style={{ backgroundColor: chainData[position.chain].color }} />
+                        {position.chain}
+                      </span>
+                    </td>
                     <td className="web-page-portfolio__mono">{position.balance}</td>
                     <td className="web-page-portfolio__mono">{formatUsd(position.value)}</td>
-                    <td className={`web-page-portfolio__mono ${position.pnl >= 0 ? "web-page-portfolio__positive" : "web-page-portfolio__negative"}`}>{position.pnl >= 0 ? "+" : "-"}{formatUsd(Math.abs(position.pnl))}</td>
+                    <td
+                      className={`web-page-portfolio__mono ${position.pnl >= 0 ? "web-page-portfolio__positive" : "web-page-portfolio__negative"}`}
+                    >
+                      {position.pnl >= 0 ? "+" : "-"}
+                      {formatUsd(Math.abs(position.pnl))}
+                    </td>
                     <td className="web-page-portfolio__mono">{position.apy}</td>
-                    <td><Badge variant={position.healthTone}>{position.health}</Badge></td>
-                    <td><div className="web-page-portfolio__row-actions"><Button variant="quiet" size="sm" onClick={() => setSelectedPosition(position)}>Inspect</Button><div className="web-page-portfolio__menu-wrap"><IconButton icon={<Ellipsis size={17} />} accessibleLabel={`Actions for ${position.asset}`} variant="ghost" size="sm" onClick={() => setActiveMenu(activeMenu === position.id ? null : position.id)} />{activeMenu === position.id ? <div className="web-page-portfolio__action-menu" role="menu"><button type="button" role="menuitem" onClick={() => handleAction("Adjust", position)}><SlidersHorizontal size={14} />Adjust position</button><button type="button" role="menuitem" onClick={() => handleAction("Withdraw", position)}><ArrowDownLeft size={14} />Withdraw funds</button><button type="button" role="menuitem" onClick={() => handleAction("View", position)}><ExternalLink size={14} />View on explorer</button></div> : null}</div></div></td>
+                    <td>
+                      <Badge variant={position.healthTone}>{position.health}</Badge>
+                    </td>
+                    <td>
+                      <div className="web-page-portfolio__row-actions">
+                        <Button
+                          variant="quiet"
+                          size="sm"
+                          onClick={() => setSelectedPosition(position)}
+                        >
+                          Inspect
+                        </Button>
+                        <div className="web-page-portfolio__menu-wrap">
+                          <IconButton
+                            icon={<Ellipsis size={17} />}
+                            accessibleLabel={`Actions for ${position.asset}`}
+                            variant="ghost"
+                            size="sm"
+                            onClick={() =>
+                              setActiveMenu(activeMenu === position.id ? null : position.id)
+                            }
+                          />
+                          {activeMenu === position.id ? (
+                            <div className="web-page-portfolio__action-menu" role="menu">
+                              <button
+                                type="button"
+                                role="menuitem"
+                                onClick={() => handleAction("Adjust", position)}
+                              >
+                                <SlidersHorizontal size={14} />
+                                Adjust position
+                              </button>
+                              <button
+                                type="button"
+                                role="menuitem"
+                                onClick={() => handleAction("Withdraw", position)}
+                              >
+                                <ArrowDownLeft size={14} />
+                                Withdraw funds
+                              </button>
+                              <button
+                                type="button"
+                                role="menuitem"
+                                onClick={() => handleAction("View", position)}
+                              >
+                                <ExternalLink size={14} />
+                                View on explorer
+                              </button>
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -242,9 +651,61 @@ export function PortfolioPage() {
 
       {selectedPosition ? (
         <aside className="web-page-portfolio__inspector" aria-label="Selected position details">
-          <div><span className="web-page-portfolio__eyebrow">Position detail</span><h2>{selectedPosition.asset}</h2><p>{selectedPosition.protocol} on {selectedPosition.chain}</p></div>
-          <div className="web-page-portfolio__inspector-stats"><span><small>Position value</small><b>{formatUsd(selectedPosition.value)}</b></span><span><small>Current APY</small><b>{selectedPosition.apy}</b></span><span><small>Net P&amp;L</small><b className={selectedPosition.pnl >= 0 ? "web-page-portfolio__positive" : "web-page-portfolio__negative"}>{selectedPosition.pnl >= 0 ? "+" : "-"}{formatUsd(Math.abs(selectedPosition.pnl))}</b></span></div>
-          <div className="web-page-portfolio__inspector-actions"><Button variant="crimson" size="sm" leadingIcon={<SlidersHorizontal size={15} />} onClick={() => handleAction("Adjust", selectedPosition)}>Adjust</Button><Button variant="outline" size="sm" leadingIcon={<ArrowUpRight size={15} />} onClick={() => handleAction("Withdraw", selectedPosition)}>Withdraw</Button><IconButton icon={<X size={16} />} accessibleLabel="Close position details" variant="ghost" size="sm" onClick={() => setSelectedPosition(null)} /></div>
+          <div>
+            <span className="web-page-portfolio__eyebrow">Position detail</span>
+            <h2>{selectedPosition.asset}</h2>
+            <p>
+              {selectedPosition.protocol} on {selectedPosition.chain}
+            </p>
+          </div>
+          <div className="web-page-portfolio__inspector-stats">
+            <span>
+              <small>Position value</small>
+              <b>{formatUsd(selectedPosition.value)}</b>
+            </span>
+            <span>
+              <small>Current APY</small>
+              <b>{selectedPosition.apy}</b>
+            </span>
+            <span>
+              <small>Net P&amp;L</small>
+              <b
+                className={
+                  selectedPosition.pnl >= 0
+                    ? "web-page-portfolio__positive"
+                    : "web-page-portfolio__negative"
+                }
+              >
+                {selectedPosition.pnl >= 0 ? "+" : "-"}
+                {formatUsd(Math.abs(selectedPosition.pnl))}
+              </b>
+            </span>
+          </div>
+          <div className="web-page-portfolio__inspector-actions">
+            <Button
+              variant="crimson"
+              size="sm"
+              leadingIcon={<SlidersHorizontal size={15} />}
+              onClick={() => handleAction("Adjust", selectedPosition)}
+            >
+              Adjust
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              leadingIcon={<ArrowUpRight size={15} />}
+              onClick={() => handleAction("Withdraw", selectedPosition)}
+            >
+              Withdraw
+            </Button>
+            <IconButton
+              icon={<X size={16} />}
+              accessibleLabel="Close position details"
+              variant="ghost"
+              size="sm"
+              onClick={() => setSelectedPosition(null)}
+            />
+          </div>
         </aside>
       ) : null}
     </main>

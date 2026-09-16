@@ -301,7 +301,10 @@ export function StrategyGraph({
                 aria-current={isSelected ? "step" : undefined}
                 aria-label={node.ariaLabel}
                 aria-pressed={isSelected}
-                className={cn("strategy-graph__node", isSelected && "strategy-graph__node--selected")}
+                className={cn(
+                  "strategy-graph__node",
+                  isSelected && "strategy-graph__node--selected",
+                )}
                 id={`${graphId}-node-${node.id}`}
                 key={node.id}
                 onClick={() => selectNode(node)}
@@ -309,7 +312,8 @@ export function StrategyGraph({
                 style={{
                   ...nodeStyle,
                   alignItems: "stretch",
-                  background: "linear-gradient(135deg, color-mix(in srgb, var(--strategy-node-soft) 96%, transparent), color-mix(in srgb, var(--metron-surface, #151b24) 88%, transparent))",
+                  background:
+                    "linear-gradient(135deg, color-mix(in srgb, var(--strategy-node-soft) 96%, transparent), color-mix(in srgb, var(--metron-surface, #151b24) 88%, transparent))",
                   border: `1px solid color-mix(in srgb, var(--strategy-node-accent) 42%, transparent)`,
                   borderRadius: "0.75rem",
                   boxShadow: isSelected
@@ -326,7 +330,8 @@ export function StrategyGraph({
                   position: "absolute",
                   textAlign: "left",
                   transform: "translate(-50%, -50%)",
-                  transition: "border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease",
+                  transition:
+                    "border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease",
                   zIndex: 1,
                 }}
                 type="button"

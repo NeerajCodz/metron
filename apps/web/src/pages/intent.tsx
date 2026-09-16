@@ -170,8 +170,8 @@ export function IntentPage() {
               Tell Metron what you want to happen.
             </h1>
             <p style={{ ...mutedText, fontSize: "1.03rem", maxWidth: 625, margin: 0 }}>
-              Describe an outcome in your own words. Metron turns it into an explicit,
-              reviewable mandate before any strategy is considered.
+              Describe an outcome in your own words. Metron turns it into an explicit, reviewable
+              mandate before any strategy is considered.
             </p>
           </div>
           <div
@@ -188,7 +188,13 @@ export function IntentPage() {
           >
             <span
               aria-hidden="true"
-              style={{ width: 7, height: 7, borderRadius: "50%", background: "#34d399", boxShadow: "0 0 0 4px rgba(52,211,153,0.1)" }}
+              style={{
+                width: 7,
+                height: 7,
+                borderRadius: "50%",
+                background: "#34d399",
+                boxShadow: "0 0 0 4px rgba(52,211,153,0.1)",
+              }}
             />
             <span style={{ ...monoText, color: "rgba(242,241,237,0.72)", fontSize: "0.62rem" }}>
               Local draft
@@ -198,7 +204,12 @@ export function IntentPage() {
 
         <section
           className="web-page-intent__workspace"
-          style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.03fr) minmax(340px, 0.97fr)", gap: "1rem", alignItems: "start" }}
+          style={{
+            display: "grid",
+            gridTemplateColumns: "minmax(0, 1.03fr) minmax(340px, 0.97fr)",
+            gap: "1rem",
+            alignItems: "start",
+          }}
         >
           <form onSubmit={parseIntent} className="web-page-intent__brief" style={{ minWidth: 0 }}>
             <GlassCard
@@ -241,7 +252,15 @@ export function IntentPage() {
                   marginTop: "1.1rem",
                 }}
               >
-                <span style={{ ...mutedText, fontSize: "0.76rem", display: "inline-flex", alignItems: "center", gap: "0.4rem" }}>
+                <span
+                  style={{
+                    ...mutedText,
+                    fontSize: "0.76rem",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.4rem",
+                  }}
+                >
                   <CircleHelp size={13} aria-hidden="true" />
                   Metron never signs or routes from this screen.
                 </span>
@@ -253,7 +272,9 @@ export function IntentPage() {
                   loadingLabel="Reading intent"
                   disabled={!intentText.trim()}
                   leadingIcon={isProcessing ? undefined : <Sparkles size={16} aria-hidden="true" />}
-                  trailingIcon={isProcessing ? undefined : <ArrowRight size={16} aria-hidden="true" />}
+                  trailingIcon={
+                    isProcessing ? undefined : <ArrowRight size={16} aria-hidden="true" />
+                  }
                 >
                   Review intent
                 </Button>
@@ -262,13 +283,32 @@ export function IntentPage() {
 
             <div
               className="web-page-intent__signal-strip"
-              style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "0.65rem", marginTop: "0.7rem" }}
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+                gap: "0.65rem",
+                marginTop: "0.7rem",
+              }}
             >
               {parsedSignals.map(({ label, value, icon: Icon }) => (
-                <div key={label} style={{ ...compactSurfaceStyle, padding: "0.8rem 0.85rem", minHeight: 96 }}>
+                <div
+                  key={label}
+                  style={{ ...compactSurfaceStyle, padding: "0.8rem 0.85rem", minHeight: 96 }}
+                >
                   <Icon size={15} strokeWidth={1.6} color="#b38f6f" aria-hidden="true" />
-                  <div style={{ ...monoText, fontSize: "0.58rem", marginTop: "0.65rem" }}>{label}</div>
-                  <div style={{ color: "rgba(242,241,237,0.86)", fontSize: "0.78rem", lineHeight: 1.35, marginTop: "0.28rem" }}>{value}</div>
+                  <div style={{ ...monoText, fontSize: "0.58rem", marginTop: "0.65rem" }}>
+                    {label}
+                  </div>
+                  <div
+                    style={{
+                      color: "rgba(242,241,237,0.86)",
+                      fontSize: "0.78rem",
+                      lineHeight: 1.35,
+                      marginTop: "0.28rem",
+                    }}
+                  >
+                    {value}
+                  </div>
                 </div>
               ))}
             </div>
@@ -299,17 +339,33 @@ export function IntentPage() {
                   aria-live="polite"
                   style={{ padding: "1.5rem 0.25rem 1.25rem" }}
                 >
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", color: "#c8aa8e" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.75rem",
+                      color: "#c8aa8e",
+                    }}
+                  >
                     <RefreshCw size={18} className="web-page-intent__spin" aria-hidden="true" />
-                    <strong style={{ fontSize: "0.98rem", fontWeight: 560 }}>Translating your brief</strong>
+                    <strong style={{ fontSize: "0.98rem", fontWeight: 560 }}>
+                      Translating your brief
+                    </strong>
                   </div>
                   <p style={{ ...mutedText, fontSize: "0.84rem", margin: "0.7rem 0 1rem" }}>
                     Mapping outcomes into risk, liquidity, and execution boundaries.
                   </p>
-                  <Progress label="Intent parsing" value={56} aria-label="Intent processing progress" />
+                  <Progress
+                    label="Intent parsing"
+                    value={56}
+                    aria-label="Intent processing progress"
+                  />
                 </div>
               ) : isParsed ? (
-                <div className="web-page-intent__constraints" style={{ display: "grid", gap: "0.7rem" }}>
+                <div
+                  className="web-page-intent__constraints"
+                  style={{ display: "grid", gap: "0.7rem" }}
+                >
                   <ConstraintField
                     label="Objective"
                     icon={<Target size={14} aria-hidden="true" />}
@@ -345,7 +401,11 @@ export function IntentPage() {
 
               <div
                 className="web-page-intent__advanced"
-                style={{ marginTop: "1.1rem", borderTop: "1px solid rgba(242,241,237,0.1)", paddingTop: "0.9rem" }}
+                style={{
+                  marginTop: "1.1rem",
+                  borderTop: "1px solid rgba(242,241,237,0.1)",
+                  paddingTop: "0.9rem",
+                }}
               >
                 <button
                   type="button"
@@ -366,21 +426,51 @@ export function IntentPage() {
                     textAlign: "left",
                   }}
                 >
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", fontSize: "0.84rem", fontWeight: 550 }}>
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "0.5rem",
+                      fontSize: "0.84rem",
+                      fontWeight: 550,
+                    }}
+                  >
                     <Pencil size={14} color="#b38f6f" aria-hidden="true" />
                     Advanced controls
                   </span>
-                  <ChevronDown size={16} aria-hidden="true" style={{ transform: advancedOpen ? "rotate(180deg)" : "none", transition: "transform 160ms ease" }} />
+                  <ChevronDown
+                    size={16}
+                    aria-hidden="true"
+                    style={{
+                      transform: advancedOpen ? "rotate(180deg)" : "none",
+                      transition: "transform 160ms ease",
+                    }}
+                  />
                 </button>
 
                 {advancedOpen ? (
-                  <div className="web-page-intent__advanced-fields" style={{ display: "grid", gap: "0.9rem", marginTop: "1rem" }}>
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "0.75rem" }}>
+                  <div
+                    className="web-page-intent__advanced-fields"
+                    style={{ display: "grid", gap: "0.9rem", marginTop: "1rem" }}
+                  >
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+                        gap: "0.75rem",
+                      }}
+                    >
                       <Field label="Max slippage">
-                        <Input value={advanced.slippage} onChange={(event) => updateAdvanced("slippage", event.target.value)} />
+                        <Input
+                          value={advanced.slippage}
+                          onChange={(event) => updateAdvanced("slippage", event.target.value)}
+                        />
                       </Field>
                       <Field label="Rebalance cadence">
-                        <Select value={advanced.cadence} onChange={(event) => updateAdvanced("cadence", event.target.value)}>
+                        <Select
+                          value={advanced.cadence}
+                          onChange={(event) => updateAdvanced("cadence", event.target.value)}
+                        >
                           <option>Weekly</option>
                           <option>Monthly</option>
                           <option>Quarterly</option>
@@ -388,8 +478,14 @@ export function IntentPage() {
                         </Select>
                       </Field>
                     </div>
-                    <Field label="Execution routing" description="A preference, not a guarantee. Final routes are reviewed before signing.">
-                      <Select value={advanced.routing} onChange={(event) => updateAdvanced("routing", event.target.value)}>
+                    <Field
+                      label="Execution routing"
+                      description="A preference, not a guarantee. Final routes are reviewed before signing."
+                    >
+                      <Select
+                        value={advanced.routing}
+                        onChange={(event) => updateAdvanced("routing", event.target.value)}
+                      >
                         <option>Best execution</option>
                         <option>Lowest gas</option>
                         <option>Deepest liquidity</option>
@@ -397,7 +493,9 @@ export function IntentPage() {
                     </Field>
                     <Switch
                       checked={advanced.stablecoinOnly}
-                      onCheckedChange={(checked) => setAdvanced((current) => ({ ...current, stablecoinOnly: checked }))}
+                      onCheckedChange={(checked) =>
+                        setAdvanced((current) => ({ ...current, stablecoinOnly: checked }))
+                      }
                       label="Prefer stablecoin-denominated positions"
                       description="Avoid directional token exposure unless explicitly requested."
                     />
@@ -411,16 +509,36 @@ export function IntentPage() {
               style={{ ...compactSurfaceStyle, marginTop: "0.7rem", padding: "1rem" }}
             >
               <div style={{ display: "flex", gap: "0.75rem", alignItems: "flex-start" }}>
-                <div style={{ width: 32, height: 32, display: "grid", placeItems: "center", background: "rgba(179,143,111,0.12)", color: "#c8aa8e", flex: "0 0 auto" }}>
+                <div
+                  style={{
+                    width: 32,
+                    height: 32,
+                    display: "grid",
+                    placeItems: "center",
+                    background: "rgba(179,143,111,0.12)",
+                    color: "#c8aa8e",
+                    flex: "0 0 auto",
+                  }}
+                >
                   <LockKeyhole size={16} aria-hidden="true" />
                 </div>
                 <div style={{ minWidth: 0, flex: 1 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.55rem", flexWrap: "wrap" }}>
-                    <strong style={{ fontSize: "0.9rem", fontWeight: 560 }}>A private commitment</strong>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.55rem",
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    <strong style={{ fontSize: "0.9rem", fontWeight: 560 }}>
+                      A private commitment
+                    </strong>
                     <Badge variant="outline">No wallet action</Badge>
                   </div>
                   <p style={{ ...mutedText, fontSize: "0.78rem", margin: "0.4rem 0 0" }}>
-                    Confirming records your mandate in this workspace. Nothing moves until you approve a strategy and sign a separate transaction.
+                    Confirming records your mandate in this workspace. Nothing moves until you
+                    approve a strategy and sign a separate transaction.
                   </p>
                   <div style={{ marginTop: "0.85rem" }}>
                     <Switch
@@ -443,8 +561,13 @@ export function IntentPage() {
 
             <div className="web-page-intent__confirm" style={{ marginTop: "0.9rem" }}>
               {showConfirmation ? (
-                <InlineAlert variant="success" icon={<Check size={16} aria-hidden="true" />} title="Intent confirmed">
-                  Your mandate is ready for strategy design. Metron will keep these boundaries visible as you compare options.
+                <InlineAlert
+                  variant="success"
+                  icon={<Check size={16} aria-hidden="true" />}
+                  title="Intent confirmed"
+                >
+                  Your mandate is ready for strategy design. Metron will keep these boundaries
+                  visible as you compare options.
                 </InlineAlert>
               ) : !privacyAccepted ? (
                 <InlineAlert variant="info" icon={<AlertTriangle size={16} aria-hidden="true" />}>
@@ -458,8 +581,16 @@ export function IntentPage() {
                 fullWidth
                 disabled={!privacyAccepted || !isParsed || isProcessing}
                 onClick={confirmIntent}
-                leadingIcon={isConfirmed ? <Check size={17} aria-hidden="true" /> : <FileCheck2 size={17} aria-hidden="true" />}
-                trailingIcon={!isConfirmed ? <ArrowRight size={17} aria-hidden="true" /> : undefined}
+                leadingIcon={
+                  isConfirmed ? (
+                    <Check size={17} aria-hidden="true" />
+                  ) : (
+                    <FileCheck2 size={17} aria-hidden="true" />
+                  )
+                }
+                trailingIcon={
+                  !isConfirmed ? <ArrowRight size={17} aria-hidden="true" /> : undefined
+                }
                 style={{ marginTop: showConfirmation || !privacyAccepted ? "0.75rem" : 0 }}
               >
                 {isConfirmed ? "Intent confirmed" : "Confirm intent"}
@@ -470,10 +601,22 @@ export function IntentPage() {
 
         <footer
           className="web-page-intent__footer"
-          style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem", marginTop: "1.75rem", paddingTop: "1rem", borderTop: "1px solid rgba(242,241,237,0.08)" }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "1rem",
+            marginTop: "1.75rem",
+            paddingTop: "1rem",
+            borderTop: "1px solid rgba(242,241,237,0.08)",
+          }}
         >
-          <span style={{ ...monoText, color: "rgba(242,241,237,0.4)", fontSize: "0.58rem" }}>Draft 04 · No execution authority</span>
-          <span style={{ ...mutedText, fontSize: "0.72rem", textAlign: "right" }}>You stay in control at every approval boundary.</span>
+          <span style={{ ...monoText, color: "rgba(242,241,237,0.4)", fontSize: "0.58rem" }}>
+            Draft 04 · No execution authority
+          </span>
+          <span style={{ ...mutedText, fontSize: "0.72rem", textAlign: "right" }}>
+            You stay in control at every approval boundary.
+          </span>
         </footer>
       </div>
       <style>{`
@@ -514,8 +657,13 @@ type ConstraintFieldProps = {
 
 function ConstraintField({ label, value, icon, onChange }: ConstraintFieldProps) {
   return (
-    <div className="web-page-intent__constraint" style={{ ...compactSurfaceStyle, padding: "0.75rem 0.8rem" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.42rem" }}>
+    <div
+      className="web-page-intent__constraint"
+      style={{ ...compactSurfaceStyle, padding: "0.75rem 0.8rem" }}
+    >
+      <div
+        style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.42rem" }}
+      >
         <span style={{ display: "grid", placeItems: "center", color: "#b38f6f" }}>{icon}</span>
         <span style={{ ...monoText, fontSize: "0.58rem" }}>{label}</span>
       </div>
@@ -523,7 +671,15 @@ function ConstraintField({ label, value, icon, onChange }: ConstraintFieldProps)
         value={value}
         onChange={(event) => onChange(event.target.value)}
         aria-label={label}
-        style={{ background: "transparent", border: 0, boxShadow: "none", padding: 0, minHeight: "auto", color: "#f2f1ed", fontSize: "0.89rem" }}
+        style={{
+          background: "transparent",
+          border: 0,
+          boxShadow: "none",
+          padding: 0,
+          minHeight: "auto",
+          color: "#f2f1ed",
+          fontSize: "0.89rem",
+        }}
       />
     </div>
   );

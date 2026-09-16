@@ -21,12 +21,7 @@ import {
   X,
   Zap,
 } from "lucide-react";
-import {
-  Badge,
-  Button,
-  MetricCard,
-  Progress,
-} from "@metron/ui";
+import { Badge, Button, MetricCard, Progress } from "@metron/ui";
 
 const strategyDetailStyles = `
 .web-page-strategy-detail {
@@ -218,25 +213,165 @@ const nodes: Array<{
   icon: typeof Wallet;
   position: CSSProperties;
 }> = [
-  { id: "capital", label: "Source", name: "Treasury", value: "$248,620", change: "100%", className: "web-page-strategy-detail__node--root", icon: Wallet, position: { left: "10%", top: "51%" } },
-  { id: "lending", label: "Lending", name: "Aave v3", value: "$109,393", change: "44%", icon: Coins, position: { left: "27%", top: "51%" } },
-  { id: "lp", label: "Liquidity", name: "ETH / USDC LP", value: "$62,155", change: "25%", icon: GitBranch, position: { left: "43%", top: "29%" } },
-  { id: "hedge", label: "Hedge", name: "Perp short", value: "$37,293", change: "15%", icon: ShieldCheck, position: { left: "43%", top: "74%" } },
-  { id: "reserve", label: "Reserve", name: "USDC buffer", value: "$39,779", change: "16%", icon: LockKeyhole, position: { left: "59%", top: "29%" } },
-  { id: "aave", label: "Supply", name: "USDC supply", value: "$109,393", change: "4.8% APY", icon: Activity, position: { left: "75%", top: "22%" } },
-  { id: "curve", label: "Pool", name: "Curve tricrypto", value: "$62,155", change: "18.4% APY", icon: BarChart3, position: { left: "75%", top: "48%" } },
-  { id: "perp", label: "Protection", name: "ETH-PERP", value: "-$37,293", change: "0.42x delta", className: "web-page-strategy-detail__node--quiet", icon: ShieldCheck, position: { left: "75%", top: "74%" } },
+  {
+    id: "capital",
+    label: "Source",
+    name: "Treasury",
+    value: "$248,620",
+    change: "100%",
+    className: "web-page-strategy-detail__node--root",
+    icon: Wallet,
+    position: { left: "10%", top: "51%" },
+  },
+  {
+    id: "lending",
+    label: "Lending",
+    name: "Aave v3",
+    value: "$109,393",
+    change: "44%",
+    icon: Coins,
+    position: { left: "27%", top: "51%" },
+  },
+  {
+    id: "lp",
+    label: "Liquidity",
+    name: "ETH / USDC LP",
+    value: "$62,155",
+    change: "25%",
+    icon: GitBranch,
+    position: { left: "43%", top: "29%" },
+  },
+  {
+    id: "hedge",
+    label: "Hedge",
+    name: "Perp short",
+    value: "$37,293",
+    change: "15%",
+    icon: ShieldCheck,
+    position: { left: "43%", top: "74%" },
+  },
+  {
+    id: "reserve",
+    label: "Reserve",
+    name: "USDC buffer",
+    value: "$39,779",
+    change: "16%",
+    icon: LockKeyhole,
+    position: { left: "59%", top: "29%" },
+  },
+  {
+    id: "aave",
+    label: "Supply",
+    name: "USDC supply",
+    value: "$109,393",
+    change: "4.8% APY",
+    icon: Activity,
+    position: { left: "75%", top: "22%" },
+  },
+  {
+    id: "curve",
+    label: "Pool",
+    name: "Curve tricrypto",
+    value: "$62,155",
+    change: "18.4% APY",
+    icon: BarChart3,
+    position: { left: "75%", top: "48%" },
+  },
+  {
+    id: "perp",
+    label: "Protection",
+    name: "ETH-PERP",
+    value: "-$37,293",
+    change: "0.42x delta",
+    className: "web-page-strategy-detail__node--quiet",
+    icon: ShieldCheck,
+    position: { left: "75%", top: "74%" },
+  },
 ];
 
-const nodeDetails: Record<NodeId, { type: string; copy: string; rows: Array<[string, string, boolean?]> }> = {
-  capital: { type: "Capital source", copy: "The strategy draws from the Metron treasury sleeve. Funds remain available for a controlled exit at any time.", rows: [["Available balance", "$248,620"], ["Committed", "$248,620"], ["Wallet", "0x7d…9a31"]] },
-  lending: { type: "Lending allocation", copy: "USDC is supplied to Aave v3 on Ethereum to earn base yield while preserving a liquid exit path.", rows: [["Supplied", "$109,393"], ["Current APY", "4.80%", true], ["Health factor", "2.14"], ["Utilization", "38.2%"]] },
-  lp: { type: "Liquidity allocation", copy: "The LP sleeve provides market-neutral fee income in the Curve tricrypto pool with a bounded inventory range.", rows: [["Position value", "$62,155"], ["7d fee APY", "18.40%", true], ["Pool share", "0.018%"], ["Range status", "In range"]] },
-  hedge: { type: "Hedge allocation", copy: "A perpetual short offsets directional ETH exposure from liquidity positions. Funding is monitored continuously.", rows: [["Notional", "$37,293"], ["ETH delta", "−0.42"], ["Funding, 24h", "−$18.62"], ["Liquidation price", "$4,912"]] },
-  reserve: { type: "Reserve allocation", copy: "A USDC buffer absorbs rebalance costs, funding spikes, and withdrawal demand without touching active positions.", rows: [["Balance", "$39,779"], ["Target", "16%", true], ["Buffer coverage", "8.2 days"], ["Custody", "Metron vault"]] },
-  aave: { type: "Aave v3 position", copy: "Supply position earning variable USDC yield. No borrowing is active against this account.", rows: [["Principal", "$109,393"], ["Net APY", "4.80%", true], ["Accrued yield", "$1,284", true], ["Last update", "3 min ago"]] },
-  curve: { type: "Curve position", copy: "Tricrypto LP position earning swap fees and emissions. The position is currently inside its rebalance band.", rows: [["Principal", "$62,155"], ["Net APY", "18.40%", true], ["7d fees", "$217", true], ["Last rebalance", "14 Jun 2025"]] },
-  perp: { type: "Perpetual protection", copy: "ETH-PERP short reduces strategy delta during volatility. The hedge is cross-margined against the reserve sleeve.", rows: [["Notional", "−$37,293"], ["Mark price", "$3,420.80"], ["Funding, 24h", "−$18.62"], ["Margin ratio", "31.4%"]] },
+const nodeDetails: Record<
+  NodeId,
+  { type: string; copy: string; rows: Array<[string, string, boolean?]> }
+> = {
+  capital: {
+    type: "Capital source",
+    copy: "The strategy draws from the Metron treasury sleeve. Funds remain available for a controlled exit at any time.",
+    rows: [
+      ["Available balance", "$248,620"],
+      ["Committed", "$248,620"],
+      ["Wallet", "0x7d…9a31"],
+    ],
+  },
+  lending: {
+    type: "Lending allocation",
+    copy: "USDC is supplied to Aave v3 on Ethereum to earn base yield while preserving a liquid exit path.",
+    rows: [
+      ["Supplied", "$109,393"],
+      ["Current APY", "4.80%", true],
+      ["Health factor", "2.14"],
+      ["Utilization", "38.2%"],
+    ],
+  },
+  lp: {
+    type: "Liquidity allocation",
+    copy: "The LP sleeve provides market-neutral fee income in the Curve tricrypto pool with a bounded inventory range.",
+    rows: [
+      ["Position value", "$62,155"],
+      ["7d fee APY", "18.40%", true],
+      ["Pool share", "0.018%"],
+      ["Range status", "In range"],
+    ],
+  },
+  hedge: {
+    type: "Hedge allocation",
+    copy: "A perpetual short offsets directional ETH exposure from liquidity positions. Funding is monitored continuously.",
+    rows: [
+      ["Notional", "$37,293"],
+      ["ETH delta", "−0.42"],
+      ["Funding, 24h", "−$18.62"],
+      ["Liquidation price", "$4,912"],
+    ],
+  },
+  reserve: {
+    type: "Reserve allocation",
+    copy: "A USDC buffer absorbs rebalance costs, funding spikes, and withdrawal demand without touching active positions.",
+    rows: [
+      ["Balance", "$39,779"],
+      ["Target", "16%", true],
+      ["Buffer coverage", "8.2 days"],
+      ["Custody", "Metron vault"],
+    ],
+  },
+  aave: {
+    type: "Aave v3 position",
+    copy: "Supply position earning variable USDC yield. No borrowing is active against this account.",
+    rows: [
+      ["Principal", "$109,393"],
+      ["Net APY", "4.80%", true],
+      ["Accrued yield", "$1,284", true],
+      ["Last update", "3 min ago"],
+    ],
+  },
+  curve: {
+    type: "Curve position",
+    copy: "Tricrypto LP position earning swap fees and emissions. The position is currently inside its rebalance band.",
+    rows: [
+      ["Principal", "$62,155"],
+      ["Net APY", "18.40%", true],
+      ["7d fees", "$217", true],
+      ["Last rebalance", "14 Jun 2025"],
+    ],
+  },
+  perp: {
+    type: "Perpetual protection",
+    copy: "ETH-PERP short reduces strategy delta during volatility. The hedge is cross-margined against the reserve sleeve.",
+    rows: [
+      ["Notional", "−$37,293"],
+      ["Mark price", "$3,420.80"],
+      ["Funding, 24h", "−$18.62"],
+      ["Margin ratio", "31.4%"],
+    ],
+  },
 };
 
 export function StrategyDetailPage() {
@@ -253,7 +388,11 @@ export function StrategyDetailPage() {
       <style>{strategyDetailStyles}</style>
       <div className="web-page-strategy-detail__shell">
         <nav className="web-page-strategy-detail__crumbs" aria-label="Breadcrumb">
-          <span>Strategies</span><span className="web-page-strategy-detail__crumb-sep">/</span><span>Yield strategies</span><span className="web-page-strategy-detail__crumb-sep">/</span><span>Delta-neutral carry</span>
+          <span>Strategies</span>
+          <span className="web-page-strategy-detail__crumb-sep">/</span>
+          <span>Yield strategies</span>
+          <span className="web-page-strategy-detail__crumb-sep">/</span>
+          <span>Delta-neutral carry</span>
         </nav>
 
         <header className="web-page-strategy-detail__heading-row">
@@ -261,66 +400,518 @@ export function StrategyDetailPage() {
             <div className="web-page-strategy-detail__eyebrow">Strategy 004 / live allocation</div>
             <h1 className="web-page-strategy-detail__title">Delta-neutral carry</h1>
             <p className="web-page-strategy-detail__subline">
-              <Badge variant="success" leadingIcon={<Check size={12} />}>Healthy</Badge>
-              <span>Ethereum mainnet</span><span className="web-page-strategy-detail__dot" aria-hidden="true" /><span>Updated 3 minutes ago</span>
+              <Badge variant="success" leadingIcon={<Check size={12} />}>
+                Healthy
+              </Badge>
+              <span>Ethereum mainnet</span>
+              <span className="web-page-strategy-detail__dot" aria-hidden="true" />
+              <span>Updated 3 minutes ago</span>
             </p>
           </div>
           <div className="web-page-strategy-detail__actions">
-            <Button variant="outline" size="sm" leadingIcon={<SlidersHorizontal className="web-page-strategy-detail__button-icon" />} onClick={() => setManageOpen((open) => !open)}>{manageOpen ? "Close manage" : "Manage strategy"}</Button>
-            <Button variant="crimson" size="sm" leadingIcon={<Play className="web-page-strategy-detail__button-icon" />} onClick={() => setExecutionOpen((open) => !open)}>{executionOpen ? "Hide execution" : "Execute rebalance"}</Button>
+            <Button
+              variant="outline"
+              size="sm"
+              leadingIcon={<SlidersHorizontal className="web-page-strategy-detail__button-icon" />}
+              onClick={() => setManageOpen((open) => !open)}
+            >
+              {manageOpen ? "Close manage" : "Manage strategy"}
+            </Button>
+            <Button
+              variant="crimson"
+              size="sm"
+              leadingIcon={<Play className="web-page-strategy-detail__button-icon" />}
+              onClick={() => setExecutionOpen((open) => !open)}
+            >
+              {executionOpen ? "Hide execution" : "Execute rebalance"}
+            </Button>
           </div>
         </header>
 
         <section className="web-page-strategy-detail__metrics" aria-label="Strategy metrics">
-          <MetricCard className="web-page-strategy-detail__metric web-page-strategy-detail__metric--accent" label="Total value" value="$248,620" change="+$18,420 · 8.0% all time" changeTone="positive" icon={<CircleDollarSign size={16} />} />
-          <MetricCard className="web-page-strategy-detail__metric" label="Net APY" value="14.72%" change="+0.84% vs 30d average" changeTone="positive" icon={<TrendingUp size={16} />} />
-          <MetricCard className="web-page-strategy-detail__metric" label="7d earned" value="$702.18" change="+$104.21 from last week" changeTone="positive" icon={<Sparkles size={16} />} />
-          <MetricCard className="web-page-strategy-detail__metric" label="Strategy risk" value="31 / 100" change="Moderate · within target" icon={<ShieldCheck size={16} />} />
+          <MetricCard
+            className="web-page-strategy-detail__metric web-page-strategy-detail__metric--accent"
+            label="Total value"
+            value="$248,620"
+            change="+$18,420 · 8.0% all time"
+            changeTone="positive"
+            icon={<CircleDollarSign size={16} />}
+          />
+          <MetricCard
+            className="web-page-strategy-detail__metric"
+            label="Net APY"
+            value="14.72%"
+            change="+0.84% vs 30d average"
+            changeTone="positive"
+            icon={<TrendingUp size={16} />}
+          />
+          <MetricCard
+            className="web-page-strategy-detail__metric"
+            label="7d earned"
+            value="$702.18"
+            change="+$104.21 from last week"
+            changeTone="positive"
+            icon={<Sparkles size={16} />}
+          />
+          <MetricCard
+            className="web-page-strategy-detail__metric"
+            label="Strategy risk"
+            value="31 / 100"
+            change="Moderate · within target"
+            icon={<ShieldCheck size={16} />}
+          />
         </section>
 
         <div className="web-page-strategy-detail__tabs" role="tablist" aria-label="Strategy views">
-          {tabs.map((tab) => <button key={tab.id} className={`web-page-strategy-detail__tab ${activeTab === tab.id ? "web-page-strategy-detail__tab--active" : ""}`} type="button" role="tab" aria-selected={activeTab === tab.id} onClick={() => setActiveTab(tab.id)}>{tab.label}</button>)}
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              className={`web-page-strategy-detail__tab ${activeTab === tab.id ? "web-page-strategy-detail__tab--active" : ""}`}
+              type="button"
+              role="tab"
+              aria-selected={activeTab === tab.id}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
 
         <div className="web-page-strategy-detail__layout">
-          <section className="web-page-strategy-detail__graph-card" aria-labelledby="strategy-map-heading">
+          <section
+            className="web-page-strategy-detail__graph-card"
+            aria-labelledby="strategy-map-heading"
+          >
             <div className="web-page-strategy-detail__card-head">
-              <div><h2 id="strategy-map-heading" className="web-page-strategy-detail__card-title">Strategy map</h2><p className="web-page-strategy-detail__card-description">Capital flows from the treasury sleeve into yield, liquidity, and protection legs.</p></div>
-              <div className="web-page-strategy-detail__live"><span className="web-page-strategy-detail__live-dot" /> Live positions</div>
+              <div>
+                <h2 id="strategy-map-heading" className="web-page-strategy-detail__card-title">
+                  Strategy map
+                </h2>
+                <p className="web-page-strategy-detail__card-description">
+                  Capital flows from the treasury sleeve into yield, liquidity, and protection legs.
+                </p>
+              </div>
+              <div className="web-page-strategy-detail__live">
+                <span className="web-page-strategy-detail__live-dot" /> Live positions
+              </div>
             </div>
-            <div className="web-page-strategy-detail__graph" role="group" aria-label="Interactive strategy allocation graph">
-              <span className="web-page-strategy-detail__connector web-page-strategy-detail__connector--one" aria-hidden="true" /><span className="web-page-strategy-detail__connector web-page-strategy-detail__connector--two" aria-hidden="true" /><span className="web-page-strategy-detail__connector web-page-strategy-detail__connector--three" aria-hidden="true" /><span className="web-page-strategy-detail__connector web-page-strategy-detail__connector--four" aria-hidden="true" /><span className="web-page-strategy-detail__connector web-page-strategy-detail__connector--five" aria-hidden="true" /><span className="web-page-strategy-detail__connector web-page-strategy-detail__connector--six" aria-hidden="true" /><span className="web-page-strategy-detail__connector web-page-strategy-detail__connector--seven" aria-hidden="true" />
-              {nodes.map((node) => { const Icon = node.icon; return <button key={node.id} type="button" className={`web-page-strategy-detail__node ${node.className ?? ""} ${selectedNode === node.id ? "web-page-strategy-detail__node--selected" : ""}`} style={node.position} onClick={() => setSelectedNode(node.id)} aria-pressed={selectedNode === node.id}><span className="web-page-strategy-detail__node-label"><Icon />{node.label}</span><span className="web-page-strategy-detail__node-name">{node.name}</span><span className="web-page-strategy-detail__node-value">{node.value}<span className="web-page-strategy-detail__node-change">{node.change}</span></span></button>; })}
+            <div
+              className="web-page-strategy-detail__graph"
+              role="group"
+              aria-label="Interactive strategy allocation graph"
+            >
+              <span
+                className="web-page-strategy-detail__connector web-page-strategy-detail__connector--one"
+                aria-hidden="true"
+              />
+              <span
+                className="web-page-strategy-detail__connector web-page-strategy-detail__connector--two"
+                aria-hidden="true"
+              />
+              <span
+                className="web-page-strategy-detail__connector web-page-strategy-detail__connector--three"
+                aria-hidden="true"
+              />
+              <span
+                className="web-page-strategy-detail__connector web-page-strategy-detail__connector--four"
+                aria-hidden="true"
+              />
+              <span
+                className="web-page-strategy-detail__connector web-page-strategy-detail__connector--five"
+                aria-hidden="true"
+              />
+              <span
+                className="web-page-strategy-detail__connector web-page-strategy-detail__connector--six"
+                aria-hidden="true"
+              />
+              <span
+                className="web-page-strategy-detail__connector web-page-strategy-detail__connector--seven"
+                aria-hidden="true"
+              />
+              {nodes.map((node) => {
+                const Icon = node.icon;
+                return (
+                  <button
+                    key={node.id}
+                    type="button"
+                    className={`web-page-strategy-detail__node ${node.className ?? ""} ${selectedNode === node.id ? "web-page-strategy-detail__node--selected" : ""}`}
+                    style={node.position}
+                    onClick={() => setSelectedNode(node.id)}
+                    aria-pressed={selectedNode === node.id}
+                  >
+                    <span className="web-page-strategy-detail__node-label">
+                      <Icon />
+                      {node.label}
+                    </span>
+                    <span className="web-page-strategy-detail__node-name">{node.name}</span>
+                    <span className="web-page-strategy-detail__node-value">
+                      {node.value}
+                      <span className="web-page-strategy-detail__node-change">{node.change}</span>
+                    </span>
+                  </button>
+                );
+              })}
             </div>
-            <div className="web-page-strategy-detail__graph-legend"><span className="web-page-strategy-detail__legend-item"><i className="web-page-strategy-detail__legend-line web-page-strategy-detail__legend-line--active" /> Selected allocation</span><span className="web-page-strategy-detail__legend-item"><i className="web-page-strategy-detail__legend-line" /> Capital flow</span><span className="web-page-strategy-detail__legend-item"><LockKeyhole size={12} /> Custodied by Metron</span></div>
+            <div className="web-page-strategy-detail__graph-legend">
+              <span className="web-page-strategy-detail__legend-item">
+                <i className="web-page-strategy-detail__legend-line web-page-strategy-detail__legend-line--active" />{" "}
+                Selected allocation
+              </span>
+              <span className="web-page-strategy-detail__legend-item">
+                <i className="web-page-strategy-detail__legend-line" /> Capital flow
+              </span>
+              <span className="web-page-strategy-detail__legend-item">
+                <LockKeyhole size={12} /> Custodied by Metron
+              </span>
+            </div>
           </section>
 
           <aside className="web-page-strategy-detail__side-stack" aria-label="Strategy details">
-            <section className="web-page-strategy-detail__side-card web-page-strategy-detail__side-card--focus" aria-labelledby="selected-node-heading">
-              <div className="web-page-strategy-detail__selected-heading"><div style={{ display: "flex", gap: 11 }}><div className="web-page-strategy-detail__selected-icon"><SelectedIcon /></div><div><h2 id="selected-node-heading" className="web-page-strategy-detail__selected-name">{selectedNode === "lending" ? "Aave v3" : nodeDetails[selectedNode].type.replace(" allocation", "")}</h2><div className="web-page-strategy-detail__selected-type">{detail.type}</div></div></div><button className="web-page-strategy-detail__close" type="button" aria-label="Clear selected node" onClick={() => setSelectedNode("capital")}><X /></button></div>
+            <section
+              className="web-page-strategy-detail__side-card web-page-strategy-detail__side-card--focus"
+              aria-labelledby="selected-node-heading"
+            >
+              <div className="web-page-strategy-detail__selected-heading">
+                <div style={{ display: "flex", gap: 11 }}>
+                  <div className="web-page-strategy-detail__selected-icon">
+                    <SelectedIcon />
+                  </div>
+                  <div>
+                    <h2
+                      id="selected-node-heading"
+                      className="web-page-strategy-detail__selected-name"
+                    >
+                      {selectedNode === "lending"
+                        ? "Aave v3"
+                        : nodeDetails[selectedNode].type.replace(" allocation", "")}
+                    </h2>
+                    <div className="web-page-strategy-detail__selected-type">{detail.type}</div>
+                  </div>
+                </div>
+                <button
+                  className="web-page-strategy-detail__close"
+                  type="button"
+                  aria-label="Clear selected node"
+                  onClick={() => setSelectedNode("capital")}
+                >
+                  <X />
+                </button>
+              </div>
               <p className="web-page-strategy-detail__selected-copy">{detail.copy}</p>
-              <dl className="web-page-strategy-detail__kv">{detail.rows.map(([label, value, positive]) => <div key={label} style={{ display: "contents" }}><dt>{label}</dt><dd className={positive ? "web-page-strategy-detail__positive" : ""}>{value}</dd></div>)}</dl>
-              <div className="web-page-strategy-detail__allocation"><div className="web-page-strategy-detail__allocation-head"><span>Capital allocation</span><strong>{nodes.find((node) => node.id === selectedNode)?.change}</strong></div><div className="web-page-strategy-detail__allocation-bar" aria-label="Allocation breakdown"><span /><span /><span /></div></div>
+              <dl className="web-page-strategy-detail__kv">
+                {detail.rows.map(([label, value, positive]) => (
+                  <div key={label} style={{ display: "contents" }}>
+                    <dt>{label}</dt>
+                    <dd className={positive ? "web-page-strategy-detail__positive" : ""}>
+                      {value}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+              <div className="web-page-strategy-detail__allocation">
+                <div className="web-page-strategy-detail__allocation-head">
+                  <span>Capital allocation</span>
+                  <strong>{nodes.find((node) => node.id === selectedNode)?.change}</strong>
+                </div>
+                <div
+                  className="web-page-strategy-detail__allocation-bar"
+                  aria-label="Allocation breakdown"
+                >
+                  <span />
+                  <span />
+                  <span />
+                </div>
+              </div>
             </section>
 
-            <section className="web-page-strategy-detail__side-card" aria-labelledby="positions-heading"><h2 id="positions-heading" className="web-page-strategy-detail__side-title">Open positions</h2>{[["USDC supply", "Aave v3 · Ethereum", "$109,393", "+$436.20"], ["ETH / USDC LP", "Curve · tricrypto", "$62,155", "+$217.04"], ["ETH-PERP short", "Hyperliquid · 0.42x", "−$37,293", "−$18.62"]].map(([name, meta, value, pnl]) => <div className="web-page-strategy-detail__position-row" key={name}><div className="web-page-strategy-detail__position-name">{name}<span className="web-page-strategy-detail__position-meta">{meta}</span></div><div className="web-page-strategy-detail__position-value">{value}<span className="web-page-strategy-detail__position-pnl">{pnl}</span></div></div>)}</section>
+            <section
+              className="web-page-strategy-detail__side-card"
+              aria-labelledby="positions-heading"
+            >
+              <h2 id="positions-heading" className="web-page-strategy-detail__side-title">
+                Open positions
+              </h2>
+              {[
+                ["USDC supply", "Aave v3 · Ethereum", "$109,393", "+$436.20"],
+                ["ETH / USDC LP", "Curve · tricrypto", "$62,155", "+$217.04"],
+                ["ETH-PERP short", "Hyperliquid · 0.42x", "−$37,293", "−$18.62"],
+              ].map(([name, meta, value, pnl]) => (
+                <div className="web-page-strategy-detail__position-row" key={name}>
+                  <div className="web-page-strategy-detail__position-name">
+                    {name}
+                    <span className="web-page-strategy-detail__position-meta">{meta}</span>
+                  </div>
+                  <div className="web-page-strategy-detail__position-value">
+                    {value}
+                    <span className="web-page-strategy-detail__position-pnl">{pnl}</span>
+                  </div>
+                </div>
+              ))}
+            </section>
 
-            <section className="web-page-strategy-detail__side-card" aria-labelledby="risk-heading"><h2 id="risk-heading" className="web-page-strategy-detail__side-title">Risk guardrails</h2><div className="web-page-strategy-detail__risk-row"><div className="web-page-strategy-detail__risk-label"><span>Leverage</span><strong>1.24x / 2.00x</strong></div><Progress label="" value={1.24} max={2} tone="success" size="sm" aria-label="Leverage guardrail" /></div><div className="web-page-strategy-detail__risk-row"><div className="web-page-strategy-detail__risk-label"><span>Delta exposure</span><strong>−0.08 / ±0.15</strong></div><Progress label="" value={0.08} max={0.15} tone="success" size="sm" aria-label="Delta exposure guardrail" /></div><div className="web-page-strategy-detail__risk-row"><div className="web-page-strategy-detail__risk-label"><span>Drawdown trigger</span><strong>3.2% / 8.0%</strong></div><Progress label="" value={3.2} max={8} tone="warning" size="sm" aria-label="Drawdown guardrail" /></div><p className="web-page-strategy-detail__risk-note">No guardrail is currently close to its intervention threshold.</p></section>
+            <section className="web-page-strategy-detail__side-card" aria-labelledby="risk-heading">
+              <h2 id="risk-heading" className="web-page-strategy-detail__side-title">
+                Risk guardrails
+              </h2>
+              <div className="web-page-strategy-detail__risk-row">
+                <div className="web-page-strategy-detail__risk-label">
+                  <span>Leverage</span>
+                  <strong>1.24x / 2.00x</strong>
+                </div>
+                <Progress
+                  label=""
+                  value={1.24}
+                  max={2}
+                  tone="success"
+                  size="sm"
+                  aria-label="Leverage guardrail"
+                />
+              </div>
+              <div className="web-page-strategy-detail__risk-row">
+                <div className="web-page-strategy-detail__risk-label">
+                  <span>Delta exposure</span>
+                  <strong>−0.08 / ±0.15</strong>
+                </div>
+                <Progress
+                  label=""
+                  value={0.08}
+                  max={0.15}
+                  tone="success"
+                  size="sm"
+                  aria-label="Delta exposure guardrail"
+                />
+              </div>
+              <div className="web-page-strategy-detail__risk-row">
+                <div className="web-page-strategy-detail__risk-label">
+                  <span>Drawdown trigger</span>
+                  <strong>3.2% / 8.0%</strong>
+                </div>
+                <Progress
+                  label=""
+                  value={3.2}
+                  max={8}
+                  tone="warning"
+                  size="sm"
+                  aria-label="Drawdown guardrail"
+                />
+              </div>
+              <p className="web-page-strategy-detail__risk-note">
+                No guardrail is currently close to its intervention threshold.
+              </p>
+            </section>
           </aside>
         </div>
 
-        <section className="web-page-strategy-detail__insights" aria-label="Strategy performance panels">
-          <article className="web-page-strategy-detail__insight"><h3>Yield profile</h3><div className="web-page-strategy-detail__yield"><div className="web-page-strategy-detail__yield-value">14.72%</div><div className="web-page-strategy-detail__yield-period">net APY<br />30 day realized</div></div><div className="web-page-strategy-detail__spark" aria-label="Yield trend over 10 periods">{Array.from({ length: 10 }, (_, index) => <i key={index} />)}</div><div className="web-page-strategy-detail__micro-copy">Carry is led by LP fees at 58%, with lending at 31% and funding drag at 4%.</div></article>
-          <article className="web-page-strategy-detail__insight"><h3>Hedge coverage</h3><div className="web-page-strategy-detail__hedge"><div className="web-page-strategy-detail__hedge-pair">ETH-PERP short<small>current notional</small></div><div className="web-page-strategy-detail__hedge-ratio">0.42x</div></div><Progress label="Delta coverage" value={84} tone="success" size="sm" valueLabel="84%" helperText="Target range 75–95%" /><div className="web-page-strategy-detail__micro-copy" style={{ marginTop: 15 }}>Funding is negative and has reduced returns by $18.62 over the last 24 hours.</div></article>
-          <article className="web-page-strategy-detail__insight"><h3>Risk pulse</h3><div className="web-page-strategy-detail__risk-summary"><div className="web-page-strategy-detail__risk-score">31</div><div className="web-page-strategy-detail__risk-copy"><strong>Moderate risk</strong>8 points below your max target</div></div><Progress label="Risk budget used" value={31} tone="warning" size="sm" valueLabel="31 / 100" /><div className="web-page-strategy-detail__micro-copy" style={{ marginTop: 13 }}>Volatility has eased for 3 consecutive days. Next review in 18 hours.</div></article>
+        <section
+          className="web-page-strategy-detail__insights"
+          aria-label="Strategy performance panels"
+        >
+          <article className="web-page-strategy-detail__insight">
+            <h3>Yield profile</h3>
+            <div className="web-page-strategy-detail__yield">
+              <div className="web-page-strategy-detail__yield-value">14.72%</div>
+              <div className="web-page-strategy-detail__yield-period">
+                net APY
+                <br />
+                30 day realized
+              </div>
+            </div>
+            <div
+              className="web-page-strategy-detail__spark"
+              aria-label="Yield trend over 10 periods"
+            >
+              {Array.from({ length: 10 }, (_, index) => (
+                <i key={index} />
+              ))}
+            </div>
+            <div className="web-page-strategy-detail__micro-copy">
+              Carry is led by LP fees at 58%, with lending at 31% and funding drag at 4%.
+            </div>
+          </article>
+          <article className="web-page-strategy-detail__insight">
+            <h3>Hedge coverage</h3>
+            <div className="web-page-strategy-detail__hedge">
+              <div className="web-page-strategy-detail__hedge-pair">
+                ETH-PERP short<small>current notional</small>
+              </div>
+              <div className="web-page-strategy-detail__hedge-ratio">0.42x</div>
+            </div>
+            <Progress
+              label="Delta coverage"
+              value={84}
+              tone="success"
+              size="sm"
+              valueLabel="84%"
+              helperText="Target range 75–95%"
+            />
+            <div className="web-page-strategy-detail__micro-copy" style={{ marginTop: 15 }}>
+              Funding is negative and has reduced returns by $18.62 over the last 24 hours.
+            </div>
+          </article>
+          <article className="web-page-strategy-detail__insight">
+            <h3>Risk pulse</h3>
+            <div className="web-page-strategy-detail__risk-summary">
+              <div className="web-page-strategy-detail__risk-score">31</div>
+              <div className="web-page-strategy-detail__risk-copy">
+                <strong>Moderate risk</strong>8 points below your max target
+              </div>
+            </div>
+            <Progress
+              label="Risk budget used"
+              value={31}
+              tone="warning"
+              size="sm"
+              valueLabel="31 / 100"
+            />
+            <div className="web-page-strategy-detail__micro-copy" style={{ marginTop: 13 }}>
+              Volatility has eased for 3 consecutive days. Next review in 18 hours.
+            </div>
+          </article>
         </section>
 
-        {activeTab !== "overview" ? <section className="web-page-strategy-detail__drawer" aria-live="polite"><div className="web-page-strategy-detail__drawer-head"><h3>{tabs.find((tab) => tab.id === activeTab)?.label} view</h3><Badge variant="sand">Live snapshot</Badge></div><p className="web-page-strategy-detail__drawer-copy">{activeTab === "positions" ? "Three positions are open across Aave, Curve, and Hyperliquid. Values below include accrued fees and funding." : activeTab === "yield" ? "Realized yield is tracking above the strategy's 12% target. Fees and lending income are settled daily." : activeTab === "hedge" ? "Hedge coverage remains inside the target band. Rebalancing is only recommended when delta exceeds 0.15." : "Risk controls are armed. The strategy will pause if drawdown exceeds 8% or health factor falls below 1.50."}</p><div className="web-page-strategy-detail__timeline"><div className="web-page-strategy-detail__timeline-item"><span>{activeTab === "risk" ? "Health factor checked at 2.14" : activeTab === "hedge" ? "Hedge coverage recalculated at 84%" : activeTab === "yield" ? "Daily yield settlement posted" : "Position values refreshed"}</span><time>03 min ago</time></div><div className="web-page-strategy-detail__timeline-item"><span>Guardrails unchanged since last review</span><time>18 hr ago</time></div></div></section> : null}
+        {activeTab !== "overview" ? (
+          <section className="web-page-strategy-detail__drawer" aria-live="polite">
+            <div className="web-page-strategy-detail__drawer-head">
+              <h3>{tabs.find((tab) => tab.id === activeTab)?.label} view</h3>
+              <Badge variant="sand">Live snapshot</Badge>
+            </div>
+            <p className="web-page-strategy-detail__drawer-copy">
+              {activeTab === "positions"
+                ? "Three positions are open across Aave, Curve, and Hyperliquid. Values below include accrued fees and funding."
+                : activeTab === "yield"
+                  ? "Realized yield is tracking above the strategy's 12% target. Fees and lending income are settled daily."
+                  : activeTab === "hedge"
+                    ? "Hedge coverage remains inside the target band. Rebalancing is only recommended when delta exceeds 0.15."
+                    : "Risk controls are armed. The strategy will pause if drawdown exceeds 8% or health factor falls below 1.50."}
+            </p>
+            <div className="web-page-strategy-detail__timeline">
+              <div className="web-page-strategy-detail__timeline-item">
+                <span>
+                  {activeTab === "risk"
+                    ? "Health factor checked at 2.14"
+                    : activeTab === "hedge"
+                      ? "Hedge coverage recalculated at 84%"
+                      : activeTab === "yield"
+                        ? "Daily yield settlement posted"
+                        : "Position values refreshed"}
+                </span>
+                <time>03 min ago</time>
+              </div>
+              <div className="web-page-strategy-detail__timeline-item">
+                <span>Guardrails unchanged since last review</span>
+                <time>18 hr ago</time>
+              </div>
+            </div>
+          </section>
+        ) : null}
 
-        <section className="web-page-strategy-detail__execution" aria-label="Execution status"><div className="web-page-strategy-detail__execution-copy"><Zap /><div><div className="web-page-strategy-detail__execution-title">Automation is {paused ? "paused" : "armed"}</div><div className="web-page-strategy-detail__execution-note">Next scheduled rebalance checks delta and funding conditions before routing any transaction.</div></div></div><div className="web-page-strategy-detail__execution-actions"><Button variant="quiet" size="sm" leadingIcon={paused ? <Play className="web-page-strategy-detail__button-icon" /> : <Pause className="web-page-strategy-detail__button-icon" />} onClick={() => setPaused((current) => !current)}>{paused ? "Resume automation" : "Pause automation"}</Button><Button variant="crimson" size="sm" leadingIcon={<RefreshCw className="web-page-strategy-detail__button-icon" />} onClick={() => setExecutionOpen(true)}>Review rebalance</Button></div></section>
+        <section className="web-page-strategy-detail__execution" aria-label="Execution status">
+          <div className="web-page-strategy-detail__execution-copy">
+            <Zap />
+            <div>
+              <div className="web-page-strategy-detail__execution-title">
+                Automation is {paused ? "paused" : "armed"}
+              </div>
+              <div className="web-page-strategy-detail__execution-note">
+                Next scheduled rebalance checks delta and funding conditions before routing any
+                transaction.
+              </div>
+            </div>
+          </div>
+          <div className="web-page-strategy-detail__execution-actions">
+            <Button
+              variant="quiet"
+              size="sm"
+              leadingIcon={
+                paused ? (
+                  <Play className="web-page-strategy-detail__button-icon" />
+                ) : (
+                  <Pause className="web-page-strategy-detail__button-icon" />
+                )
+              }
+              onClick={() => setPaused((current) => !current)}
+            >
+              {paused ? "Resume automation" : "Pause automation"}
+            </Button>
+            <Button
+              variant="crimson"
+              size="sm"
+              leadingIcon={<RefreshCw className="web-page-strategy-detail__button-icon" />}
+              onClick={() => setExecutionOpen(true)}
+            >
+              Review rebalance
+            </Button>
+          </div>
+        </section>
 
-        {executionOpen ? <section className="web-page-strategy-detail__drawer" aria-label="Rebalance review"><div className="web-page-strategy-detail__drawer-head"><h3>Review rebalance</h3><button className="web-page-strategy-detail__close" type="button" aria-label="Close rebalance review" onClick={() => setExecutionOpen(false)}><X /></button></div><p className="web-page-strategy-detail__drawer-copy">No transaction is required right now. The current delta is −0.08 and sits inside the configured band. You can still route a manual rebalance after reviewing gas and slippage.</p><div className="web-page-strategy-detail__drawer-actions"><Button variant="outline" size="sm" onClick={() => setExecutionOpen(false)}>Keep current positions</Button><Button variant="crimson" size="sm" leadingIcon={<ArrowUpRight className="web-page-strategy-detail__button-icon" />} onClick={() => setExecutionOpen(false)}>Prepare transaction</Button></div></section> : null}
-        {manageOpen ? <section className="web-page-strategy-detail__drawer" aria-label="Manage strategy"><div className="web-page-strategy-detail__drawer-head"><h3>Manage strategy</h3><button className="web-page-strategy-detail__close" type="button" aria-label="Close strategy management" onClick={() => setManageOpen(false)}><X /></button></div><p className="web-page-strategy-detail__drawer-copy">Adjust the allocation policy, automation schedule, or risk budget. Current policy runs a 16% reserve and checks every 6 hours.</p><div className="web-page-strategy-detail__drawer-actions"><Button variant="outline" size="sm" leadingIcon={<Clock3 className="web-page-strategy-detail__button-icon" />}>Edit schedule</Button><Button variant="sand" size="sm" leadingIcon={<Target className="web-page-strategy-detail__button-icon" />}>Edit guardrails</Button></div></section> : null}
+        {executionOpen ? (
+          <section className="web-page-strategy-detail__drawer" aria-label="Rebalance review">
+            <div className="web-page-strategy-detail__drawer-head">
+              <h3>Review rebalance</h3>
+              <button
+                className="web-page-strategy-detail__close"
+                type="button"
+                aria-label="Close rebalance review"
+                onClick={() => setExecutionOpen(false)}
+              >
+                <X />
+              </button>
+            </div>
+            <p className="web-page-strategy-detail__drawer-copy">
+              No transaction is required right now. The current delta is −0.08 and sits inside the
+              configured band. You can still route a manual rebalance after reviewing gas and
+              slippage.
+            </p>
+            <div className="web-page-strategy-detail__drawer-actions">
+              <Button variant="outline" size="sm" onClick={() => setExecutionOpen(false)}>
+                Keep current positions
+              </Button>
+              <Button
+                variant="crimson"
+                size="sm"
+                leadingIcon={<ArrowUpRight className="web-page-strategy-detail__button-icon" />}
+                onClick={() => setExecutionOpen(false)}
+              >
+                Prepare transaction
+              </Button>
+            </div>
+          </section>
+        ) : null}
+        {manageOpen ? (
+          <section className="web-page-strategy-detail__drawer" aria-label="Manage strategy">
+            <div className="web-page-strategy-detail__drawer-head">
+              <h3>Manage strategy</h3>
+              <button
+                className="web-page-strategy-detail__close"
+                type="button"
+                aria-label="Close strategy management"
+                onClick={() => setManageOpen(false)}
+              >
+                <X />
+              </button>
+            </div>
+            <p className="web-page-strategy-detail__drawer-copy">
+              Adjust the allocation policy, automation schedule, or risk budget. Current policy runs
+              a 16% reserve and checks every 6 hours.
+            </p>
+            <div className="web-page-strategy-detail__drawer-actions">
+              <Button
+                variant="outline"
+                size="sm"
+                leadingIcon={<Clock3 className="web-page-strategy-detail__button-icon" />}
+              >
+                Edit schedule
+              </Button>
+              <Button
+                variant="sand"
+                size="sm"
+                leadingIcon={<Target className="web-page-strategy-detail__button-icon" />}
+              >
+                Edit guardrails
+              </Button>
+            </div>
+          </section>
+        ) : null}
       </div>
     </main>
   );

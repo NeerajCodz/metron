@@ -138,7 +138,9 @@ button {
   font-size: 0.72rem;
   text-align: left;
   cursor: pointer;
-  transition: border-color var(--metron-duration-fast) var(--metron-ease), background-color var(--metron-duration-fast) var(--metron-ease);
+  transition:
+    border-color var(--metron-duration-fast) var(--metron-ease),
+    background-color var(--metron-duration-fast) var(--metron-ease);
 }
 
 .workspace-switcher:hover {
@@ -197,7 +199,10 @@ button {
   font-size: 0.76rem;
   text-align: left;
   cursor: pointer;
-  transition: color var(--metron-duration-fast) var(--metron-ease), background-color var(--metron-duration-fast) var(--metron-ease), border-color var(--metron-duration-fast) var(--metron-ease);
+  transition:
+    color var(--metron-duration-fast) var(--metron-ease),
+    background-color var(--metron-duration-fast) var(--metron-ease),
+    border-color var(--metron-duration-fast) var(--metron-ease);
 }
 
 .app-nav__item:hover {
@@ -311,7 +316,10 @@ button {
   background: var(--metron-surface);
   color: var(--metron-pearl-muted);
   cursor: pointer;
-  transition: border-color var(--metron-duration-fast) var(--metron-ease), color var(--metron-duration-fast) var(--metron-ease), background-color var(--metron-duration-fast) var(--metron-ease);
+  transition:
+    border-color var(--metron-duration-fast) var(--metron-ease),
+    color var(--metron-duration-fast) var(--metron-ease),
+    background-color var(--metron-duration-fast) var(--metron-ease);
 }
 
 .command-trigger:hover,

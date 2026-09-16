@@ -65,7 +65,12 @@ const primaryNavigation: NavItem[] = [
 
 const screens = [
   ...primaryNavigation.map(({ id, label, icon }) => ({ id, label, icon })),
-  { id: "strategy-detail", label: "Strategy detail", description: "Inspect a live strategy", icon: Layers3 },
+  {
+    id: "strategy-detail",
+    label: "Strategy detail",
+    description: "Inspect a live strategy",
+    icon: Layers3,
+  },
   { id: "execution", label: "Execution", description: "Review pending orders", icon: Gauge },
   { id: "emergency", label: "Emergency", description: "Pause protocol activity", icon: Siren },
 ] as const;
@@ -131,13 +136,25 @@ export function App() {
           aria-label="Close navigation"
           onClick={() => setSidebarOpen(false)}
         />
-        <aside className={`app-sidebar${sidebarOpen ? " is-open" : ""}`} aria-label="Primary navigation">
+        <aside
+          className={`app-sidebar${sidebarOpen ? " is-open" : ""}`}
+          aria-label="Primary navigation"
+        >
           <div className="app-sidebar__top">
-            <a className="wordmark" href="#dashboard" onClick={() => navigate("dashboard")} aria-label="Metron home">
+            <a
+              className="wordmark"
+              href="#dashboard"
+              onClick={() => navigate("dashboard")}
+              aria-label="Metron home"
+            >
               <span className="wordmark-mark" aria-hidden="true" />
               <span>METRON</span>
             </a>
-            <button className="app-sidebar__close" aria-label="Close navigation" onClick={() => setSidebarOpen(false)}>
+            <button
+              className="app-sidebar__close"
+              aria-label="Close navigation"
+              onClick={() => setSidebarOpen(false)}
+            >
               <X size={17} aria-hidden="true" />
             </button>
           </div>
@@ -191,7 +208,11 @@ export function App() {
 
         <div className="app-main">
           <header className="app-topbar">
-            <button className="app-menu-toggle" aria-label="Open navigation" onClick={() => setSidebarOpen(true)}>
+            <button
+              className="app-menu-toggle"
+              aria-label="Open navigation"
+              onClick={() => setSidebarOpen(true)}
+            >
               <Menu size={20} aria-hidden="true" />
             </button>
             <div className="app-breadcrumb" aria-label="Current location">
@@ -203,9 +224,15 @@ export function App() {
               <button className="command-trigger" aria-label="Open command search">
                 <Search size={16} aria-hidden="true" />
                 <span>Search anything</span>
-                <kbd><Command size={11} aria-hidden="true" /> K</kbd>
+                <kbd>
+                  <Command size={11} aria-hidden="true" /> K
+                </kbd>
               </button>
-              <Badge className="network-status" variant="success" leadingIcon={<span className="status-dot" aria-hidden="true" />}>
+              <Badge
+                className="network-status"
+                variant="success"
+                leadingIcon={<span className="status-dot" aria-hidden="true" />}
+              >
                 Mainnet connected
               </Badge>
               <button className="topbar-icon-button" aria-label="View notifications">
@@ -221,9 +248,16 @@ export function App() {
           </header>
 
           <div className="app-risk-banner" role="status">
-            <span className="app-risk-banner__icon"><AlertTriangle size={16} aria-hidden="true" /></span>
-            <span><strong>Two conditions need review.</strong> Stablecoin utilization is approaching its guardrail.</span>
-            <button onClick={() => navigate("emergency")}>Open emergency controls <ChevronRight size={14} aria-hidden="true" /></button>
+            <span className="app-risk-banner__icon">
+              <AlertTriangle size={16} aria-hidden="true" />
+            </span>
+            <span>
+              <strong>Two conditions need review.</strong> Stablecoin utilization is approaching its
+              guardrail.
+            </span>
+            <button onClick={() => navigate("emergency")}>
+              Open emergency controls <ChevronRight size={14} aria-hidden="true" />
+            </button>
           </div>
 
           <div className="app-content">
@@ -231,7 +265,11 @@ export function App() {
           </div>
         </div>
 
-        <ScreenDock screens={screens} activeScreen={activeScreen} onSelect={(screen) => navigate(screen as ScreenId)} />
+        <ScreenDock
+          screens={screens}
+          activeScreen={activeScreen}
+          onSelect={(screen) => navigate(screen as ScreenId)}
+        />
       </div>
     </BackgroundLayout>
   );

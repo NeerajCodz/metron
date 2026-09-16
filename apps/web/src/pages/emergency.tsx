@@ -23,14 +23,7 @@ import {
   X,
   Zap,
 } from "lucide-react";
-import {
-  Badge,
-  Button,
-  GlassCard,
-  InlineAlert,
-  Progress,
-  Switch,
-} from "@metron/ui";
+import { Badge, Button, GlassCard, InlineAlert, Progress, Switch } from "@metron/ui";
 
 type SystemMode = "normal" | "guarded" | "emergency";
 type RecoveryPlan = "stabilize" | "de-risk" | "manual";
@@ -414,10 +407,14 @@ export function EmergencyPage() {
               Recovery center
             </h1>
             <p className="web-page-emergency__title-note" style={styles.titleNote}>
-              Lock down execution, choose a recovery posture, and keep an auditable path back to normal operation.
+              Lock down execution, choose a recovery posture, and keep an auditable path back to
+              normal operation.
             </p>
           </div>
-          <Badge variant={isEmergency ? "crimson" : "warning"} leadingIcon={isEmergency ? <Siren size={13} /> : <ShieldAlert size={13} />}>
+          <Badge
+            variant={isEmergency ? "crimson" : "warning"}
+            leadingIcon={isEmergency ? <Siren size={13} /> : <ShieldAlert size={13} />}
+          >
             {isEmergency ? "Emergency mode" : "Elevated risk"}
           </Badge>
         </div>
@@ -429,20 +426,35 @@ export function EmergencyPage() {
           icon={<AlertTriangle size={20} style={styles.alertIcon} />}
           title="Critical risk detected"
         >
-          ETH volatility has pushed the leverage buffer below the 20% operating floor. New strategy entries are paused while two positions require review.
+          ETH volatility has pushed the leverage buffer below the 20% operating floor. New strategy
+          entries are paused while two positions require review.
         </InlineAlert>
 
-        <section className="web-page-emergency__mode-panel" style={styles.modePanel} aria-labelledby="system-mode-heading">
+        <section
+          className="web-page-emergency__mode-panel"
+          style={styles.modePanel}
+          aria-labelledby="system-mode-heading"
+        >
           <div style={styles.sectionHeader}>
             <div>
-              <h2 id="system-mode-heading" style={styles.sectionTitle}>System mode</h2>
+              <h2 id="system-mode-heading" style={styles.sectionTitle}>
+                System mode
+              </h2>
               <span style={styles.sectionMeta}>Operator control / global</span>
             </div>
-            <Badge variant={isEmergency ? "crimson" : "neutral"} leadingIcon={<LockKeyhole size={12} />}>
+            <Badge
+              variant={isEmergency ? "crimson" : "neutral"}
+              leadingIcon={<LockKeyhole size={12} />}
+            >
               {isEmergency ? "Execution locked" : "Guardrails active"}
             </Badge>
           </div>
-          <div className="web-page-emergency__mode-grid" style={styles.modeGrid} role="group" aria-label="System mode">
+          <div
+            className="web-page-emergency__mode-grid"
+            style={styles.modeGrid}
+            role="group"
+            aria-label="System mode"
+          >
             {modeOptions.map((mode) => {
               const ModeIcon = mode.icon;
               const selected = systemMode === mode.id;
@@ -475,7 +487,12 @@ export function EmergencyPage() {
             title="Choose the next move"
             description="The selected plan remains advisory until you approve an emergency action."
           >
-            <div className="web-page-emergency__recovery-grid" style={styles.recoveryGrid} role="radiogroup" aria-label="AI recovery posture">
+            <div
+              className="web-page-emergency__recovery-grid"
+              style={styles.recoveryGrid}
+              role="radiogroup"
+              aria-label="AI recovery posture"
+            >
               {recoveryOptions.map((option) => {
                 const RecoveryIcon = option.icon;
                 const selected = recoveryPlan === option.id;
@@ -484,7 +501,10 @@ export function EmergencyPage() {
                     key={option.id}
                     type="button"
                     className="web-page-emergency__recovery-option"
-                    style={{ ...styles.recoveryCard, ...(selected ? styles.recoveryCardSelected : {}) }}
+                    style={{
+                      ...styles.recoveryCard,
+                      ...(selected ? styles.recoveryCardSelected : {}),
+                    }}
                     aria-checked={selected}
                     role="radio"
                     onClick={() => setRecoveryPlan(option.id)}
@@ -518,24 +538,48 @@ export function EmergencyPage() {
             <div style={styles.actionList}>
               <div style={styles.actionItem}>
                 <div style={styles.actionCopy}>
-                  <span style={styles.actionLabel}><PauseCircle size={16} color="#c8aa8e" aria-hidden="true" /> Pause new entries</span>
-                  <p style={styles.actionDescription}>Prevent strategies from opening new positions.</p>
+                  <span style={styles.actionLabel}>
+                    <PauseCircle size={16} color="#c8aa8e" aria-hidden="true" /> Pause new entries
+                  </span>
+                  <p style={styles.actionDescription}>
+                    Prevent strategies from opening new positions.
+                  </p>
                 </div>
-                <Switch aria-label="Pause new entries" checked={pauseEntries} onCheckedChange={setPauseEntries} />
+                <Switch
+                  aria-label="Pause new entries"
+                  checked={pauseEntries}
+                  onCheckedChange={setPauseEntries}
+                />
               </div>
               <div style={styles.actionItem}>
                 <div style={styles.actionCopy}>
-                  <span style={styles.actionLabel}><Gauge size={16} color="#c8aa8e" aria-hidden="true" /> Limit leverage</span>
-                  <p style={styles.actionDescription}>Keep new and rebalance orders at 1.5x maximum.</p>
+                  <span style={styles.actionLabel}>
+                    <Gauge size={16} color="#c8aa8e" aria-hidden="true" /> Limit leverage
+                  </span>
+                  <p style={styles.actionDescription}>
+                    Keep new and rebalance orders at 1.5x maximum.
+                  </p>
                 </div>
-                <Switch aria-label="Limit leverage" checked={limitLeverage} onCheckedChange={setLimitLeverage} />
+                <Switch
+                  aria-label="Limit leverage"
+                  checked={limitLeverage}
+                  onCheckedChange={setLimitLeverage}
+                />
               </div>
               <div style={styles.actionItem}>
                 <div style={styles.actionCopy}>
-                  <span style={styles.actionLabel}><Power size={16} color="#ff8298" aria-hidden="true" /> Freeze automation</span>
-                  <p style={styles.actionDescription}>Stop autonomous rebalances until manually released.</p>
+                  <span style={styles.actionLabel}>
+                    <Power size={16} color="#ff8298" aria-hidden="true" /> Freeze automation
+                  </span>
+                  <p style={styles.actionDescription}>
+                    Stop autonomous rebalances until manually released.
+                  </p>
                 </div>
-                <Switch aria-label="Freeze automation" checked={freezeAutomation} onCheckedChange={setFreezeAutomation} />
+                <Switch
+                  aria-label="Freeze automation"
+                  checked={freezeAutomation}
+                  onCheckedChange={setFreezeAutomation}
+                />
               </div>
             </div>
             <div style={styles.healthGrid}>
@@ -551,21 +595,35 @@ export function EmergencyPage() {
           </GlassCard>
         </div>
 
-        <div className="web-page-emergency__lower-grid" style={{ ...styles.workspace, marginTop: "1.25rem" }}>
+        <div
+          className="web-page-emergency__lower-grid"
+          style={{ ...styles.workspace, marginTop: "1.25rem" }}
+        >
           <GlassCard
             className="web-page-emergency__flash-card"
             style={styles.card}
             header={<span style={styles.eyebrow}>High impact action</span>}
             title="Flash unwind"
             description="Exit all active positions at the best available route, then revoke strategy execution."
-            action={<Badge variant={flashQueued ? "success" : "warning"} leadingIcon={flashQueued ? <CircleCheck size={12} /> : <Zap size={12} />}>{flashQueued ? "Queued" : "Requires confirmation"}</Badge>}
+            action={
+              <Badge
+                variant={flashQueued ? "success" : "warning"}
+                leadingIcon={flashQueued ? <CircleCheck size={12} /> : <Zap size={12} />}
+              >
+                {flashQueued ? "Queued" : "Requires confirmation"}
+              </Badge>
+            }
           >
             <div style={styles.divider} />
             <Progress
               label="Estimated unwind coverage"
               value={flashQueued ? 100 : 74}
               valueLabel={flashQueued ? "Queued" : "74% routable now"}
-              helperText={flashQueued ? "Execution lock is active across all strategies." : "Two assets may route with elevated slippage."}
+              helperText={
+                flashQueued
+                  ? "Execution lock is active across all strategies."
+                  : "Two assets may route with elevated slippage."
+              }
               tone={flashQueued ? "success" : "warning"}
               size="sm"
             />
@@ -583,19 +641,45 @@ export function EmergencyPage() {
               </Button>
             ) : null}
             {flashConfirmOpen ? (
-              <div style={styles.flashPanel} role="alertdialog" aria-labelledby="flash-confirm-heading" aria-describedby="flash-confirm-copy">
-                <h3 id="flash-confirm-heading" style={styles.flashPanelTitle}><AlertTriangle size={17} color="#f59e0b" aria-hidden="true" /> Confirm flash unwind</h3>
+              <div
+                style={styles.flashPanel}
+                role="alertdialog"
+                aria-labelledby="flash-confirm-heading"
+                aria-describedby="flash-confirm-copy"
+              >
+                <h3 id="flash-confirm-heading" style={styles.flashPanelTitle}>
+                  <AlertTriangle size={17} color="#f59e0b" aria-hidden="true" /> Confirm flash
+                  unwind
+                </h3>
                 <p id="flash-confirm-copy" style={styles.flashPanelCopy}>
-                  This will market-exit 6 positions, cancel pending orders, and lock all automation. Estimated realized slippage is 0.8% to 1.6%.
+                  This will market-exit 6 positions, cancel pending orders, and lock all automation.
+                  Estimated realized slippage is 0.8% to 1.6%.
                 </p>
                 <div style={styles.flashActions}>
-                  <Button variant="danger" leadingIcon={<Zap size={15} />} onClick={confirmFlashUnwind}>Confirm unwind</Button>
-                  <Button variant="outline" leadingIcon={<X size={15} />} onClick={() => setFlashConfirmOpen(false)}>Cancel</Button>
+                  <Button
+                    variant="danger"
+                    leadingIcon={<Zap size={15} />}
+                    onClick={confirmFlashUnwind}
+                  >
+                    Confirm unwind
+                  </Button>
+                  <Button
+                    variant="outline"
+                    leadingIcon={<X size={15} />}
+                    onClick={() => setFlashConfirmOpen(false)}
+                  >
+                    Cancel
+                  </Button>
                 </div>
               </div>
             ) : null}
             {flashQueued ? (
-              <InlineAlert variant="success" icon={<CircleCheck size={17} />} title="Flash unwind queued" style={{ marginTop: "1rem" }}>
+              <InlineAlert
+                variant="success"
+                icon={<CircleCheck size={17} />}
+                title="Flash unwind queued"
+                style={{ marginTop: "1rem" }}
+              >
                 The execution lock is active. Monitor fills from the execution center.
               </InlineAlert>
             ) : null}
@@ -610,31 +694,52 @@ export function EmergencyPage() {
           >
             <div style={styles.actionList}>
               <div style={styles.actionItem}>
-                <span style={styles.actionLabel}><CircleCheck size={15} color="#34d399" aria-hidden="true" /> Risk engine online</span>
+                <span style={styles.actionLabel}>
+                  <CircleCheck size={15} color="#34d399" aria-hidden="true" /> Risk engine online
+                </span>
                 <Badge variant="success">Healthy</Badge>
               </div>
               <div style={styles.actionItem}>
-                <span style={styles.actionLabel}><WalletCards size={15} color="#34d399" aria-hidden="true" /> Collateral sync</span>
+                <span style={styles.actionLabel}>
+                  <WalletCards size={15} color="#34d399" aria-hidden="true" /> Collateral sync
+                </span>
                 <Badge variant="success">12 sec ago</Badge>
               </div>
               <div style={styles.actionItem}>
-                <span style={styles.actionLabel}><Clock3 size={15} color="#f59e0b" aria-hidden="true" /> Venue heartbeat</span>
+                <span style={styles.actionLabel}>
+                  <Clock3 size={15} color="#f59e0b" aria-hidden="true" /> Venue heartbeat
+                </span>
                 <Badge variant="warning">Degraded</Badge>
               </div>
               <div style={{ ...styles.actionItem, borderBottom: 0 }}>
-                <span style={styles.actionLabel}><Waves size={15} color="#ff8298" aria-hidden="true" /> Oracle deviation</span>
+                <span style={styles.actionLabel}>
+                  <Waves size={15} color="#ff8298" aria-hidden="true" /> Oracle deviation
+                </span>
                 <Badge variant="crimson">0.42%</Badge>
               </div>
             </div>
-            <Button variant="outline" fullWidth leadingIcon={<RefreshCcw size={15} />} style={{ marginTop: "1rem" }}>
+            <Button
+              variant="outline"
+              fullWidth
+              leadingIcon={<RefreshCcw size={15} />}
+              style={{ marginTop: "1rem" }}
+            >
               Recheck systems
             </Button>
           </GlassCard>
         </div>
 
         <div style={styles.footerStatus}>
-          {flashQueued ? <CircleStop size={14} color="#ff8298" aria-hidden="true" /> : <LockKeyhole size={14} aria-hidden="true" />}
-          <span>{flashQueued ? "Operator lock active. Awaiting fill confirmation." : "All emergency actions require explicit operator confirmation."}</span>
+          {flashQueued ? (
+            <CircleStop size={14} color="#ff8298" aria-hidden="true" />
+          ) : (
+            <LockKeyhole size={14} aria-hidden="true" />
+          )}
+          <span>
+            {flashQueued
+              ? "Operator lock active. Awaiting fill confirmation."
+              : "All emergency actions require explicit operator confirmation."}
+          </span>
         </div>
       </div>
     </main>

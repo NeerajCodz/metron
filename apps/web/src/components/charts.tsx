@@ -236,13 +236,15 @@ export function AllocationChart({
     value: Number.isFinite(item.value) && item.value > 0 ? item.value : 0,
   }));
   const sum = normalized.reduce((accumulator, item) => accumulator + item.value, 0);
-  const requestedTotal = typeof total === "number" && Number.isFinite(total) && total > 0 ? total : 0;
+  const requestedTotal =
+    typeof total === "number" && Number.isFinite(total) && total > 0 ? total : 0;
   const chartTotal = Math.max(sum, requestedTotal, 1);
   const readableValues = normalized.map((item) => {
     const percentage = (item.value / chartTotal) * 100;
     return `${item.label} ${valueFormatter(item.value, percentage)}`;
   });
-  const accessibleLabel = props["aria-label"] ?? `${label}: ${readableValues.join(", ") || "no data"}`;
+  const accessibleLabel =
+    props["aria-label"] ?? `${label}: ${readableValues.join(", ") || "no data"}`;
   const safeHeight = Number.isFinite(height) && height > 0 ? height : 14;
 
   const rootStyle: CSSProperties = {
@@ -278,7 +280,13 @@ export function AllocationChart({
             "--allocation-value": `${percentage}%`,
           };
 
-          return <span key={`${item.label}-${index}`} title={`${item.label}: ${valueFormatter(item.value, percentage)}`} style={segmentStyle} />;
+          return (
+            <span
+              key={`${item.label}-${index}`}
+              title={`${item.label}: ${valueFormatter(item.value, percentage)}`}
+              style={segmentStyle}
+            />
+          );
         })}
       </div>
       {showLegend ? (
@@ -314,13 +322,28 @@ export function AllocationChart({
                     width: "0.55rem",
                     height: "0.55rem",
                     borderRadius: "50%",
-                    backgroundColor: item.color ?? allocationPalette[index % allocationPalette.length],
+                    backgroundColor:
+                      item.color ?? allocationPalette[index % allocationPalette.length],
                   }}
                 />
-                <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={item.description}>
+                <span
+                  style={{
+                    minWidth: 0,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                  title={item.description}
+                >
                   {item.label}
                 </span>
-                <strong style={{ color: "var(--web-text, #f2f1ed)", fontSize: "0.72rem", fontWeight: 650 }}>
+                <strong
+                  style={{
+                    color: "var(--web-text, #f2f1ed)",
+                    fontSize: "0.72rem",
+                    fontWeight: 650,
+                  }}
+                >
                   {valueFormatter(item.value, percentage)}
                 </strong>
               </li>

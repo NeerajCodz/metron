@@ -17,14 +17,7 @@ import {
   Sparkles,
   type LucideIcon,
 } from "lucide-react";
-import {
-  Badge,
-  Button,
-  GlassCard,
-  InlineAlert,
-  Input,
-  Select,
-} from "@metron/ui";
+import { Badge, Button, GlassCard, InlineAlert, Input, Select } from "@metron/ui";
 
 type EventCategory = "Strategy" | "Risk" | "Execution" | "Automation" | "System";
 type EventStatus = "Completed" | "Action required" | "Monitoring" | "Failed";
@@ -79,9 +72,16 @@ const events: AuditEvent[] = [
       { label: "Expected price impact", value: "0.07%" },
       { label: "Resulting delta", value: "+0.004 ETH" },
     ],
-    prediction: { label: "Liquidation probability", value: "0.8%", confidence: "94% confidence", horizon: "24 hour horizon" },
-    action: "Borrowed 0.18 WETH against the Aave collateral and swapped to USDC through the approved route.",
-    result: "Completed inside policy. Delta is now within the ±0.02 ETH tolerance and health factor is unchanged.",
+    prediction: {
+      label: "Liquidation probability",
+      value: "0.8%",
+      confidence: "94% confidence",
+      horizon: "24 hour horizon",
+    },
+    action:
+      "Borrowed 0.18 WETH against the Aave collateral and swapped to USDC through the approved route.",
+    result:
+      "Completed inside policy. Delta is now within the ±0.02 ETH tolerance and health factor is unchanged.",
     transaction: [
       { label: "Transaction", value: "0x8f3c6d29...a91d", link: "https://arbiscan.io/tx/0x8f3c" },
       { label: "Block", value: "298,114,221" },
@@ -111,16 +111,24 @@ const events: AuditEvent[] = [
       { label: "Intervention threshold", value: "0.68" },
       { label: "Required response", value: "Increase monitoring" },
     ],
-    prediction: { label: "Liquidation probability", value: "1.6%", confidence: "89% confidence", horizon: "24 hour horizon" },
-    action: "Raised monitoring cadence to every 5 minutes. No capital-moving action was authorized.",
-    result: "All positions remain inside their risk envelopes. Automation is armed if health or delta gates deteriorate.",
+    prediction: {
+      label: "Liquidation probability",
+      value: "1.6%",
+      confidence: "89% confidence",
+      horizon: "24 hour horizon",
+    },
+    action:
+      "Raised monitoring cadence to every 5 minutes. No capital-moving action was authorized.",
+    result:
+      "All positions remain inside their risk envelopes. Automation is armed if health or delta gates deteriorate.",
   },
   {
     id: "evt-51be",
     category: "Execution",
     status: "Completed",
     title: "Strategy route settled",
-    summary: "The selected lending route finished on Arbitrum with the expected collateral balance.",
+    summary:
+      "The selected lending route finished on Arbitrum with the expected collateral balance.",
     time: "Sep 17, 2026, 11:42 UTC",
     relative: "3 hr ago",
     actor: "Settlement contract",
@@ -138,9 +146,15 @@ const events: AuditEvent[] = [
       { label: "Estimated execution cost", value: "$14.22" },
       { label: "Projected drawdown", value: "3.1%" },
     ],
-    prediction: { label: "12 month yield range", value: "$2,184 to $3,560", confidence: "78% confidence", horizon: "Scenario range" },
+    prediction: {
+      label: "12 month yield range",
+      value: "$2,184 to $3,560",
+      confidence: "78% confidence",
+      horizon: "Scenario range",
+    },
     action: "Deposited USDC, supplied collateral to Aave V3, and opened the bounded hedge leg.",
-    result: "Position opened. Route matched the signed intent and settled below the maximum slippage limit.",
+    result:
+      "Position opened. Route matched the signed intent and settled below the maximum slippage limit.",
     transaction: [
       { label: "Transaction", value: "0x51be11d0...79c2", link: "https://arbiscan.io/tx/0x51be" },
       { label: "Block", value: "298,108,904" },
@@ -226,9 +240,15 @@ const events: AuditEvent[] = [
       { label: "Distance to gate", value: "0.09%" },
       { label: "Recommended mode", value: "Observe" },
     ],
-    prediction: { label: "Gate breach probability", value: "8.4%", confidence: "86% confidence", horizon: "6 hour horizon" },
+    prediction: {
+      label: "Gate breach probability",
+      value: "8.4%",
+      confidence: "86% confidence",
+      horizon: "6 hour horizon",
+    },
     action: "Flagged the position for closer observation and paused non-essential rebalancing.",
-    result: "No emergency action taken. The position remains within its stablecoin deviation policy.",
+    result:
+      "No emergency action taken. The position remains within its stablecoin deviation policy.",
   },
   {
     id: "evt-b18d",
@@ -254,7 +274,8 @@ const events: AuditEvent[] = [
       { label: "Minimum benefit", value: "$31.00" },
     ],
     action: "Removed liquidity from the stale range and minted a new bounded position around spot.",
-    result: "Recenter complete. Estimated fee capture is restored while the stablecoin gate remains active.",
+    result:
+      "Recenter complete. Estimated fee capture is restored while the stablecoin gate remains active.",
     transaction: [
       { label: "Transaction", value: "0xb18d76a9...48f1", link: "https://basescan.org/tx/0xb18d" },
       { label: "Block", value: "24,901,118" },
@@ -283,7 +304,8 @@ const events: AuditEvent[] = [
       { label: "Retry policy", value: "Await new quote" },
     ],
     action: "Rejected the stale quote before any token approval or transfer.",
-    result: "No funds moved. The position remains safe and the recovery policy is ready for a fresh route.",
+    result:
+      "No funds moved. The position remains safe and the recovery policy is ready for a fresh route.",
   },
   {
     id: "evt-0d41",
@@ -316,10 +338,11 @@ const events: AuditEvent[] = [
     ],
   },
 ];
-const defaultEvent: AuditEvent = events[0] ?? (() => {
-  throw new Error("Activity event seed is empty.");
-})();
-
+const defaultEvent: AuditEvent =
+  events[0] ??
+  (() => {
+    throw new Error("Activity event seed is empty.");
+  })();
 
 const categoryOptions = ["All categories", "Strategy", "Risk", "Execution", "Automation", "System"];
 const statusOptions = ["All statuses", "Completed", "Action required", "Monitoring", "Failed"];
@@ -389,7 +412,8 @@ export function ActivityPage() {
     });
   }, [category, query, status]);
 
-  const selectedEvent: AuditEvent = events.find((event) => event.id === selectedId) ?? filteredEvents[0] ?? defaultEvent;
+  const selectedEvent: AuditEvent =
+    events.find((event) => event.id === selectedId) ?? filteredEvents[0] ?? defaultEvent;
   const prediction = selectedEvent.prediction;
   const transaction = selectedEvent.transaction;
   const hasFilters = query.length > 0 || category !== "All categories" || status !== "All statuses";
@@ -523,7 +547,8 @@ export function ActivityPage() {
               <p className="web-page-activity-kicker">Audit trail</p>
               <h1 className="web-page-activity-title">Activity</h1>
               <p className="web-page-activity-description">
-                A traceable record of strategy decisions, risk signals, and every authorized action across your account.
+                A traceable record of strategy decisions, risk signals, and every authorized action
+                across your account.
               </p>
             </div>
             <div className="web-page-activity-header-meta" aria-label="Activity sync status">
@@ -535,7 +560,9 @@ export function ActivityPage() {
 
           <div className="web-page-activity-toolbar" aria-label="Activity filters">
             <div>
-              <label className="web-page-activity-filter-label" htmlFor="activity-search">Search events</label>
+              <label className="web-page-activity-filter-label" htmlFor="activity-search">
+                Search events
+              </label>
               <div className="web-page-activity-search">
                 <Search size={15} aria-hidden="true" />
                 <Input
@@ -548,15 +575,31 @@ export function ActivityPage() {
               </div>
             </div>
             <div>
-              <label className="web-page-activity-filter-label" htmlFor="activity-category">Category</label>
-              <Select id="activity-category" value={category} onChange={(event) => setCategory(event.target.value)}>
-                {categoryOptions.map((option) => <option key={option}>{option}</option>)}
+              <label className="web-page-activity-filter-label" htmlFor="activity-category">
+                Category
+              </label>
+              <Select
+                id="activity-category"
+                value={category}
+                onChange={(event) => setCategory(event.target.value)}
+              >
+                {categoryOptions.map((option) => (
+                  <option key={option}>{option}</option>
+                ))}
               </Select>
             </div>
             <div>
-              <label className="web-page-activity-filter-label" htmlFor="activity-status">Status</label>
-              <Select id="activity-status" value={status} onChange={(event) => setStatus(event.target.value)}>
-                {statusOptions.map((option) => <option key={option}>{option}</option>)}
+              <label className="web-page-activity-filter-label" htmlFor="activity-status">
+                Status
+              </label>
+              <Select
+                id="activity-status"
+                value={status}
+                onChange={(event) => setStatus(event.target.value)}
+              >
+                {statusOptions.map((option) => (
+                  <option key={option}>{option}</option>
+                ))}
               </Select>
             </div>
             <div className="web-page-activity-filter-actions">
@@ -584,12 +627,17 @@ export function ActivityPage() {
           )}
 
           <div className="web-page-activity-main">
-            <section className="web-page-activity-list-panel" aria-labelledby="activity-list-heading">
+            <section
+              className="web-page-activity-list-panel"
+              aria-labelledby="activity-list-heading"
+            >
               <div className="web-page-activity-list-head">
                 <div className="web-page-activity-list-count" id="activity-list-heading">
                   <strong>{filteredEvents.length}</strong> events in the last 7 days
                 </div>
-                <Badge variant="neutral" leadingIcon={<Clock3 size={12} />}>Newest first</Badge>
+                <Badge variant="neutral" leadingIcon={<Clock3 size={12} />}>
+                  Newest first
+                </Badge>
               </div>
               <div className="web-page-activity-list" role="list" aria-label="Audit events">
                 {filteredEvents.length === 0 ? (
@@ -597,40 +645,53 @@ export function ActivityPage() {
                     <Search size={22} aria-hidden="true" />
                     <strong>No matching events</strong>
                     <span>Try a different search or clear the active filters.</span>
-                    <div style={{ marginTop: "1rem" }}><Button variant="outline" size="sm" onClick={clearFilters}>Clear filters</Button></div>
+                    <div style={{ marginTop: "1rem" }}>
+                      <Button variant="outline" size="sm" onClick={clearFilters}>
+                        Clear filters
+                      </Button>
+                    </div>
                   </div>
-                ) : filteredEvents.map((event) => (
-                  <button
-                    className="web-page-activity-event"
-                    type="button"
-                    role="listitem"
-                    key={event.id}
-                    data-selected={event.id === selectedEvent.id}
-                    onClick={() => setSelectedId(event.id)}
-                    aria-label={`View details for ${event.title}`}
-                  >
-                    <EventIcon category={event.category} status={event.status} />
-                    <span className="web-page-activity-event-copy">
-                      <span className="web-page-activity-event-title">
-                        {event.title}
-                        <Badge variant={statusVariant[event.status]}>{event.status}</Badge>
+                ) : (
+                  filteredEvents.map((event) => (
+                    <button
+                      className="web-page-activity-event"
+                      type="button"
+                      role="listitem"
+                      key={event.id}
+                      data-selected={event.id === selectedEvent.id}
+                      onClick={() => setSelectedId(event.id)}
+                      aria-label={`View details for ${event.title}`}
+                    >
+                      <EventIcon category={event.category} status={event.status} />
+                      <span className="web-page-activity-event-copy">
+                        <span className="web-page-activity-event-title">
+                          {event.title}
+                          <Badge variant={statusVariant[event.status]}>{event.status}</Badge>
+                        </span>
+                        <span className="web-page-activity-event-summary">{event.summary}</span>
+                        <span className="web-page-activity-event-meta">
+                          <span>{event.category}</span>
+                          <span>{event.chain}</span>
+                          <span>{event.actor}</span>
+                        </span>
                       </span>
-                      <span className="web-page-activity-event-summary">{event.summary}</span>
-                      <span className="web-page-activity-event-meta">
-                        <span>{event.category}</span>
-                        <span>{event.chain}</span>
-                        <span>{event.actor}</span>
+                      <span className="web-page-activity-event-time">
+                        {event.relative}
+                        <span className="web-page-activity-event-chevron">
+                          <ChevronRight size={14} />
+                        </span>
                       </span>
-                    </span>
-                    <span className="web-page-activity-event-time">
-                      {event.relative}
-                      <span className="web-page-activity-event-chevron"><ChevronRight size={14} /></span>
-                    </span>
-                  </button>
-                ))}
+                    </button>
+                  ))
+                )}
               </div>
               <div className="web-page-activity-legend" aria-label="Event status legend">
-                {statusOptions.slice(1).map((item) => <span className="web-page-activity-legend-item" key={item}><span className="web-page-activity-legend-swatch" data-status={item} />{item}</span>)}
+                {statusOptions.slice(1).map((item) => (
+                  <span className="web-page-activity-legend-item" key={item}>
+                    <span className="web-page-activity-legend-swatch" data-status={item} />
+                    {item}
+                  </span>
+                ))}
               </div>
             </section>
 
@@ -639,45 +700,125 @@ export function ActivityPage() {
                 <div className="web-page-activity-detail-header">
                   <div className="web-page-activity-detail-topline">
                     <span className="web-page-activity-detail-category">Selected event</span>
-                    <Badge variant={statusVariant[selectedEvent.status]}>{selectedEvent.status}</Badge>
+                    <Badge variant={statusVariant[selectedEvent.status]}>
+                      {selectedEvent.status}
+                    </Badge>
                   </div>
                   <h2 className="web-page-activity-detail-title">{selectedEvent.title}</h2>
                   <p className="web-page-activity-detail-summary">{selectedEvent.summary}</p>
                   <div className="web-page-activity-detail-context">
-                    <span><Clock3 size={12} />{selectedEvent.time}</span>
-                    <span><ShieldCheck size={12} />{selectedEvent.actor}</span>
-                    <span><Layers3 size={12} />{selectedEvent.position}</span>
+                    <span>
+                      <Clock3 size={12} />
+                      {selectedEvent.time}
+                    </span>
+                    <span>
+                      <ShieldCheck size={12} />
+                      {selectedEvent.actor}
+                    </span>
+                    <span>
+                      <Layers3 size={12} />
+                      {selectedEvent.position}
+                    </span>
                   </div>
                 </div>
                 <div className="web-page-activity-detail-body">
                   <DetailSection eyebrow="Observed data" icon={<Database size={14} />}>
                     <div className="web-page-activity-data">
-                      {selectedEvent.observed.map((item) => <div className="web-page-activity-data-item" key={item.label}><div className="web-page-activity-data-label">{item.label}</div><div className="web-page-activity-data-value">{item.value}</div>{item.detail && <div className="web-page-activity-data-detail">{item.detail}</div>}</div>)}
+                      {selectedEvent.observed.map((item) => (
+                        <div className="web-page-activity-data-item" key={item.label}>
+                          <div className="web-page-activity-data-label">{item.label}</div>
+                          <div className="web-page-activity-data-value">{item.value}</div>
+                          {item.detail && (
+                            <div className="web-page-activity-data-detail">{item.detail}</div>
+                          )}
+                        </div>
+                      ))}
                     </div>
                   </DetailSection>
                   <DetailSection eyebrow="Calculation" icon={<Sparkles size={14} />}>
                     <div className="web-page-activity-data">
-                      {selectedEvent.calculation.map((item) => <div className="web-page-activity-data-item" key={item.label}><div className="web-page-activity-data-label">{item.label}</div><div className="web-page-activity-data-value">{item.value}</div>{item.detail && <div className="web-page-activity-data-detail">{item.detail}</div>}</div>)}
+                      {selectedEvent.calculation.map((item) => (
+                        <div className="web-page-activity-data-item" key={item.label}>
+                          <div className="web-page-activity-data-label">{item.label}</div>
+                          <div className="web-page-activity-data-value">{item.value}</div>
+                          {item.detail && (
+                            <div className="web-page-activity-data-detail">{item.detail}</div>
+                          )}
+                        </div>
+                      ))}
                     </div>
                   </DetailSection>
-                  {prediction && <DetailSection eyebrow="Prediction" icon={<Activity size={14} />}>
-                    <div className="web-page-activity-prediction">
-                      <div><div className="web-page-activity-prediction-label">{prediction.label}</div><div className="web-page-activity-prediction-value">{prediction.value}</div><div className="web-page-activity-prediction-meta">{prediction.horizon}</div></div>
-                      <div className="web-page-activity-prediction-confidence">{prediction.confidence}</div>
-                    </div>
-                  </DetailSection>}
+                  {prediction && (
+                    <DetailSection eyebrow="Prediction" icon={<Activity size={14} />}>
+                      <div className="web-page-activity-prediction">
+                        <div>
+                          <div className="web-page-activity-prediction-label">
+                            {prediction.label}
+                          </div>
+                          <div className="web-page-activity-prediction-value">
+                            {prediction.value}
+                          </div>
+                          <div className="web-page-activity-prediction-meta">
+                            {prediction.horizon}
+                          </div>
+                        </div>
+                        <div className="web-page-activity-prediction-confidence">
+                          {prediction.confidence}
+                        </div>
+                      </div>
+                    </DetailSection>
+                  )}
                   <DetailSection eyebrow="Action" icon={<ArrowUpRight size={14} />}>
                     <p className="web-page-activity-detail-copy">{selectedEvent.action}</p>
                   </DetailSection>
-                  <DetailSection eyebrow="Result" icon={selectedEvent.status === "Failed" ? <AlertTriangle size={14} /> : <Check size={14} />}>
-                    <p className="web-page-activity-detail-copy web-page-activity-result" data-status={selectedEvent.status}>{selectedEvent.result}</p>
+                  <DetailSection
+                    eyebrow="Result"
+                    icon={
+                      selectedEvent.status === "Failed" ? (
+                        <AlertTriangle size={14} />
+                      ) : (
+                        <Check size={14} />
+                      )
+                    }
+                  >
+                    <p
+                      className="web-page-activity-detail-copy web-page-activity-result"
+                      data-status={selectedEvent.status}
+                    >
+                      {selectedEvent.result}
+                    </p>
                   </DetailSection>
-                  {transaction && <DetailSection eyebrow="Transaction details" icon={<ExternalLink size={14} />}>
-                    <dl className="web-page-activity-tx">
-                      {transaction.map((item) => <div className="web-page-activity-tx-row" key={item.label}><dt>{item.label}</dt><dd>{item.link ? <a href={item.link} target="_blank" rel="noreferrer">{item.value}<ExternalLink size={11} aria-hidden="true" /></a> : item.value}</dd></div>)}
-                    </dl>
-                  </DetailSection>}
-                  {!transaction && <InlineAlert variant="info" icon={<Info size={14} />} title="No transaction recorded">This event changed monitoring state only. No capital-moving transaction was submitted.</InlineAlert>}
+                  {transaction && (
+                    <DetailSection eyebrow="Transaction details" icon={<ExternalLink size={14} />}>
+                      <dl className="web-page-activity-tx">
+                        {transaction.map((item) => (
+                          <div className="web-page-activity-tx-row" key={item.label}>
+                            <dt>{item.label}</dt>
+                            <dd>
+                              {item.link ? (
+                                <a href={item.link} target="_blank" rel="noreferrer">
+                                  {item.value}
+                                  <ExternalLink size={11} aria-hidden="true" />
+                                </a>
+                              ) : (
+                                item.value
+                              )}
+                            </dd>
+                          </div>
+                        ))}
+                      </dl>
+                    </DetailSection>
+                  )}
+                  {!transaction && (
+                    <InlineAlert
+                      variant="info"
+                      icon={<Info size={14} />}
+                      title="No transaction recorded"
+                    >
+                      This event changed monitoring state only. No capital-moving transaction was
+                      submitted.
+                    </InlineAlert>
+                  )}
                 </div>
               </GlassCard>
             </aside>

@@ -136,7 +136,9 @@ export function ScreenDock({
                 type="button"
                 disabled={screen.disabled}
                 aria-current={isActive ? "page" : undefined}
-                aria-label={screen.description ? `${screen.label}: ${screen.description}` : screen.label}
+                aria-label={
+                  screen.description ? `${screen.label}: ${screen.description}` : screen.label
+                }
                 title={screen.description}
                 onClick={() => onSelect(screen.id)}
                 onKeyDown={(event) => handleKeyDown(event, index)}
@@ -167,7 +169,9 @@ export function ScreenDock({
                 }}
               >
                 <Icon size={16} strokeWidth={isActive ? 2.25 : 1.9} aria-hidden="true" />
-                <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                <span
+                  style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+                >
                   {screen.label}
                 </span>
               </button>

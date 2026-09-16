@@ -101,11 +101,26 @@ const stressScenarios: readonly StressScenario[] = [
 ];
 
 const breakdown = [
-  { label: "Leverage utilization", value: 62, note: "2.4x effective leverage", tone: "warning" as const },
+  {
+    label: "Leverage utilization",
+    value: 62,
+    note: "2.4x effective leverage",
+    tone: "warning" as const,
+  },
   { label: "Collateral quality", value: 88, note: "92% ETH and wstETH", tone: "success" as const },
   { label: "Liquidity buffer", value: 71, note: "$18,420 available", tone: "accent" as const },
-  { label: "Protocol concentration", value: 54, note: "3 lending venues", tone: "warning" as const },
-  { label: "Oracle confidence", value: 96, note: "Two independent feeds", tone: "success" as const },
+  {
+    label: "Protocol concentration",
+    value: 54,
+    note: "3 lending venues",
+    tone: "warning" as const,
+  },
+  {
+    label: "Oracle confidence",
+    value: 96,
+    note: "Two independent feeds",
+    tone: "success" as const,
+  },
 ];
 
 const protectionDefaults = {
@@ -1177,7 +1192,8 @@ export function RiskCenterPage() {
     return () => window.clearTimeout(timer);
   }, [simulationState]);
 
-  const selectedScenario = stressScenarios.find((scenario) => scenario.id === selectedScenarioId) ?? stressScenarios[0]!;
+  const selectedScenario =
+    stressScenarios.find((scenario) => scenario.id === selectedScenarioId) ?? stressScenarios[0]!;
   const horizonValues = horizonData[horizon] ?? [];
   const horizonStart = horizonValues[0] ?? 0;
   const horizonPeak = horizonValues.length > 0 ? Math.max(...horizonValues) : 0;
@@ -1189,8 +1205,17 @@ export function RiskCenterPage() {
     const reserveLift = protections.reserveRepay ? 0.09 : 0;
     const guardrailLift = protections.healthGuardrail ? 0.07 : 0;
     const breakerLift = protections.circuitBreaker ? 0.05 : 0;
-    const healthFactor = Math.max(0.84, 1.82 - magnitude * 0.018 - regimePenalty + reserveLift + guardrailLift);
-    const probability = Math.min(96, Math.max(3, 7.8 + magnitude * 1.25 + regimePenalty * 24 - reserveLift * 18 - breakerLift * 15));
+    const healthFactor = Math.max(
+      0.84,
+      1.82 - magnitude * 0.018 - regimePenalty + reserveLift + guardrailLift,
+    );
+    const probability = Math.min(
+      96,
+      Math.max(
+        3,
+        7.8 + magnitude * 1.25 + regimePenalty * 24 - reserveLift * 18 - breakerLift * 15,
+      ),
+    );
     const drawdown = Math.min(60, magnitude * 0.76 + (marketRegime === "risk-off" ? 4 : 0));
     return {
       healthFactor: healthFactor.toFixed(2),
@@ -1224,7 +1249,8 @@ export function RiskCenterPage() {
             </p>
             <h1>Protect the position before the market moves.</h1>
             <p className="web-page-risk-header-copy">
-              A forward view of collateral health, liquidation exposure, and the controls that keep your strategy inside its guardrails.
+              A forward view of collateral health, liquidation exposure, and the controls that keep
+              your strategy inside its guardrails.
             </p>
           </div>
           <div className="web-page-risk-header-status" aria-label="Risk center status">
@@ -1257,7 +1283,8 @@ export function RiskCenterPage() {
               <span className="web-page-risk-score-denominator">/ 100</span>
             </div>
             <p className="web-page-risk-score-description">
-              Your buffer remains healthy, but leverage utilization and venue concentration are the two signals worth watching this week.
+              Your buffer remains healthy, but leverage utilization and venue concentration are the
+              two signals worth watching this week.
             </p>
             <Progress
               className="web-page-risk-score-progress"
@@ -1308,7 +1335,10 @@ export function RiskCenterPage() {
               <p className="web-page-risk-section-kicker">Forward exposure</p>
               <h2 id="liquidation-title">Liquidation probability horizon</h2>
             </div>
-            <p>Probability of a forced close under current collateral, leverage, and liquidity conditions.</p>
+            <p>
+              Probability of a forced close under current collateral, leverage, and liquidity
+              conditions.
+            </p>
           </div>
           <div className="web-page-risk-chart-card">
             <div className="web-page-risk-chart-heading">
@@ -1317,9 +1347,15 @@ export function RiskCenterPage() {
                   <Waves size={16} strokeWidth={1.8} aria-hidden="true" />
                   Estimated liquidation probability
                 </h3>
-                <p className="web-page-risk-chart-subtitle">Watchline is set at 15% for this portfolio.</p>
+                <p className="web-page-risk-chart-subtitle">
+                  Watchline is set at 15% for this portfolio.
+                </p>
               </div>
-              <div className="web-page-risk-horizon-toggle" role="group" aria-label="Choose liquidation probability horizon">
+              <div
+                className="web-page-risk-horizon-toggle"
+                role="group"
+                aria-label="Choose liquidation probability horizon"
+              >
                 {(Object.keys(horizonData) as Horizon[]).map((option) => (
                   <button
                     key={option}
@@ -1380,8 +1416,12 @@ export function RiskCenterPage() {
             </div>
             <div className="web-page-risk-chart-note">
               <span className="web-page-risk-legend">Watchline</span>
-              <span>Current horizon peak <strong>{horizonPeak.toFixed(1)}%</strong></span>
-              <span>Model confidence <strong>91%</strong></span>
+              <span>
+                Current horizon peak <strong>{horizonPeak.toFixed(1)}%</strong>
+              </span>
+              <span>
+                Model confidence <strong>91%</strong>
+              </span>
             </div>
           </div>
         </section>
@@ -1392,7 +1432,10 @@ export function RiskCenterPage() {
               <p className="web-page-risk-section-kicker">Signal decomposition</p>
               <h2 id="breakdown-title">Risk breakdown</h2>
             </div>
-            <p>Five weighted signals explain the current score. Higher values indicate more room before stress becomes material.</p>
+            <p>
+              Five weighted signals explain the current score. Higher values indicate more room
+              before stress becomes material.
+            </p>
           </div>
           <div className="web-page-risk-breakdown-grid">
             <div className="web-page-risk-panel">
@@ -1433,7 +1476,8 @@ export function RiskCenterPage() {
               </div>
               <h3 className="web-page-risk-regime-title">Constructive, but brittle</h3>
               <p className="web-page-risk-regime-copy">
-                Trend remains supportive, while thinner weekend liquidity leaves less room for a fast move through collateral levels.
+                Trend remains supportive, while thinner weekend liquidity leaves less room for a
+                fast move through collateral levels.
               </p>
               <div className="web-page-risk-regime-stats">
                 <div className="web-page-risk-regime-stat">
@@ -1483,7 +1527,11 @@ export function RiskCenterPage() {
                   <Badge variant={scenario.id === "correlated-selloff" ? "crimson" : "neutral"}>
                     {scenario.probability}
                   </Badge>
-                  {selectedScenarioId === scenario.id ? <Check size={15} strokeWidth={2} aria-label="Selected" /> : <ChevronRight size={15} strokeWidth={1.8} aria-hidden="true" />}
+                  {selectedScenarioId === scenario.id ? (
+                    <Check size={15} strokeWidth={2} aria-label="Selected" />
+                  ) : (
+                    <ChevronRight size={15} strokeWidth={1.8} aria-hidden="true" />
+                  )}
                 </div>
                 <h3>{scenario.title}</h3>
                 <p>{scenario.detail}</p>
@@ -1520,14 +1568,11 @@ export function RiskCenterPage() {
                 <Badge variant="outline">Hardcoded model</Badge>
               </div>
               <p className="web-page-risk-card-description">
-                Adjust the shock and regime. The preview uses your active protection switches and current collateral snapshot.
+                Adjust the shock and regime. The preview uses your active protection switches and
+                current collateral snapshot.
               </p>
               <div className="web-page-risk-form-grid">
-                <Field
-                  label="ETH price shock"
-                  description="From -1% to -60%"
-                  id="risk-price-shock"
-                >
+                <Field label="ETH price shock" description="From -1% to -60%" id="risk-price-shock">
                   <Input
                     type="number"
                     min={-60}
@@ -1585,7 +1630,10 @@ export function RiskCenterPage() {
                 <div className="web-page-risk-result-idle" role="status">
                   <div>
                     <CircleHelp size={25} strokeWidth={1.5} aria-hidden="true" />
-                    <p>Run the cascade simulation to see health factor, drawdown, and liquidation probability under this shock.</p>
+                    <p>
+                      Run the cascade simulation to see health factor, drawdown, and liquidation
+                      probability under this shock.
+                    </p>
                   </div>
                 </div>
               ) : simulationState === "running" ? (
@@ -1605,14 +1653,28 @@ export function RiskCenterPage() {
                   <div className="web-page-risk-result-topline">
                     <div>
                       <span className="web-page-risk-result-label">Cascade simulation result</span>
-                      <div className="web-page-risk-result-score">{simulation.healthFactor}<span>health factor</span></div>
+                      <div className="web-page-risk-result-score">
+                        {simulation.healthFactor}
+                        <span>health factor</span>
+                      </div>
                     </div>
-                    <Badge variant={simulation.isCritical ? "crimson" : "success"} leadingIcon={simulation.isCritical ? <AlertTriangle size={13} strokeWidth={1.8} /> : <ShieldCheck size={13} strokeWidth={1.8} />}>
+                    <Badge
+                      variant={simulation.isCritical ? "crimson" : "success"}
+                      leadingIcon={
+                        simulation.isCritical ? (
+                          <AlertTriangle size={13} strokeWidth={1.8} />
+                        ) : (
+                          <ShieldCheck size={13} strokeWidth={1.8} />
+                        )
+                      }
+                    >
                       {simulation.isCritical ? "Action required" : "Within guardrails"}
                     </Badge>
                   </div>
                   <p className="web-page-risk-result-copy">
-                    At a {Math.abs(priceShock)}% ETH shock in a {marketRegime.replace("-", " ")} regime, your active protections leave {simulation.healthFactor} of collateral coverage before liquidation conditions become active.
+                    At a {Math.abs(priceShock)}% ETH shock in a {marketRegime.replace("-", " ")}{" "}
+                    regime, your active protections leave {simulation.healthFactor} of collateral
+                    coverage before liquidation conditions become active.
                   </p>
                   {simulation.isCritical ? (
                     <InlineAlert
@@ -1657,16 +1719,22 @@ export function RiskCenterPage() {
               <p className="web-page-risk-section-kicker">Position controls</p>
               <h2 id="protection-title">Protection options</h2>
             </div>
-            <p>These controls are local preferences until you confirm them in the execution center.</p>
+            <p>
+              These controls are local preferences until you confirm them in the execution center.
+            </p>
           </div>
           <GlassCard>
             <div className="web-page-risk-protection-list">
               <div className="web-page-risk-option-row">
                 <div className="web-page-risk-option-copy">
-                  <span className="web-page-risk-option-icon" aria-hidden="true"><ShieldCheck size={17} strokeWidth={1.8} /></span>
+                  <span className="web-page-risk-option-icon" aria-hidden="true">
+                    <ShieldCheck size={17} strokeWidth={1.8} />
+                  </span>
                   <div>
                     <p className="web-page-risk-option-title">Health factor guardrail</p>
-                    <p className="web-page-risk-option-description">Pause new leverage when health factor falls below 1.45.</p>
+                    <p className="web-page-risk-option-description">
+                      Pause new leverage when health factor falls below 1.45.
+                    </p>
                   </div>
                 </div>
                 <span className="web-page-risk-option-meta">Floor 1.45</span>
@@ -1678,10 +1746,14 @@ export function RiskCenterPage() {
               </div>
               <div className="web-page-risk-option-row">
                 <div className="web-page-risk-option-copy">
-                  <span className="web-page-risk-option-icon" aria-hidden="true"><ArrowDownRight size={17} strokeWidth={1.8} /></span>
+                  <span className="web-page-risk-option-icon" aria-hidden="true">
+                    <ArrowDownRight size={17} strokeWidth={1.8} />
+                  </span>
                   <div>
                     <p className="web-page-risk-option-title">Auto-repay from reserve</p>
-                    <p className="web-page-risk-option-description">Use idle USDC to repay debt when the watchline is crossed.</p>
+                    <p className="web-page-risk-option-description">
+                      Use idle USDC to repay debt when the watchline is crossed.
+                    </p>
                   </div>
                 </div>
                 <span className="web-page-risk-option-meta">Reserve $18.4k</span>
@@ -1693,10 +1765,14 @@ export function RiskCenterPage() {
               </div>
               <div className="web-page-risk-option-row">
                 <div className="web-page-risk-option-copy">
-                  <span className="web-page-risk-option-icon" aria-hidden="true"><LockKeyhole size={17} strokeWidth={1.8} /></span>
+                  <span className="web-page-risk-option-icon" aria-hidden="true">
+                    <LockKeyhole size={17} strokeWidth={1.8} />
+                  </span>
                   <div>
                     <p className="web-page-risk-option-title">Oracle circuit breaker</p>
-                    <p className="web-page-risk-option-description">Block execution when venue prices diverge by more than 2%.</p>
+                    <p className="web-page-risk-option-description">
+                      Block execution when venue prices diverge by more than 2%.
+                    </p>
                   </div>
                 </div>
                 <span className="web-page-risk-option-meta">Deviation 2%</span>
@@ -1709,7 +1785,12 @@ export function RiskCenterPage() {
             </div>
             <div className="web-page-risk-protection-footer">
               <p>Changes affect the next simulation and require confirmation before execution.</p>
-              <Button type="button" variant="outline" size="sm" trailingIcon={<ChevronRight size={15} strokeWidth={1.8} />}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                trailingIcon={<ChevronRight size={15} strokeWidth={1.8} />}
+              >
                 Review controls
               </Button>
             </div>
@@ -1718,7 +1799,8 @@ export function RiskCenterPage() {
 
         <p className="web-page-risk-footer-note">
           <CircleHelp size={13} strokeWidth={1.8} aria-hidden="true" />
-          Model snapshot: block 21,047,812. This page is an analytical view, not a liquidation guarantee.
+          Model snapshot: block 21,047,812. This page is an analytical view, not a liquidation
+          guarantee.
         </p>
       </div>
     </main>
