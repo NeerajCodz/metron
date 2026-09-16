@@ -203,6 +203,7 @@ export function SettingsPage() {
   const [walletConnected, setWalletConnected] = useState(true);
   const [copied, setCopied] = useState(false);
   const [walletFeedback, setWalletFeedback] = useState<string | null>(null);
+  const [actionNotice, setActionNotice] = useState<string | null>(null);
 
   const updateSetting = <K extends keyof SettingsState>(key: K, value: SettingsState[K]) => {
     setSettings((current) => ({ ...current, [key]: value }));
@@ -363,9 +364,9 @@ export function SettingsPage() {
       <GlassCard className="web-page-settings__card" title="Active sessions" description="Review where this workspace is currently open.">
         <div className="web-page-settings__session-list">
           <div className="web-page-settings__session"><div className="web-page-settings__session-icon"><Globe2 size={17} /></div><div><strong>Chrome on Windows</strong><span>Current session · London, UK · Seen now</span></div><Badge variant="success">Current</Badge></div>
-          <div className="web-page-settings__session"><div className="web-page-settings__session-icon"><Smartphone size={17} /></div><div><strong>Metron mobile preview</strong><span>iPhone · Singapore · Seen 2 hours ago</span></div><Button variant="quiet" size="sm">Revoke</Button></div>
+          <div className="web-page-settings__session"><div className="web-page-settings__session-icon"><Smartphone size={17} /></div><div><strong>Metron mobile preview</strong><span>iPhone · Singapore · Seen 2 hours ago</span></div><Button variant="quiet" size="sm" onClick={() => setActionNotice("Mobile preview session revoked.")}>Revoke</Button></div>
         </div>
-        <div className="web-page-settings__card-footer"><Button variant="outline" size="sm" leadingIcon={<LockKeyhole size={15} />}>Revoke all other sessions</Button></div>
+        <div className="web-page-settings__card-footer"><Button variant="outline" size="sm" leadingIcon={<LockKeyhole size={15} />} onClick={() => setActionNotice("All other web sessions were revoked.")}>Revoke all other sessions</Button></div>
       </GlassCard>
     </>
   );
@@ -385,7 +386,7 @@ export function SettingsPage() {
       </GlassCard>
       <GlassCard className="web-page-settings__card" title="Local data" description="Metron uses local storage for drafts, filters, and non-custodial display preferences.">
         <div className="web-page-settings__privacy-callout"><div className="web-page-settings__section-icon"><Eye size={17} /></div><div><strong>Your keys never leave your signer.</strong><p>Metron cannot move funds without an explicit signature from your connected wallet or multisig.</p></div></div>
-        <div className="web-page-settings__card-footer"><Button variant="outline" size="sm" leadingIcon={<Database size={15} />}>Download local data</Button><Button variant="quiet" size="sm" leadingIcon={<RefreshCw size={15} />}>Clear cached views</Button></div>
+        <div className="web-page-settings__card-footer"><Button variant="outline" size="sm" leadingIcon={<Database size={15} />} onClick={() => setActionNotice("A local data export is ready to download.")}>Download local data</Button><Button variant="quiet" size="sm" leadingIcon={<RefreshCw size={15} />} onClick={() => setActionNotice("Cached views cleared. Live data will repopulate as you browse.")}>Clear cached views</Button></div>
       </GlassCard>
     </>
   );
@@ -485,7 +486,7 @@ export function SettingsPage() {
         </div>
       </GlassCard>
       <GlassCard className="web-page-settings__card" title="Custom RPC" description="Use a private endpoint for a supported chain when you need lower latency or higher limits.">
-        <div className="web-page-settings__rpc-row"><div className="web-page-settings__rpc-icon"><Link2 size={17} /></div><div><strong>Alchemy shared endpoint</strong><span>Ethereum · Read-only health check</span></div><Badge variant="neutral">Default</Badge><Button variant="outline" size="sm" trailingIcon={<ChevronRight size={14} />}>Manage endpoints</Button></div>
+        <div className="web-page-settings__rpc-row"><div className="web-page-settings__rpc-icon"><Link2 size={17} /></div><div><strong>Alchemy shared endpoint</strong><span>Ethereum · Read-only health check</span></div><Badge variant="neutral">Default</Badge><Button variant="outline" size="sm" trailingIcon={<ChevronRight size={14} />} onClick={() => setActionNotice("RPC endpoint management is ready for this workspace.")}>Manage endpoints</Button></div>
       </GlassCard>
     </>
   );
@@ -539,6 +540,7 @@ export function SettingsPage() {
         </nav>
         <main className="web-page-settings__content">
           <div className="web-page-settings__content-heading"><div><span className="web-page-settings__content-kicker">{tabs.find((tab) => tab.id === activeTab)?.description}</span><h2>{tabs.find((tab) => tab.id === activeTab)?.label}</h2></div><div className="web-page-settings__content-marker"><Radio size={13} />Live workspace</div></div>
+          {actionNotice ? <InlineAlert className="web-page-settings__alert" variant="success" icon={<Check size={17} />} title="Action complete">{actionNotice}</InlineAlert> : null}
           {renderTab()}
         </main>
       </div>
@@ -546,9 +548,6 @@ export function SettingsPage() {
   );
 }
 
-function InfoIcon() {
-  return <CircleAlert size={17} />;
-}
 
 const styles = `
 .web-page-settings { --settings-ink: #f4f0e8; --settings-muted: #9e9d99; --settings-dim: #6f716f; --settings-line: rgba(255,255,255,.1); --settings-line-strong: rgba(255,255,255,.18); --settings-surface: rgba(19,20,20,.82); --settings-sand: #d7c6a5; --settings-crimson: #d04a4a; color: var(--settings-ink); max-width: 1440px; margin: 0 auto; padding: clamp(1.5rem, 3.6vw, 3.75rem) clamp(1rem, 4vw, 4.75rem) 5rem; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
