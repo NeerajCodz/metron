@@ -1,0 +1,5 @@
+[package]
+name = "metron_intent"
+type = "bin"
+authors = ["Metron"]
+compiler_version = ">=0.36.0"

@@ -6,9 +6,12 @@
   "scripts": {
     "build": "node ../../scripts/forge.mjs build && tsc -p tsconfig.json",
     "clean": "node ../../scripts/forge.mjs clean && node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
-    "lint": "node ../../scripts/forge.mjs fmt --check && eslint chains config test-ts --max-warnings=0",
+    "lint": "node ../../scripts/forge.mjs fmt --check && eslint chains config keeper scripts test-ts --max-warnings=0",
     "test": "node ../../scripts/forge.mjs test && vitest run test-ts",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "zk:check": "node scripts/zk.mjs check",
+    "zk:compile": "node scripts/zk.mjs compile",
+    "zk:prove": "node scripts/zk.mjs prove"
   },
   "dependencies": {
     "@metron/config": "workspace:*",
