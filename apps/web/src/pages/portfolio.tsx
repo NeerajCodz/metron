@@ -1,4 +1,4 @@
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   ArrowDownLeft,
   ArrowUpRight,
@@ -22,6 +22,15 @@ import { Badge, Button, GlassCard, IconButton, MetricCard, Progress } from "@met
 
 const chains = ["All chains", "Ethereum", "Arbitrum", "Base", "Solana"] as const;
 type Chain = (typeof chains)[number];
+type AsyncStatus = "idle" | "loading" | "success" | "error";
+type OperationState = {
+  status: AsyncStatus;
+  message: string;
+  positionId?: string;
+  action?: string;
+};
+
+const idleOperation: OperationState = { status: "idle", message: "" };
 
 type Position = {
   id: string;
@@ -235,6 +244,21 @@ export function PortfolioPage() {
   const [selectedPosition, setSelectedPosition] = useState<Position | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [query, setQuery] = useState("");
+  const [searchInput, setSearchInput] = useState("");
+  const [chainStatus, setChainStatus] = useState<OperationState>(idleOperation);
+  const [searchStatus, setSearchStatus] = useState<OperationState>(idleOperation);
+  const [inspectionStatus, setInspectionStatus] = useState<OperationState>(idleOperation);
+  const [positionActionStatus, setPositionActionStatus] =
+    useState<OperationState>(idleOperation);
+  const [refreshStatus, setRefreshStatus] = useState<AsyncStatus>("idle");
+  const timers = useRef<Record<string, number>>({});
+
+  useEffect(
+    () => () => {
+      Object.values(timers.current).forEach((timer) => window.clearTimeout(timer));
+    },
+    [],
+  );
 
   const totals = useMemo(() => {
     const rows =
@@ -267,9 +291,101 @@ export function PortfolioPage() {
     [query, selectedChain],
   );
 
+  const handleChainChange = (nextChain: Chain) => {
+    if (nextChain === selectedChain || chainStatus.status === "loading") return;
+    setChainStatus({
+      status: "loading",
+      message: `Loading ${nextChain === "All chains" ? "all networks" : nextChain} positions…`,
+    });
+    window.clearTimeout(timers.current.chain);
+    timers.current.chain = window.setTimeout(() => {
+      setSelectedChain(nextChain);
+      setActiveMenu(null);
+      setChainStatus({
+        status: "success",
+        message: `Showing ${nextChain === "All chains" ? "all networks" : nextChain} portfolio results.`,
+      });
+    }, 550);
+  };
+
+  const handleSearch = (value: string) => {
+    setSearchInput(value);
+    setSearchStatus({ status: "loading", message: "Searching positions…" });
+    window.clearTimeout(timers.current.search);
+    timers.current.search = window.setTimeout(() => {
+      const search = value.trim().toLowerCase();
+      const resultCount = positions.filter((position) => {
+        const inChain = selectedChain === "All chains" || position.chain === selectedChain;
+        return (
+          inChain &&
+          (!search ||
+            `${position.asset} ${position.protocol} ${position.chain} ${position.type}`
+              .toLowerCase()
+              .includes(search))
+        );
+      }).length;
+      setQuery(value);
+      setSearchStatus({
+        status: "success",
+        message: `${resultCount} ${resultCount === 1 ? "position" : "positions"} found.`,
+      });
+    }, 350);
+  };
+
+  const handleInspect = (position: Position) => {
+    setSelectedPosition(position);
+    setInspectionStatus({
+      status: "loading",
+      positionId: position.id,
+      message: `Loading ${position.asset} position detail…`,
+    });
+    window.clearTimeout(timers.current.inspect);
+    timers.current.inspect = window.setTimeout(() => {
+      setInspectionStatus({
+        status: "success",
+        positionId: position.id,
+        message: `${position.asset} detail loaded from ${position.protocol}.`,
+      });
+    }, 450);
+  };
+
   const handleAction = (action: string, position: Position) => {
-    setNotice(`${action} request staged for ${position.asset} on ${position.protocol}.`);
     setActiveMenu(null);
+    setPositionActionStatus({
+      status: "loading",
+      positionId: position.id,
+      action,
+      message: `${action} request is being reviewed for ${position.asset}…`,
+    });
+    window.clearTimeout(timers.current.action);
+    timers.current.action = window.setTimeout(() => {
+      if (action === "Withdraw") {
+        setPositionActionStatus({
+          status: "error",
+          positionId: position.id,
+          action,
+          message: `Withdraw blocked: ${position.asset} remains inside the active risk guard.`,
+        });
+        return;
+      }
+      setPositionActionStatus({
+        status: "success",
+        positionId: position.id,
+        action,
+        message: `${action} request staged for ${position.asset} on ${position.protocol}.`,
+      });
+      setNotice(`${action} request staged for ${position.asset} on ${position.protocol}.`);
+    }, 800);
+  };
+
+  const handleRefresh = () => {
+    if (refreshStatus === "loading") return;
+    setRefreshStatus("loading");
+    window.clearTimeout(timers.current.refresh);
+    timers.current.refresh = window.setTimeout(() => {
+      setRefreshStatus("success");
+      setNotice("Portfolio balances refreshed. Latest block 19,842,116.");
+    }, 700);
   };
 
   return (
@@ -286,9 +402,16 @@ export function PortfolioPage() {
         <div className="web-page-portfolio__header-actions">
           <span className="web-page-portfolio__sync">
             <span className="web-page-portfolio__sync-dot" />
-            Synced 2 min ago
+            {refreshStatus === "loading" ? "Refreshing balances…" : "Synced 2 min ago"}
           </span>
-          <Button variant="outline" size="sm" leadingIcon={<RefreshCw size={15} />}>
+          <Button
+            variant="outline"
+            size="sm"
+            leadingIcon={<RefreshCw size={15} />}
+            onClick={handleRefresh}
+            loading={refreshStatus === "loading"}
+            loadingLabel="Refreshing"
+          >
             Refresh
           </Button>
         </div>
@@ -305,12 +428,10 @@ export function PortfolioPage() {
               className="web-page-portfolio__chain-tab"
               data-active={selectedChain === chain}
               key={chain}
-              onClick={() => {
-                setSelectedChain(chain);
-                setActiveMenu(null);
-              }}
+              onClick={() => handleChainChange(chain)}
               role="tab"
               aria-selected={selectedChain === chain}
+              aria-busy={chainStatus.status === "loading"}
               type="button"
             >
               {chain}
@@ -323,8 +444,9 @@ export function PortfolioPage() {
           <select
             className="web-page-portfolio__chain-select"
             value={selectedChain}
-            onChange={(event) => setSelectedChain(event.target.value as Chain)}
+            onChange={(event) => handleChainChange(event.target.value as Chain)}
             aria-label="Select network"
+            disabled={chainStatus.status === "loading"}
           >
             {chains.map((chain) => (
               <option key={chain} value={chain}>
@@ -340,12 +462,22 @@ export function PortfolioPage() {
         </label>
       </section>
 
+      {chainStatus.status !== "idle" ? (
+        <div className={`web-page-portfolio__operation web-page-portfolio__operation--${chainStatus.status}`} role="status" aria-live="polite">
+          <span>{chainStatus.message}</span>
+        </div>
+      ) : null}
       {notice ? (
         <div className="web-page-portfolio__notice" role="status" aria-live="polite">
           <span>{notice}</span>
           <button type="button" onClick={() => setNotice(null)} aria-label="Dismiss notification">
             <X size={15} />
           </button>
+        </div>
+      ) : null}
+      {positionActionStatus.status !== "idle" ? (
+        <div className={`web-page-portfolio__operation web-page-portfolio__operation--${positionActionStatus.status}`} role="status" aria-live="polite">
+          <span>{positionActionStatus.message}</span>
         </div>
       ) : null}
 
@@ -408,7 +540,7 @@ export function PortfolioPage() {
                   data-muted={!isSelected}
                   key={chain}
                   type="button"
-                  onClick={() => setSelectedChain(chain)}
+                  onClick={() => handleChainChange(chain)}
                 >
                   <span className="web-page-portfolio__allocation-label">
                     <i style={{ backgroundColor: data.color }} />
@@ -513,12 +645,18 @@ export function PortfolioPage() {
             <label className="web-page-portfolio__search">
               <Search size={15} aria-hidden="true" />
               <input
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
+                value={searchInput}
+                onChange={(event) => handleSearch(event.target.value)}
                 placeholder="Search positions"
                 aria-label="Search positions"
+                aria-busy={searchStatus.status === "loading"}
               />
             </label>
+            {searchStatus.status !== "idle" ? (
+              <span className="web-page-portfolio__search-status" role="status" aria-live="polite">
+                {searchStatus.message}
+              </span>
+            ) : null}
             <Button variant="outline" size="sm" leadingIcon={<SlidersHorizontal size={15} />}>
               Filter
             </Button>
@@ -535,8 +673,9 @@ export function PortfolioPage() {
               variant="quiet"
               size="sm"
               onClick={() => {
+                setSearchInput("");
                 setQuery("");
-                setSelectedChain("All chains");
+                handleChainChange("All chains");
               }}
             >
               Clear filters
@@ -596,7 +735,12 @@ export function PortfolioPage() {
                         <Button
                           variant="quiet"
                           size="sm"
-                          onClick={() => setSelectedPosition(position)}
+                          onClick={() => handleInspect(position)}
+                          loading={
+                            inspectionStatus.status === "loading" &&
+                            inspectionStatus.positionId === position.id
+                          }
+                          loadingLabel="Inspecting"
                         >
                           Inspect
                         </Button>
@@ -615,6 +759,11 @@ export function PortfolioPage() {
                               <button
                                 type="button"
                                 role="menuitem"
+                                disabled={positionActionStatus.status === "loading"}
+                                aria-busy={
+                                  positionActionStatus.status === "loading" &&
+                                  positionActionStatus.positionId === position.id
+                                }
                                 onClick={() => handleAction("Adjust", position)}
                               >
                                 <SlidersHorizontal size={14} />
@@ -623,6 +772,11 @@ export function PortfolioPage() {
                               <button
                                 type="button"
                                 role="menuitem"
+                                disabled={positionActionStatus.status === "loading"}
+                                aria-busy={
+                                  positionActionStatus.status === "loading" &&
+                                  positionActionStatus.positionId === position.id
+                                }
                                 onClick={() => handleAction("Withdraw", position)}
                               >
                                 <ArrowDownLeft size={14} />
@@ -631,6 +785,11 @@ export function PortfolioPage() {
                               <button
                                 type="button"
                                 role="menuitem"
+                                disabled={positionActionStatus.status === "loading"}
+                                aria-busy={
+                                  positionActionStatus.status === "loading" &&
+                                  positionActionStatus.positionId === position.id
+                                }
                                 onClick={() => handleAction("View", position)}
                               >
                                 <ExternalLink size={14} />
@@ -657,6 +816,12 @@ export function PortfolioPage() {
             <p>
               {selectedPosition.protocol} on {selectedPosition.chain}
             </p>
+          {inspectionStatus.positionId === selectedPosition.id &&
+          inspectionStatus.status !== "idle" ? (
+            <p className={`web-page-portfolio__inspector-status web-page-portfolio__inspector-status--${inspectionStatus.status}`} role="status" aria-live="polite">
+              {inspectionStatus.message}
+            </p>
+          ) : null}
           </div>
           <div className="web-page-portfolio__inspector-stats">
             <span>
@@ -687,6 +852,12 @@ export function PortfolioPage() {
               size="sm"
               leadingIcon={<SlidersHorizontal size={15} />}
               onClick={() => handleAction("Adjust", selectedPosition)}
+              loading={
+                positionActionStatus.status === "loading" &&
+                positionActionStatus.positionId === selectedPosition.id &&
+                positionActionStatus.action === "Adjust"
+              }
+              loadingLabel="Staging"
             >
               Adjust
             </Button>
@@ -695,6 +866,12 @@ export function PortfolioPage() {
               size="sm"
               leadingIcon={<ArrowUpRight size={15} />}
               onClick={() => handleAction("Withdraw", selectedPosition)}
+              loading={
+                positionActionStatus.status === "loading" &&
+                positionActionStatus.positionId === selectedPosition.id &&
+                positionActionStatus.action === "Withdraw"
+              }
+              loadingLabel="Reviewing"
             >
               Withdraw
             </Button>
@@ -731,6 +908,10 @@ const styles = `
 .web-page-portfolio__chain-select-icon { pointer-events: none; position: absolute; right: 11px; top: 50%; transform: translateY(-50%); color: var(--metron-pearl-dim); }
 .web-page-portfolio__notice { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 11px 14px; border-left: 2px solid var(--metron-crimson-bright); background: rgb(113 0 20 / 18%); color: var(--metron-pearl-muted); font-size: 12px; margin: 0 0 22px; }
 .web-page-portfolio__notice button { border: 0; background: transparent; color: var(--metron-pearl-muted); cursor: pointer; display: grid; place-items: center; }
+.web-page-portfolio__operation { display: flex; align-items: center; gap: 9px; padding: 10px 14px; margin: 0 0 12px; border-left: 2px solid var(--metron-sand-bright); background: rgb(179 143 111 / 12%); color: var(--metron-pearl-muted); font-size: 12px; }
+.web-page-portfolio__operation--loading { border-left-color: var(--metron-sand-bright); }
+.web-page-portfolio__operation--success { border-left-color: var(--metron-success, #34d399); }
+.web-page-portfolio__operation--error { border-left-color: #d46d78; background: rgb(212 109 120 / 10%); }
 .web-page-portfolio__metrics { display: grid; grid-template-columns: minmax(1.35fr, 2fr) repeat(3, minmax(0, 1fr)); gap: 12px; }
 .web-page-portfolio__metric { min-height: 132px; }
 .web-page-portfolio__metric--hero { border-top: 2px solid var(--metron-crimson-bright); }
@@ -768,6 +949,10 @@ const styles = `
 .web-page-portfolio__table-tools { display: flex; align-items: center; gap: 8px; }
 .web-page-portfolio__search { display: flex; align-items: center; gap: 8px; border: 1px solid var(--metron-border); background: var(--metron-surface); padding: 7px 10px; min-width: 210px; color: var(--metron-pearl-dim); }
 .web-page-portfolio__search input { border: 0; outline: 0; min-width: 0; width: 100%; background: transparent; color: var(--metron-pearl); font: 12px var(--metron-font-sans, sans-serif); }
+.web-page-portfolio__search-status { color: var(--metron-pearl-dim); font: 10px var(--metron-font-mono, monospace); white-space: nowrap; }
+.web-page-portfolio__inspector-status { color: var(--metron-pearl-dim); font: 10px var(--metron-font-mono, monospace); margin-top: 8px !important; }
+.web-page-portfolio__inspector-status--success { color: var(--metron-success, #34d399); }
+.web-page-portfolio__inspector-status--error { color: #d46d78; }
 .web-page-portfolio__search input::placeholder { color: var(--metron-pearl-dim); }
 .web-page-portfolio__table-wrap { overflow-x: auto; border-top: 1px solid var(--metron-border-strong); border-bottom: 1px solid var(--metron-border); }
 .web-page-portfolio__table { width: 100%; min-width: 950px; border-collapse: collapse; }

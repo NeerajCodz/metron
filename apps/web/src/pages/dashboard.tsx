@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Activity,
   AlertTriangle,
@@ -95,7 +95,52 @@ export function DashboardPage() {
   const [period, setPeriod] = useState("30D");
   const [alertVisible, setAlertVisible] = useState(true);
   const [paused, setPaused] = useState(false);
+  const [automationStatus, setAutomationStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
+  const [automationMessage, setAutomationMessage] = useState("");
+  const [exportStatus, setExportStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
+  const [exportMessage, setExportMessage] = useState("");
+  const automationTimer = useRef<number | undefined>(undefined);
+  const exportTimer = useRef<number | undefined>(undefined);
 
+  useEffect(
+    () => () => {
+      window.clearTimeout(automationTimer.current);
+      window.clearTimeout(exportTimer.current);
+    },
+    [],
+  );
+
+  const handleAutomationToggle = () => {
+    if (automationStatus === "loading") return;
+    const nextPaused = !paused;
+    setAutomationStatus("loading");
+    setAutomationMessage(`${nextPaused ? "Pausing" : "Resuming"} automation rules…`);
+    window.clearTimeout(automationTimer.current);
+    automationTimer.current = window.setTimeout(() => {
+      setPaused(nextPaused);
+      setAutomationStatus("success");
+      setAutomationMessage(
+        nextPaused
+          ? "Automation paused. No new rebalance orders will be submitted."
+          : "Automation resumed. Guardrails are active again.",
+      );
+    }, 700);
+  };
+
+  const handleExport = () => {
+    if (exportStatus === "loading") return;
+    setExportStatus("loading");
+    setExportMessage("Preparing the 30-day portfolio report…");
+    window.clearTimeout(exportTimer.current);
+    exportTimer.current = window.setTimeout(() => {
+      setExportStatus("success");
+      setExportMessage("Report ready. The export includes 142 fills and 4 chain balances.");
+    }, 900);
+  };
   return (
     <main className="web-page-dashboard" aria-labelledby="dashboard-title">
       <header className="web-page-dashboard__header">
@@ -133,6 +178,68 @@ export function DashboardPage() {
           </button>
         </InlineAlert>
       )}
+      {automationStatus !== "idle" ? (
+        <InlineAlert
+          className="web-page-dashboard__alert"
+          variant={
+            automationStatus === "error"
+              ? "error"
+              : automationStatus === "success"
+                ? "success"
+                : "info"
+          }
+          icon={
+            automationStatus === "error" ? (
+              <AlertTriangle size={16} />
+            ) : automationStatus === "success" ? (
+              <CheckCircle2 size={16} />
+            ) : (
+              <Clock3 size={16} />
+            )
+          }
+          title={
+            automationStatus === "loading"
+              ? "Updating automation"
+              : automationStatus === "success"
+                ? "Automation updated"
+                : "Automation update failed"
+          }
+          role="status"
+        >
+          {automationMessage}
+        </InlineAlert>
+      ) : null}
+      {exportStatus !== "idle" ? (
+        <InlineAlert
+          className="web-page-dashboard__alert"
+          variant={
+            exportStatus === "error"
+              ? "error"
+              : exportStatus === "success"
+                ? "success"
+                : "info"
+          }
+          icon={
+            exportStatus === "error" ? (
+              <AlertTriangle size={16} />
+            ) : exportStatus === "success" ? (
+              <CheckCircle2 size={16} />
+            ) : (
+              <Clock3 size={16} />
+            )
+          }
+          title={
+            exportStatus === "loading"
+              ? "Generating report"
+              : exportStatus === "success"
+                ? "Export complete"
+                : "Export failed"
+          }
+          role="status"
+        >
+          {exportMessage}
+        </InlineAlert>
+      ) : null}
 
       <section className="web-page-dashboard__metrics" aria-label="Portfolio summary">
         <MetricCard
@@ -352,7 +459,9 @@ export function DashboardPage() {
               variant={paused ? "primary" : "outline"}
               size="sm"
               leadingIcon={paused ? <Play size={14} /> : <Pause size={14} />}
-              onClick={() => setPaused(!paused)}
+              onClick={handleAutomationToggle}
+              loading={automationStatus === "loading"}
+              loadingLabel={paused ? "Resuming" : "Pausing"}
             >
               {paused ? "Resume" : "Pause"}
             </Button>
@@ -393,7 +502,14 @@ export function DashboardPage() {
           <Network size={14} /> Data synced 18 seconds ago
         </span>
         <span>Block 19,842,116 · Ethereum mainnet</span>
-        <Button variant="quiet" size="sm" trailingIcon={<ArrowDownRight size={14} />}>
+        <Button
+          variant="quiet"
+          size="sm"
+          trailingIcon={<ArrowDownRight size={14} />}
+          onClick={handleExport}
+          loading={exportStatus === "loading"}
+          loadingLabel="Preparing"
+        >
           Export report
         </Button>
       </footer>
