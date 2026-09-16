@@ -9,7 +9,10 @@ import {MetronTypes} from "../../contracts/libraries/MetronTypes.sol";
 
 contract MockInsuranceToken is ERC20 {
     constructor() ERC20("Mock USD", "mUSD") {}
-    function mint(address to, uint256 amount) external { _mint(to, amount); }
+
+    function mint(address to, uint256 amount) external {
+        _mint(to, amount);
+    }
 }
 
 contract EmergencyControlsTest is Test {
@@ -48,7 +51,13 @@ contract EmergencyControlsTest is Test {
         bytes32 evidence = keccak256("oracle-divergence");
         vm.startPrank(admin);
         vm.expectRevert(abi.encodeWithSelector(InsuranceReserve.TriggerNotVerified.selector, keccak256("unverified")));
-        reserve.claim(coverageId, 10e18, InsuranceReserve.TriggerKind.ORACLE_DIVERGENCE, keccak256("unverified"), keccak256("claim-1"));
+        reserve.claim(
+            coverageId,
+            10e18,
+            InsuranceReserve.TriggerKind.ORACLE_DIVERGENCE,
+            keccak256("unverified"),
+            keccak256("claim-1")
+        );
         vm.expectRevert(
             abi.encodeWithSelector(
                 InsuranceReserve.TriggerMismatch.selector,

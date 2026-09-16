@@ -93,9 +93,7 @@ contract HedgeManager is AccessControl, Pausable, ReentrancyGuard {
             lastRebalancedAt: 0,
             configured: true
         });
-        emit HedgePolicyConfigured(
-            positionId, msg.sender, targetDeltaWad, toleranceWad, cooldown, minimumBenefitWad
-        );
+        emit HedgePolicyConfigured(positionId, msg.sender, targetDeltaWad, toleranceWad, cooldown, minimumBenefitWad);
     }
 
     function canRebalance(bytes32 positionId, int256 observedDeltaWad) public view returns (bool) {
@@ -122,7 +120,9 @@ contract HedgeManager is AccessControl, Pausable, ReentrancyGuard {
         IStrategyAdapter adapter,
         bytes calldata data
     ) external onlyRole(KEEPER_ROLE) whenNotPaused nonReentrant returns (bytes32 executionId, uint256 outputAmount) {
-        if (traceId == bytes32(0) || reservationId == bytes32(0) || address(adapter) == address(0)) revert InvalidPolicy();
+        if (traceId == bytes32(0) || reservationId == bytes32(0) || address(adapter) == address(0)) {
+            revert InvalidPolicy();
+        }
         if (block.timestamp > deadline) revert DeadlineExpired(deadline);
         MetronTypes.Position memory position = positionManager.getPosition(positionId);
         if (position.status != MetronTypes.PositionStatus.ACTIVE) revert PositionNotActive(positionId);

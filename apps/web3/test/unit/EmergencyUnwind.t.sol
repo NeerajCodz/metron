@@ -11,11 +11,15 @@ import {MetronTypes} from "../../contracts/libraries/MetronTypes.sol";
 
 contract UnwindToken is ERC20 {
     constructor() ERC20("Unwind USD", "uUSD") {}
-    function mint(address to, uint256 amount) external { _mint(to, amount); }
+
+    function mint(address to, uint256 amount) external {
+        _mint(to, amount);
+    }
 }
 
 contract MockRecoveryExecutor is IRecoveryExecutor {
     uint256 public calls;
+
     function recoverPosition(bytes32, MetronTypes.StrategyAction[] calldata, uint256, MetronTypes.PositionStatus)
         external
         returns (bytes32)
@@ -28,12 +32,20 @@ contract MockRecoveryExecutor is IRecoveryExecutor {
 contract MockFlashProvider is IFlashLiquidityProvider {
     UnwindToken public immutable token;
     uint256 public feeAmount;
-    constructor(UnwindToken token_) { token = token_; }
-    function setFee(uint256 amount) external { feeAmount = amount; }
+
+    constructor(UnwindToken token_) {
+        token = token_;
+    }
+
+    function setFee(uint256 amount) external {
+        feeAmount = amount;
+    }
+
     function flashLoan(address receiver, address loanToken, uint256 amount, bytes calldata data) external {
         token.transfer(receiver, amount);
         IFlashCallback(receiver).onFlashLoan(loanToken, amount, feeAmount, data);
     }
+
     function repay(address loanToken, uint256 amount) external {
         token.transferFrom(msg.sender, address(this), amount);
         loanToken;
@@ -64,7 +76,13 @@ contract EmergencyUnwindTest is Test {
         MetronTypes.StrategyAction[] memory actions = new MetronTypes.StrategyAction[](1);
         bytes32 positionId = keccak256("position");
         bytes32 unwindId = unwind.unwind(
-            positionId, actions, MetronTypes.PositionStatus.CLOSED, provider, address(token), 100e18, block.timestamp + 1 days
+            positionId,
+            actions,
+            MetronTypes.PositionStatus.CLOSED,
+            provider,
+            address(token),
+            100e18,
+            block.timestamp + 1 days
         );
         assertTrue(unwind.completedUnwinds(unwindId));
         assertEq(recovery.calls(), 1);
@@ -76,7 +94,13 @@ contract EmergencyUnwindTest is Test {
         MetronTypes.StrategyAction[] memory actions = new MetronTypes.StrategyAction[](1);
         vm.expectRevert();
         unwind.unwind(
-            keccak256("position"), actions, MetronTypes.PositionStatus.CLOSED, provider, address(token), 100e18, block.timestamp + 1 days
+            keccak256("position"),
+            actions,
+            MetronTypes.PositionStatus.CLOSED,
+            provider,
+            address(token),
+            100e18,
+            block.timestamp + 1 days
         );
         assertEq(recovery.calls(), 0);
         assertEq(token.balanceOf(address(unwind)), 1e18);

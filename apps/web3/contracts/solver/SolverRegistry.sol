@@ -41,13 +41,8 @@ contract SolverRegistry is AccessControl {
         if (solverId == bytes32(0)) revert InvalidSolverId();
         if (operator == address(0)) revert InvalidOperator();
         if (solvers[solverId].operator != address(0)) revert SolverExists(solverId);
-        solvers[solverId] = Solver({
-            operator: operator,
-            metadataHash: metadataHash,
-            bond: bond,
-            reputationBps: 5_000,
-            enabled: true
-        });
+        solvers[solverId] =
+            Solver({operator: operator, metadataHash: metadataHash, bond: bond, reputationBps: 5_000, enabled: true});
         emit SolverRegistered(solverId, operator, metadataHash, bond);
     }
 

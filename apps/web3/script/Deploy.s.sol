@@ -45,31 +45,19 @@ contract Deploy is Script {
         deployment.positionManager = new PositionManager(admin, deployment.intentManager);
         deployment.riskController = new RiskController(admin, deployment.intentManager, protocolLimits);
         deployment.strategyExecutor = new StrategyExecutor(
-            admin,
-            deployment.intentManager,
-            deployment.positionManager,
-            deployment.riskController,
-            deployment.vault
+            admin, deployment.intentManager, deployment.positionManager, deployment.riskController, deployment.vault
         );
         deployment.recoveryExecutor = new RecoveryExecutor(
-            admin,
-            deployment.intentManager,
-            deployment.positionManager,
-            deployment.riskController,
-            deployment.vault
+            admin, deployment.intentManager, deployment.positionManager, deployment.riskController, deployment.vault
         );
 
-        deployment.intentManager.grantRole(
-            deployment.intentManager.SETTLER_ROLE(), address(deployment.strategyExecutor)
-        );
+        deployment.intentManager
+            .grantRole(deployment.intentManager.SETTLER_ROLE(), address(deployment.strategyExecutor));
         deployment.vault.grantRole(deployment.vault.EXECUTOR_ROLE(), address(deployment.strategyExecutor));
         deployment.vault.grantRole(deployment.vault.EXECUTOR_ROLE(), address(deployment.recoveryExecutor));
-        deployment.positionManager.grantRole(
-            deployment.positionManager.EXECUTOR_ROLE(), address(deployment.strategyExecutor)
-        );
-        deployment.recoveryExecutor.grantRole(
-            deployment.recoveryExecutor.EXECUTOR_ROLE(), admin
-        );
+        deployment.positionManager
+            .grantRole(deployment.positionManager.EXECUTOR_ROLE(), address(deployment.strategyExecutor));
+        deployment.recoveryExecutor.grantRole(deployment.recoveryExecutor.EXECUTOR_ROLE(), admin);
         vm.stopBroadcast();
     }
 }

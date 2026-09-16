@@ -31,8 +31,7 @@ contract RebalanceAutomation {
         RebalanceEnvelope memory envelope = abi.decode(checkData, (RebalanceEnvelope));
         PositionAutomation.RebalanceCall memory call = envelope.call;
         upkeepNeeded = positionAutomation.hedgeManager().canRebalance(call.positionId, call.observedDeltaWad)
-            && tx.gasprice <= envelope.maxGasPriceWei
-            && envelope.observedLiquidityBps >= envelope.minimumLiquidityBps
+            && tx.gasprice <= envelope.maxGasPriceWei && envelope.observedLiquidityBps >= envelope.minimumLiquidityBps
             && envelope.observedVolatilityBps <= envelope.maximumVolatilityBps
             && call.constraints.slippageBps <= envelope.maximumSlippageBps;
     }

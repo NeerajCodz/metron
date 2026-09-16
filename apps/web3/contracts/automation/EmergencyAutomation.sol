@@ -24,7 +24,9 @@ contract EmergencyAutomation {
     RecoveryExecutor public immutable recoveryExecutor;
 
     constructor(IPositionManager positionManager_, RecoveryExecutor recoveryExecutor_) {
-        if (address(positionManager_) == address(0) || address(recoveryExecutor_) == address(0)) revert InvalidTarget();
+        if (address(positionManager_) == address(0) || address(recoveryExecutor_) == address(0)) {
+            revert InvalidTarget();
+        }
         positionManager = positionManager_;
         recoveryExecutor = recoveryExecutor_;
     }

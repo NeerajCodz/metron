@@ -64,11 +64,14 @@ contract EmergencyUnwind is AccessControl, Pausable, ReentrancyGuard, IFlashCall
         uint256 amount,
         uint256 deadline
     ) external onlyRole(UNWIND_ROLE) whenNotPaused nonReentrant returns (bytes32 unwindId) {
-        if (address(provider) == address(0) || token == address(0) || positionId == bytes32(0)) revert InvalidAddress();
+        if (address(provider) == address(0) || token == address(0) || positionId == bytes32(0)) {
+            revert InvalidAddress();
+        }
         if (amount == 0) revert InvalidAmount();
         if (deadline < block.timestamp || activeUnwind.active) revert InvalidDeadline();
         breaker.requireAllowed(MetronTypes.ActionRisk.RISK_REDUCING, true, false);
-        unwindId = keccak256(abi.encode(address(this), block.chainid, positionId, address(provider), token, amount, deadline));
+        unwindId =
+            keccak256(abi.encode(address(this), block.chainid, positionId, address(provider), token, amount, deadline));
         if (completedUnwinds[unwindId]) revert UnwindAlreadyUsed(unwindId);
         activeUnwind = UnwindState(positionId, address(provider), token, amount, 0, true, false);
         emit UnwindStarted(unwindId, positionId, address(provider), amount);
@@ -76,14 +79,18 @@ contract EmergencyUnwind is AccessControl, Pausable, ReentrancyGuard, IFlashCall
         if (activeUnwind.active || !activeUnwind.completed) revert UnwindNotActive();
         completedUnwinds[unwindId] = true;
     }
-    function onFlashLoan(address token, uint256 amount, uint256 fee, bytes calldata data)
-        external
-        whenNotPaused
-    {
+
+    function onFlashLoan(address token, uint256 amount, uint256 fee, bytes calldata data) external whenNotPaused {
         UnwindState storage state = activeUnwind;
-        if (!state.active || msg.sender != state.provider || token != state.token || amount != state.amount) revert OnlyProvider();
-        (bytes32 unwindId, MetronTypes.StrategyAction[] memory actions, MetronTypes.PositionStatus finalStatus, uint256 deadline) =
-            abi.decode(data, (bytes32, MetronTypes.StrategyAction[], MetronTypes.PositionStatus, uint256));
+        if (!state.active || msg.sender != state.provider || token != state.token || amount != state.amount) {
+            revert OnlyProvider();
+        }
+        (
+            bytes32 unwindId,
+            MetronTypes.StrategyAction[] memory actions,
+            MetronTypes.PositionStatus finalStatus,
+            uint256 deadline
+        ) = abi.decode(data, (bytes32, MetronTypes.StrategyAction[], MetronTypes.PositionStatus, uint256));
         recoveryExecutor.recoverPosition(state.positionId, actions, deadline, finalStatus);
         uint256 required = amount + fee;
         uint256 available = IERC20(token).balanceOf(address(this));

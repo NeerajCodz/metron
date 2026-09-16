@@ -89,8 +89,7 @@ contract RemoteExecutor is AccessControl, Pausable, ReentrancyGuard, IRemoteExec
             uint64 expiresAt,
             bytes memory data
         ) = abi.decode(
-            message,
-            (bytes32, uint8, uint256, address, bytes32, uint8, address, bytes32, uint64, uint64, bytes)
+            message, (bytes32, uint8, uint256, address, bytes32, uint8, address, bytes32, uint64, uint64, bytes)
         );
         if (version != 1) revert UnsupportedVersion(version);
         if (sourceChainIds[srcEid] != sourceChainId) revert SourceChainNotAllowed(srcEid, sourceChainId);

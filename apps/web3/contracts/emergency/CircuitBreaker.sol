@@ -37,17 +37,17 @@ contract CircuitBreaker is AccessControl {
         _setMode(MetronTypes.OperationMode.EMERGENCY, reason);
     }
 
-    function canExecute(MetronTypes.ActionRisk risk, bool recovery, bool safeWithdrawal)
-        public
-        view
-        returns (bool)
-    {
+    function canExecute(MetronTypes.ActionRisk risk, bool recovery, bool safeWithdrawal) public view returns (bool) {
         if (mode == MetronTypes.OperationMode.NORMAL) return true;
         if (safeWithdrawal || recovery) return true;
         return mode == MetronTypes.OperationMode.RESTRICTED && risk != MetronTypes.ActionRisk.RISK_INCREASING;
     }
 
-    function requireAllowed(MetronTypes.ActionRisk risk, bool recovery, bool safeWithdrawal) external view returns (bool) {
+    function requireAllowed(MetronTypes.ActionRisk risk, bool recovery, bool safeWithdrawal)
+        external
+        view
+        returns (bool)
+    {
         if (!canExecute(risk, recovery, safeWithdrawal)) revert ActionBlocked(mode, risk);
         return true;
     }

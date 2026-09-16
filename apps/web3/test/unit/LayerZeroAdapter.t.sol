@@ -6,7 +6,12 @@ import {CrossChainRouter} from "../../contracts/crosschain/CrossChainRouter.sol"
 import {LayerZeroAdapter} from "../../contracts/crosschain/LayerZeroAdapter.sol";
 import {RemoteExecutor} from "../../contracts/crosschain/RemoteExecutor.sol";
 import {ILayerZeroAdapter} from "../../contracts/interfaces/ILayerZeroAdapter.sol";
-import {ILayerZeroEndpointV2, LzMessagingParams, LzMessagingReceipt, LzOrigin} from "../../contracts/interfaces/ILayerZeroEndpointV2.sol";
+import {
+    ILayerZeroEndpointV2,
+    LzMessagingParams,
+    LzMessagingReceipt,
+    LzOrigin
+} from "../../contracts/interfaces/ILayerZeroEndpointV2.sol";
 
 contract MockLayerZeroEndpoint is ILayerZeroEndpointV2 {
     uint64 public nonce;
@@ -17,15 +22,19 @@ contract MockLayerZeroEndpoint is ILayerZeroEndpointV2 {
         return (1, 0);
     }
 
-    function send(LzMessagingParams calldata params, address) external payable returns (LzMessagingReceipt memory receipt) {
+    function send(LzMessagingParams calldata params, address)
+        external
+        payable
+        returns (LzMessagingReceipt memory receipt)
+    {
         lastParams = params;
         receipt = LzMessagingReceipt(nextGuid, ++nonce, 1, 0);
         nextGuid = keccak256(abi.encode(nextGuid));
     }
+
     function deliver(address receiver, LzOrigin calldata origin, bytes32 guid, bytes calldata message) external {
-        (bool ok, bytes memory reason) = receiver.call(
-            abi.encodeCall(LayerZeroAdapter.lzReceive, (origin, receiver, guid, message, bytes("")))
-        );
+        (bool ok, bytes memory reason) =
+            receiver.call(abi.encodeCall(LayerZeroAdapter.lzReceive, (origin, receiver, guid, message, bytes(""))));
         if (!ok) {
             assembly {
                 revert(add(reason, 32), mload(reason))
@@ -103,7 +112,7 @@ contract LayerZeroAdapterTest is Test {
         endpoint.deliver(address(adapter), origin, inboundGuid, message);
         assertTrue(outboundGuid != inboundGuid);
         assertEq(target.calls(), 1);
-        (, , , , , LayerZeroAdapter.MessageStatus status) = adapter.messages(inboundGuid);
+        (,,,,, LayerZeroAdapter.MessageStatus status) = adapter.messages(inboundGuid);
         assertEq(uint256(status), uint256(LayerZeroAdapter.MessageStatus.DELIVERED));
     }
 
@@ -124,9 +133,13 @@ contract LayerZeroAdapterTest is Test {
         );
         LzOrigin memory wrongOrigin = LzOrigin(999, REMOTE_PEER, 1);
         vm.prank(address(endpoint));
-        (bool rejected,) = address(adapter).call(
-            abi.encodeCall(LayerZeroAdapter.lzReceive, (wrongOrigin, address(adapter), bytes32(uint256(111)), message, bytes("")))
-        );
+        (bool rejected,) = address(adapter)
+            .call(
+                abi.encodeCall(
+                    LayerZeroAdapter.lzReceive,
+                    (wrongOrigin, address(adapter), bytes32(uint256(111)), message, bytes(""))
+                )
+            );
         assertFalse(rejected);
 
         LzOrigin memory origin = LzOrigin(REMOTE_EID, REMOTE_PEER, 1);
@@ -177,7 +190,7 @@ contract LayerZeroAdapterTest is Test {
         bytes32 guid = keccak256("expired-guid");
         endpoint.deliver(address(adapter), origin, guid, message);
         assertEq(target.calls(), 0);
-        (, , , , , LayerZeroAdapter.MessageStatus status) = adapter.messages(guid);
+        (,,,,, LayerZeroAdapter.MessageStatus status) = adapter.messages(guid);
         assertEq(uint256(status), uint256(LayerZeroAdapter.MessageStatus.EXPIRED));
     }
 }

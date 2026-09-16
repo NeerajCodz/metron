@@ -4,7 +4,12 @@ pragma solidity 0.8.30;
 import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 import {Pausable} from "@openzeppelin/contracts/utils/Pausable.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import {ILayerZeroEndpointV2, LzMessagingParams, LzMessagingReceipt, LzOrigin} from "../interfaces/ILayerZeroEndpointV2.sol";
+import {
+    ILayerZeroEndpointV2,
+    LzMessagingParams,
+    LzMessagingReceipt,
+    LzOrigin
+} from "../interfaces/ILayerZeroEndpointV2.sol";
 import {IRemoteExecutor} from "../interfaces/IRemoteExecutor.sol";
 
 contract LayerZeroAdapter is AccessControl, Pausable, ReentrancyGuard {
@@ -122,9 +127,8 @@ contract LayerZeroAdapter is AccessControl, Pausable, ReentrancyGuard {
             revert MessageNotRetryable(oldGuid, previous.status);
         }
         if (keccak256(message) != previous.messageHash) revert InvalidMessage();
-        newGuid = _sendMessage(
-            previous.dstEid, previous.receiver, message, options, expiresAt, refundAddress, msg.value
-        );
+        newGuid =
+            _sendMessage(previous.dstEid, previous.receiver, message, options, expiresAt, refundAddress, msg.value);
         emit MessageRetried(oldGuid, newGuid);
     }
 
@@ -138,7 +142,9 @@ contract LayerZeroAdapter is AccessControl, Pausable, ReentrancyGuard {
         uint256 value
     ) internal returns (bytes32 guid) {
         if (peers[dstEid] != receiver || receiver == bytes32(0)) revert InvalidPeer(dstEid, receiver);
-        if (message.length == 0 || expiresAt <= block.timestamp || refundAddress == address(0)) revert InvalidMessage();
+        if (message.length == 0 || expiresAt <= block.timestamp || refundAddress == address(0)) {
+            revert InvalidMessage();
+        }
         LzMessagingParams memory params = LzMessagingParams(dstEid, receiver, message, options, false);
         LzMessagingReceipt memory receipt = endpoint.send{value: value}(params, refundAddress);
         if (receipt.guid == bytes32(0)) revert InvalidMessage();
@@ -175,9 +181,8 @@ contract LayerZeroAdapter is AccessControl, Pausable, ReentrancyGuard {
         MessageState storage state = messages[guid];
         if (state.status != MessageStatus.NONE) revert MessageAlreadyHandled(guid);
         if (message.length == 0) revert InvalidMessage();
-        (, , , , , , , , , uint64 expiresAt, ) = abi.decode(
-            message,
-            (bytes32, uint8, uint256, address, bytes32, uint8, address, bytes32, uint64, uint64, bytes)
+        (,,,,,,,,, uint64 expiresAt,) = abi.decode(
+            message, (bytes32, uint8, uint256, address, bytes32, uint8, address, bytes32, uint64, uint64, bytes)
         );
         if (expiresAt <= block.timestamp) {
             state.messageHash = keccak256(message);
@@ -186,8 +191,8 @@ contract LayerZeroAdapter is AccessControl, Pausable, ReentrancyGuard {
             emit MessageExpired(guid);
             return;
         }
-        bool success = address(remoteExecutor) != address(0)
-            && remoteExecutor.executeRemote(origin.srcEid, guid, message);
+        bool success =
+            address(remoteExecutor) != address(0) && remoteExecutor.executeRemote(origin.srcEid, guid, message);
         state.messageHash = keccak256(message);
         state.expiresAt = expiresAt;
         state.status = success ? MessageStatus.DELIVERED : MessageStatus.FAILED;

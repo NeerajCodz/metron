@@ -47,7 +47,13 @@ contract InsuranceReserve is AccessControl, Pausable, ReentrancyGuard {
     event ReserveFunded(address indexed funder, uint256 amount);
     event CoverageConfigured(bytes32 indexed coverageId, address indexed beneficiary, uint256 cap, uint64 expiresAt);
     event EvidenceConfigured(bytes32 indexed evidenceHash, TriggerKind indexed trigger, bool verified);
-    event ClaimPaid(bytes32 indexed claimId, bytes32 indexed coverageId, address indexed beneficiary, uint256 amount, TriggerKind trigger);
+    event ClaimPaid(
+        bytes32 indexed claimId,
+        bytes32 indexed coverageId,
+        address indexed beneficiary,
+        uint256 amount,
+        TriggerKind trigger
+    );
 
     constructor(address admin, IERC20 asset_, uint256 reserveCap_) {
         if (admin == address(0) || address(asset_) == address(0) || reserveCap_ == 0) revert InvalidAddress();
@@ -75,7 +81,10 @@ contract InsuranceReserve is AccessControl, Pausable, ReentrancyGuard {
         emit CoverageConfigured(coverageId, beneficiary, cap, expiresAt);
     }
 
-    function configureEvidence(bytes32 evidenceHash, TriggerKind trigger, bool verified) external onlyRole(CONFIG_ROLE) {
+    function configureEvidence(bytes32 evidenceHash, TriggerKind trigger, bool verified)
+        external
+        onlyRole(CONFIG_ROLE)
+    {
         if (evidenceHash == bytes32(0)) revert InvalidCoverage();
         verifiedEvidence[evidenceHash] = verified;
         evidenceTriggers[evidenceHash] = trigger;
@@ -83,13 +92,13 @@ contract InsuranceReserve is AccessControl, Pausable, ReentrancyGuard {
         emit EvidenceConfigured(evidenceHash, trigger, verified);
     }
 
-    function claim(
-        bytes32 coverageId,
-        uint256 amount,
-        TriggerKind trigger,
-        bytes32 evidenceHash,
-        bytes32 claimNonce
-    ) external onlyRole(CLAIM_ROLE) whenNotPaused nonReentrant returns (bytes32 claimId) {
+    function claim(bytes32 coverageId, uint256 amount, TriggerKind trigger, bytes32 evidenceHash, bytes32 claimNonce)
+        external
+        onlyRole(CLAIM_ROLE)
+        whenNotPaused
+        nonReentrant
+        returns (bytes32 claimId)
+    {
         Coverage storage coverage = coverages[coverageId];
         if (!coverage.enabled || block.timestamp > coverage.expiresAt) revert ClaimExpired(coverage.expiresAt);
         if (amount == 0 || evidenceHash == bytes32(0) || claimNonce == bytes32(0)) revert InvalidAmount();
@@ -99,7 +108,9 @@ contract InsuranceReserve is AccessControl, Pausable, ReentrancyGuard {
         }
         uint256 remainingCoverage = coverage.cap - coverage.paid;
         uint256 available = asset.balanceOf(address(this));
-        if (amount > remainingCoverage || amount > available) revert CoverageUnavailable(amount, remainingCoverage < available ? remainingCoverage : available);
+        if (amount > remainingCoverage || amount > available) {
+            revert CoverageUnavailable(amount, remainingCoverage < available ? remainingCoverage : available);
+        }
         claimId = keccak256(abi.encode(address(this), coverageId, amount, trigger, evidenceHash, claimNonce));
         if (processedClaims[claimId]) revert ClaimAlreadyProcessed(claimId);
         processedClaims[claimId] = true;

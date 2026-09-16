@@ -44,7 +44,9 @@ contract IntentSettlement is AccessControl {
     event SettlementCompleted(bytes32 indexed intentId, bytes32 indexed solverId, bytes32 routeHash, bytes32 traceId);
 
     constructor(address admin, address intentManager_, address solverRegistry_) {
-        if (admin == address(0) || intentManager_ == address(0) || solverRegistry_ == address(0)) revert InvalidAddress();
+        if (admin == address(0) || intentManager_ == address(0) || solverRegistry_ == address(0)) {
+            revert InvalidAddress();
+        }
         intentManager = IIntentManager(intentManager_);
         solverRegistry = SolverRegistry(solverRegistry_);
         _grantRole(DEFAULT_ADMIN_ROLE, admin);

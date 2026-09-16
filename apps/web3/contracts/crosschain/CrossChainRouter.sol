@@ -43,6 +43,7 @@ contract CrossChainRouter is AccessControl, Pausable, ReentrancyGuard {
         uint64 expiresAt,
         bytes32 guid
     );
+
     constructor(address admin, ILayerZeroAdapter adapter_) {
         if (admin == address(0) || address(adapter_) == address(0)) revert InvalidAddress();
         adapter = adapter_;

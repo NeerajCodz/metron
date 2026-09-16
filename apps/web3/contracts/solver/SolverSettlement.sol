@@ -56,10 +56,16 @@ contract SolverSettlement {
     mapping(bytes32 intentId => mapping(bytes32 solverId => BidReveal bid)) public bidReveals;
     mapping(bytes32 routeHash => bool used) public usedRoutes;
 
-    event AuctionOpened(bytes32 indexed intentId, uint64 commitDeadline, uint64 revealDeadline, uint64 settlementDeadline);
+    event AuctionOpened(
+        bytes32 indexed intentId, uint64 commitDeadline, uint64 revealDeadline, uint64 settlementDeadline
+    );
     event BidCommitted(bytes32 indexed intentId, bytes32 indexed solverId, bytes32 commitment, bytes32 traceId);
-    event BidRevealed(bytes32 indexed intentId, bytes32 indexed solverId, bytes32 routeHash, int256 score, bytes32 traceId);
-    event WinnerSelected(bytes32 indexed intentId, bytes32 indexed solverId, bytes32 routeHash, int256 score, bytes32 traceId);
+    event BidRevealed(
+        bytes32 indexed intentId, bytes32 indexed solverId, bytes32 routeHash, int256 score, bytes32 traceId
+    );
+    event WinnerSelected(
+        bytes32 indexed intentId, bytes32 indexed solverId, bytes32 routeHash, int256 score, bytes32 traceId
+    );
 
     constructor(address intentManager_, address solverRegistry_, address intentSettlement_) {
         if (intentManager_ == address(0) || solverRegistry_ == address(0) || intentSettlement_ == address(0)) {
@@ -126,12 +132,8 @@ contract SolverSettlement {
             revert InvalidCommitment(solverId);
         }
         commit.revealed = true;
-        bidReveals[intentId][solverId] = BidReveal({
-            routeHash: routeHash,
-            traceId: traceId,
-            score: score,
-            minimumOutput: minimumOutput
-        });
+        bidReveals[intentId][solverId] =
+            BidReveal({routeHash: routeHash, traceId: traceId, score: score, minimumOutput: minimumOutput});
         if (
             auction.winnerSolverId == bytes32(0) || score > auction.winnerScore
                 || (score == auction.winnerScore && solverId < auction.winnerSolverId)
