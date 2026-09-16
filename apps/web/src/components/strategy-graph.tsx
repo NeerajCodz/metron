@@ -7,7 +7,7 @@ import {
   type ReactNode,
 } from "react";
 import { AlertTriangle, Check, Clock3, CircleDot } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, cn } from "@metron/ui";
+import { GlassCard, cn } from "@metron/ui";
 
 export type StrategyNodeStatus = "active" | "complete" | "pending" | "warning" | "critical";
 
@@ -195,22 +195,21 @@ export function StrategyGraph({
   };
 
   return (
-    <Card
+    <GlassCard
       {...props}
       aria-describedby={validDependencies.length > 0 ? dependencyListId : undefined}
       aria-label={ariaLabel ?? "Strategy graph"}
       className={cn("strategy-graph", className)}
       role={role ?? "region"}
-      variant="glass"
     >
       {title || description ? (
-        <CardHeader className="strategy-graph__header">
-          {title ? <CardTitle>{title}</CardTitle> : null}
-          {description ? <CardDescription>{description}</CardDescription> : null}
-        </CardHeader>
+        <header className="strategy-graph__header">
+          {title ? <h2 className="strategy-graph__title">{title}</h2> : null}
+          {description ? <p className="strategy-graph__description">{description}</p> : null}
+        </header>
       ) : null}
 
-      <CardContent className="strategy-graph__content">
+      <div className="strategy-graph__content">
         <div
           className="strategy-graph__canvas"
           style={{
@@ -429,8 +428,8 @@ export function StrategyGraph({
             No strategy steps are configured.
           </p>
         ) : null}
-      </CardContent>
-    </Card>
+      </div>
+    </GlassCard>
   );
 }
 
