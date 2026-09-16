@@ -1,0 +1,309 @@
+{
+  "schemaVersion": "1.0.0",
+  "source": "docs/spec.md",
+  "scope": "backend-ai-web3",
+  "requirements": [
+    {
+      "id": "FR-001",
+      "title": "Wallet connection",
+      "status": "frontend-excluded",
+      "implementation": ["packages/config", "packages/sdk"],
+      "verification": ["SDK chain configuration tests"],
+      "note": "The React wallet connection surface is outside the approved scope; chain metadata consumed by it remains in scope."
+    },
+    {
+      "id": "FR-002",
+      "title": "User-controlled signing",
+      "status": "in-scope",
+      "implementation": ["apps/web3/contracts", "packages/sdk"],
+      "verification": ["contract authorization tests", "SDK signing tests"]
+    },
+    {
+      "id": "FR-003",
+      "title": "Intent creation",
+      "status": "in-scope",
+      "implementation": ["packages/types", "packages/validation", "apps/backend/convex/intents"],
+      "verification": ["intent schema tests", "intent lifecycle integration tests"]
+    },
+    {
+      "id": "FR-004",
+      "title": "Intent validation",
+      "status": "in-scope",
+      "implementation": ["packages/validation", "apps/backend/convex/intents", "apps/web3/contracts/core/IntentManager.sol"],
+      "verification": ["schema boundary tests", "IntentManager fuzz tests"]
+    },
+    {
+      "id": "FR-005",
+      "title": "Natural-language intent parsing",
+      "status": "in-scope",
+      "implementation": ["apps/ai/src/llm/intent_parser.py", "apps/ai/src/api/intent.py"],
+      "verification": ["intent parser contract tests", "approval-required integration test"]
+    },
+    {
+      "id": "FR-006",
+      "title": "Private intent commitment",
+      "status": "in-scope",
+      "implementation": ["packages/protocol", "packages/sdk", "apps/web3/zk/circuits/intent"],
+      "verification": ["cross-runtime commitment vectors", "intent circuit tests"]
+    },
+    {
+      "id": "FR-007",
+      "title": "Ownership proof",
+      "status": "in-scope",
+      "implementation": ["apps/web3/zk/circuits/ownership", "apps/web3/contracts/zk/ZKOwnershipVerifier.sol"],
+      "verification": ["ownership circuit tests", "nullifier replay invariant"]
+    },
+    {
+      "id": "FR-008",
+      "title": "Solver candidate generation",
+      "status": "in-scope",
+      "implementation": ["apps/web3/solver/engine", "apps/web3/solver/routes"],
+      "verification": ["multi-candidate solver integration test"]
+    },
+    {
+      "id": "FR-009",
+      "title": "Solver scoring",
+      "status": "in-scope",
+      "implementation": ["packages/protocol/src/route-scoring.ts", "apps/web3/solver/engine/scorer.ts"],
+      "verification": ["deterministic scoring tests", "constraint rejection tests"]
+    },
+    {
+      "id": "FR-010",
+      "title": "Solver auction",
+      "status": "in-scope",
+      "implementation": ["apps/web3/solver/auction", "apps/web3/contracts/solver"],
+      "verification": ["commit-reveal tests", "settlement integration tests"]
+    },
+    {
+      "id": "FR-011",
+      "title": "MEV reduction",
+      "status": "in-scope",
+      "implementation": ["apps/web3/solver/auction", "apps/web3/contracts/solver/SolverSettlement.sol"],
+      "verification": ["reveal-window tests", "minimum-output tests"]
+    },
+    {
+      "id": "FR-012",
+      "title": "Lending",
+      "status": "in-scope",
+      "implementation": ["apps/web3/contracts/defi/AaveV3Adapter.sol", "apps/web3/adapters/aave"],
+      "verification": ["Aave fork tests", "health-factor boundary tests"]
+    },
+    {
+      "id": "FR-013",
+      "title": "Concentrated liquidity",
+      "status": "in-scope",
+      "implementation": ["apps/web3/contracts/defi/UniswapV4Adapter.sol", "apps/web3/contracts/defi/LiquidityManager.sol", "apps/web3/adapters/uniswap"],
+      "verification": ["Uniswap fork tests", "liquidity position tests"]
+    },
+    {
+      "id": "FR-014",
+      "title": "Uniswap v4 hooks",
+      "status": "in-scope",
+      "implementation": ["apps/web3/contracts/defi/hooks"],
+      "verification": ["hook fuzz tests", "hook invariant tests", "hook adversarial tests"]
+    },
+    {
+      "id": "FR-015",
+      "title": "Cross-chain messaging",
+      "status": "in-scope",
+      "implementation": ["apps/web3/contracts/crosschain", "apps/web3/adapters/layerzero"],
+      "verification": ["LayerZero message integration tests", "replay tests"]
+    },
+    {
+      "id": "FR-016",
+      "title": "Cross-chain assets",
+      "status": "in-scope",
+      "implementation": ["apps/web3/contracts/crosschain/RemoteExecutor.sol", "apps/web3/keeper"],
+      "verification": ["prefunded destination execution test", "asset accounting invariant"]
+    },
+    {
+      "id": "FR-017",
+      "title": "Unified position view",
+      "status": "in-scope",
+      "implementation": ["apps/backend/convex/positions", "packages/sdk"],
+      "verification": ["multi-chain projection tests", "chain decomposition tests"]
+    },
+    {
+      "id": "FR-018",
+      "title": "Delta calculation",
+      "status": "in-scope",
+      "implementation": ["packages/protocol/src/risk-math.ts", "apps/web3/contracts/libraries/DeltaMath.sol"],
+      "verification": ["signed delta tests", "cross-runtime delta vectors"]
+    },
+    {
+      "id": "FR-019",
+      "title": "Delta rebalancing",
+      "status": "in-scope",
+      "implementation": ["apps/web3/contracts/defi/HedgeManager.sol", "apps/web3/keeper"],
+      "verification": ["tolerance boundary tests", "cooldown and hysteresis tests"]
+    },
+    {
+      "id": "FR-020",
+      "title": "Liquidation probability",
+      "status": "in-scope",
+      "implementation": ["apps/ai/src/api/liquidation.py", "apps/ai/src/models/liquidation"],
+      "verification": ["probability calibration tests", "horizon contract tests"]
+    },
+    {
+      "id": "FR-021",
+      "title": "Recovery strategy ranking",
+      "status": "in-scope",
+      "implementation": ["apps/ai/src/optimization/recovery.py", "apps/ai/src/api/recovery.py"],
+      "verification": ["recovery simulation tests", "policy-envelope tests"]
+    },
+    {
+      "id": "FR-022",
+      "title": "Dynamic risk threshold",
+      "status": "in-scope",
+      "implementation": ["apps/ai/src/api/threshold.py", "apps/web3/contracts/risk/RiskController.sol"],
+      "verification": ["threshold bound tests", "regime sensitivity tests"]
+    },
+    {
+      "id": "FR-023",
+      "title": "Personalized risk policy",
+      "status": "in-scope",
+      "implementation": ["apps/ai/src/api/personalization.py", "apps/backend/convex/ai"],
+      "verification": ["hard-limit precedence tests", "preference history tests"]
+    },
+    {
+      "id": "FR-024",
+      "title": "Market regime detection",
+      "status": "in-scope",
+      "implementation": ["apps/ai/src/api/regime.py", "apps/ai/src/models/market_regime"],
+      "verification": ["regime confusion matrix", "fallback classifier tests"]
+    },
+    {
+      "id": "FR-025",
+      "title": "Liquidity-aware execution",
+      "status": "in-scope",
+      "implementation": ["apps/ai/src/api/liquidity.py", "apps/web3/solver/engine"],
+      "verification": ["slippage sensitivity tests", "route liquidity tests"]
+    },
+    {
+      "id": "FR-026",
+      "title": "Cascade liquidation prediction",
+      "status": "in-scope",
+      "implementation": ["apps/ai/src/api/cascade.py", "apps/ai/src/simulation"],
+      "verification": ["cascade propagation tests", "scenario sensitivity tests"]
+    },
+    {
+      "id": "FR-027",
+      "title": "Stress scenario generation",
+      "status": "in-scope",
+      "implementation": ["apps/ai/src/api/stress.py", "apps/ai/src/llm/scenario_parser.py"],
+      "verification": ["deterministic stress tests", "natural-language conversion tests"]
+    },
+    {
+      "id": "FR-028",
+      "title": "Explainable risk",
+      "status": "in-scope",
+      "implementation": ["apps/ai/src/api/explain.py", "apps/ai/src/llm/explanations.py"],
+      "verification": ["explanation provenance tests"]
+    },
+    {
+      "id": "FR-029",
+      "title": "Natural-language analysis",
+      "status": "in-scope",
+      "implementation": ["apps/ai/src/llm", "apps/ai/src/api/explain.py"],
+      "verification": ["simulator-grounding tests", "missing-value refusal tests"]
+    },
+    {
+      "id": "FR-030",
+      "title": "Emergency circuit breaker",
+      "status": "in-scope",
+      "implementation": ["apps/web3/contracts/risk/CircuitBreaker.sol"],
+      "verification": ["mode permission tests", "permission monotonicity invariant"]
+    },
+    {
+      "id": "FR-031",
+      "title": "Same-chain flash unwind",
+      "status": "in-scope",
+      "implementation": ["apps/web3/contracts/risk/RecoveryExecutor.sol"],
+      "verification": ["flash unwind fork tests", "atomicity invariant"]
+    },
+    {
+      "id": "FR-032",
+      "title": "Cross-chain recovery",
+      "status": "in-scope",
+      "implementation": ["apps/web3/contracts/crosschain", "apps/backend/convex/indexing"],
+      "verification": ["timeout tests", "failure and recovery state tests"]
+    },
+    {
+      "id": "FR-033",
+      "title": "Parametric insurance",
+      "status": "in-scope",
+      "implementation": ["apps/web3/contracts/insurance/InsuranceReserve.sol"],
+      "verification": ["objective trigger tests", "reserve capacity invariant"]
+    },
+    {
+      "id": "NFR-001",
+      "title": "Safety",
+      "status": "in-scope",
+      "implementation": ["apps/web3/contracts", "apps/ai", "apps/backend"],
+      "verification": ["authority boundary tests", "end-to-end safe degradation"]
+    },
+    {
+      "id": "NFR-002",
+      "title": "Determinism",
+      "status": "in-scope",
+      "implementation": ["packages/protocol", "apps/web3/contracts"],
+      "verification": ["cross-runtime vectors", "transaction reproducibility tests"]
+    },
+    {
+      "id": "NFR-003",
+      "title": "Observability",
+      "status": "in-scope",
+      "implementation": ["packages/logger", "apps/backend/convex/analytics"],
+      "verification": ["trace correlation end-to-end test"]
+    },
+    {
+      "id": "NFR-004",
+      "title": "Idempotency",
+      "status": "in-scope",
+      "implementation": ["apps/backend/convex/indexing", "apps/web3/keeper"],
+      "verification": ["duplicate event tests", "duplicate trigger tests"]
+    },
+    {
+      "id": "NFR-005",
+      "title": "Replay protection",
+      "status": "in-scope",
+      "implementation": ["apps/web3/contracts/core", "apps/web3/contracts/crosschain", "apps/web3/contracts/zk"],
+      "verification": ["nonce tests", "message replay tests", "nullifier invariant"]
+    },
+    {
+      "id": "NFR-006",
+      "title": "Fail closed",
+      "status": "in-scope",
+      "implementation": ["apps/web3/contracts/oracle", "apps/web3/contracts/risk"],
+      "verification": ["stale oracle end-to-end test", "deviation tests"]
+    },
+    {
+      "id": "NFR-007",
+      "title": "Bounded automation",
+      "status": "in-scope",
+      "implementation": ["apps/web3/contracts/automation", "apps/web3/keeper"],
+      "verification": ["automation limit fuzz tests", "keeper authorization tests"]
+    },
+    {
+      "id": "NFR-008",
+      "title": "Precision",
+      "status": "in-scope",
+      "implementation": ["packages/protocol", "apps/web3/contracts/libraries"],
+      "verification": ["rounding tests", "decimal scaling fuzz tests"]
+    },
+    {
+      "id": "NFR-009",
+      "title": "Compatibility",
+      "status": "in-scope",
+      "implementation": ["packages"],
+      "verification": ["workspace dependency boundary checks"]
+    },
+    {
+      "id": "NFR-010",
+      "title": "Testability",
+      "status": "in-scope",
+      "implementation": ["apps/web3/test", "tests/e2e"],
+      "verification": ["Foundry fork suite", "full-system end-to-end suite"]
+    }
+  ]
+}
