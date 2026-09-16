@@ -22,7 +22,7 @@
       "id": "FR-003",
       "title": "Intent creation",
       "status": "in-scope",
-      "implementation": ["packages/types", "packages/validation", "apps/backend/convex/intents"],
+      "implementation": ["packages/types", "packages/validation", "apps/backend/convex/intents.ts"],
       "verification": ["intent schema tests", "intent lifecycle integration tests"]
     },
     {
@@ -31,7 +31,7 @@
       "status": "in-scope",
       "implementation": [
         "packages/validation",
-        "apps/backend/convex/intents",
+        "apps/backend/convex/intents.ts",
         "apps/web3/contracts/core/IntentManager.sol"
       ],
       "verification": ["schema boundary tests", "IntentManager fuzz tests"]
@@ -127,7 +127,7 @@
       "id": "FR-015",
       "title": "Cross-chain messaging",
       "status": "in-scope",
-      "implementation": ["apps/web3/contracts/crosschain", "apps/web3/adapters/layerzero"],
+      "implementation": ["apps/web3/contracts/crosschain", "apps/web3/adapters/simulation"],
       "verification": ["LayerZero message integration tests", "replay tests"]
     },
     {
@@ -141,7 +141,7 @@
       "id": "FR-017",
       "title": "Unified position view",
       "status": "in-scope",
-      "implementation": ["apps/backend/convex/positions", "packages/sdk"],
+      "implementation": ["apps/backend/convex/positions.ts", "packages/sdk"],
       "verification": ["multi-chain projection tests", "chain decomposition tests"]
     },
     {
@@ -261,7 +261,7 @@
       "id": "FR-032",
       "title": "Cross-chain recovery",
       "status": "in-scope",
-      "implementation": ["apps/web3/contracts/crosschain", "apps/backend/convex/indexing"],
+      "implementation": ["apps/web3/contracts/crosschain", "apps/backend/convex/indexing.ts"],
       "verification": ["timeout tests", "failure and recovery state tests"]
     },
     {
@@ -296,7 +296,7 @@
       "id": "NFR-004",
       "title": "Idempotency",
       "status": "in-scope",
-      "implementation": ["apps/backend/convex/indexing", "apps/web3/keeper"],
+      "implementation": ["apps/backend/convex/indexing.ts", "apps/web3/keeper"],
       "verification": ["duplicate event tests", "duplicate trigger tests"]
     },
     {
