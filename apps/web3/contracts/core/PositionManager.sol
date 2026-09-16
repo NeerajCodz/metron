@@ -3,9 +3,10 @@ pragma solidity 0.8.30;
 
 import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 import {IIntentManager} from "../interfaces/IIntentManager.sol";
+import {IPositionManager} from "../interfaces/IPositionManager.sol";
 import {MetronTypes} from "../libraries/MetronTypes.sol";
 
-contract PositionManager is AccessControl {
+contract PositionManager is AccessControl, IPositionManager {
     bytes32 public constant EXECUTOR_ROLE = keccak256("EXECUTOR_ROLE");
 
     struct PositionComponent {
@@ -58,6 +59,7 @@ contract PositionManager is AccessControl {
 
     function createPosition(bytes32 intentId, bytes32 strategyId)
         external
+        override
         onlyRole(EXECUTOR_ROLE)
         returns (bytes32 positionId)
     {
@@ -87,6 +89,7 @@ contract PositionManager is AccessControl {
 
     function transitionStatus(bytes32 positionId, MetronTypes.PositionStatus newStatus)
         external
+        override
         onlyRole(EXECUTOR_ROLE)
     {
         _transition(positionId, newStatus);

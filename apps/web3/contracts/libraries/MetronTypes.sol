@@ -89,7 +89,11 @@ library MetronTypes {
     struct StrategyAction {
         address adapter;
         address asset;
+        address outputAsset;
+        bytes32 protocolId;
+        bytes32 reservationId;
         uint256 amount;
+        uint256 minimumOutput;
         bytes data;
         ExecutionConstraints constraints;
     }

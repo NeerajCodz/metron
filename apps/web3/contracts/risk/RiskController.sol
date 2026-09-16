@@ -3,9 +3,10 @@ pragma solidity 0.8.30;
 
 import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 import {IIntentManager} from "../interfaces/IIntentManager.sol";
+import {IRiskController} from "../interfaces/IRiskController.sol";
 import {MetronTypes} from "../libraries/MetronTypes.sol";
 
-contract RiskController is AccessControl {
+contract RiskController is AccessControl, IRiskController {
     bytes32 public constant MODE_MANAGER_ROLE = keccak256("MODE_MANAGER_ROLE");
 
     error InvalidAddress();
@@ -76,6 +77,7 @@ contract RiskController is AccessControl {
     function validateExecution(bytes32 intentId, MetronTypes.ExecutionConstraints calldata constraints)
         external
         view
+        override
         returns (bool)
     {
         if (!policyConfigured[intentId]) revert InvalidPolicy();

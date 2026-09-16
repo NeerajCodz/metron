@@ -8,8 +8,9 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {Pausable} from "@openzeppelin/contracts/utils/Pausable.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import {IVault} from "../interfaces/IVault.sol";
 
-contract Vault is AccessControl, EIP712, Pausable, ReentrancyGuard {
+contract Vault is AccessControl, EIP712, Pausable, ReentrancyGuard, IVault {
     using SafeERC20 for IERC20;
 
     bytes32 public constant EXECUTOR_ROLE = keccak256("EXECUTOR_ROLE");
@@ -69,6 +70,7 @@ contract Vault is AccessControl, EIP712, Pausable, ReentrancyGuard {
 
     function deposit(address asset, uint256 amount, address owner)
         external
+        override
         nonReentrant
         whenNotPaused
         returns (uint256 creditedAmount)
@@ -135,6 +137,7 @@ contract Vault is AccessControl, EIP712, Pausable, ReentrancyGuard {
 
     function consume(address owner, address asset, bytes32 authorizationId, uint256 amount, address recipient)
         external
+        override
         onlyRole(EXECUTOR_ROLE)
         nonReentrant
         whenNotPaused
