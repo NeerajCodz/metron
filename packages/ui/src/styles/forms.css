@@ -1,0 +1,297 @@
+.metron-field {
+  display: grid;
+  gap: 0.5rem;
+  min-width: 0;
+  color: var(--metron-pearl);
+}
+
+.metron-field__label {
+  width: fit-content;
+  color: var(--metron-pearl);
+  font-size: 0.875rem;
+  font-weight: 650;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+}
+
+.metron-field__required {
+  margin-inline-start: 0.25rem;
+  color: var(--metron-danger);
+}
+
+.metron-field__control {
+  min-width: 0;
+}
+
+.metron-field__description,
+.metron-field__error {
+  max-width: 68ch;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+
+.metron-field__description {
+  color: var(--metron-pearl-muted);
+}
+
+.metron-field__error {
+  color: var(--metron-danger);
+}
+
+.metron-input,
+.metron-textarea,
+.metron-select {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--metron-border);
+  border-radius: var(--metron-radius-control);
+  background:
+    linear-gradient(135deg, rgb(242 241 237 / 7%), transparent 44%),
+    rgb(11 11 11 / 58%);
+  box-shadow:
+    inset 0 1px 0 rgb(242 241 237 / 8%),
+    0 10px 24px rgb(0 0 0 / 16%);
+  color: var(--metron-pearl);
+  font: inherit;
+  line-height: 1.4;
+  outline: none;
+  transition:
+    border-color var(--metron-duration-fast) var(--metron-ease),
+    background-color var(--metron-duration-fast) var(--metron-ease),
+    box-shadow var(--metron-duration-fast) var(--metron-ease);
+}
+
+.metron-input,
+.metron-select {
+  min-height: 2.875rem;
+  padding: 0.6875rem 0.875rem;
+}
+
+.metron-textarea {
+  min-height: 7.5rem;
+  padding: 0.75rem 0.875rem;
+  resize: vertical;
+}
+
+.metron-input::placeholder,
+.metron-textarea::placeholder {
+  color: rgb(242 241 237 / 42%);
+  opacity: 1;
+}
+
+.metron-input:hover:not(:disabled):not(:read-only),
+.metron-textarea:hover:not(:disabled):not(:read-only),
+.metron-select:hover:not(:disabled) {
+  border-color: var(--metron-border-strong);
+  background-color: rgb(34 31 31 / 76%);
+}
+
+.metron-input:focus-visible,
+.metron-textarea:focus-visible,
+.metron-select:focus-visible {
+  border-color: var(--metron-focus);
+  box-shadow:
+    0 0 0 3px rgb(179 143 111 / 20%),
+    inset 0 1px 0 rgb(242 241 237 / 10%);
+}
+
+.metron-input[aria-invalid="true"],
+.metron-textarea[aria-invalid="true"],
+.metron-select[aria-invalid="true"] {
+  border-color: var(--metron-danger);
+  box-shadow: 0 0 0 1px rgb(214 90 111 / 20%);
+}
+
+.metron-input[aria-invalid="true"]:focus-visible,
+.metron-textarea[aria-invalid="true"]:focus-visible,
+.metron-select[aria-invalid="true"]:focus-visible {
+  box-shadow:
+    0 0 0 3px rgb(214 90 111 / 22%),
+    inset 0 1px 0 rgb(242 241 237 / 10%);
+}
+
+.metron-input:disabled,
+.metron-textarea:disabled,
+.metron-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.metron-input:read-only,
+.metron-textarea:read-only {
+  border-style: dashed;
+  background: rgb(22 22 22 / 46%);
+  color: var(--metron-pearl-muted);
+}
+
+.metron-select {
+  cursor: pointer;
+  color-scheme: dark;
+}
+
+.metron-select option {
+  color: var(--metron-pearl);
+  background: var(--metron-obsidian);
+}
+
+.metron-switch {
+  display: grid;
+  gap: 0.4rem;
+  width: fit-content;
+  max-width: 100%;
+  color: var(--metron-pearl);
+}
+
+.metron-switch__label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.metron-switch__control {
+  position: relative;
+  flex: 0 0 auto;
+  width: 2.875rem;
+  height: 1.625rem;
+  margin-block-start: 0.0625rem;
+}
+
+.metron-switch__input {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.metron-switch__track {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border: 1px solid var(--metron-border-strong);
+  border-radius: var(--metron-radius-pill);
+  background:
+    linear-gradient(135deg, rgb(242 241 237 / 9%), transparent 55%),
+    rgb(22 22 22 / 88%);
+  box-shadow:
+    inset 0 1px 2px rgb(0 0 0 / 42%),
+    0 7px 18px rgb(0 0 0 / 18%);
+  transition:
+    border-color var(--metron-duration-fast) var(--metron-ease),
+    background-color var(--metron-duration-fast) var(--metron-ease),
+    box-shadow var(--metron-duration-fast) var(--metron-ease);
+}
+
+.metron-switch__thumb {
+  position: absolute;
+  top: 0.1875rem;
+  left: 0.1875rem;
+  width: 1.125rem;
+  height: 1.125rem;
+  border: 1px solid rgb(242 241 237 / 28%);
+  border-radius: 50%;
+  background: var(--metron-pearl);
+  box-shadow: 0 4px 10px rgb(0 0 0 / 42%);
+  transition:
+    transform var(--metron-duration-medium) var(--metron-ease),
+    background-color var(--metron-duration-fast) var(--metron-ease);
+}
+
+.metron-switch__input:checked + .metron-switch__track {
+  border-color: rgb(179 143 111 / 50%);
+  background:
+    linear-gradient(135deg, rgb(242 241 237 / 13%), transparent 48%),
+    var(--metron-crimson);
+}
+
+.metron-switch__input:checked + .metron-switch__track .metron-switch__thumb {
+  transform: translateX(1.25rem);
+  background: var(--metron-sand);
+}
+
+.metron-switch__input:focus-visible + .metron-switch__track {
+  outline: 2px solid var(--metron-focus);
+  outline-offset: 3px;
+}
+
+.metron-switch--invalid .metron-switch__track {
+  border-color: var(--metron-danger);
+}
+
+.metron-switch__copy {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.metron-switch__text {
+  font-size: 0.9375rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.metron-switch__description,
+.metron-switch__status,
+.metron-switch__error {
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+.metron-switch__description {
+  color: var(--metron-pearl-muted);
+}
+
+.metron-switch__status {
+  color: var(--metron-sand);
+}
+
+.metron-switch__error {
+  margin-inline-start: 3.625rem;
+  color: var(--metron-danger);
+}
+
+.metron-switch--disabled .metron-switch__label {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.metron-switch--disabled .metron-switch__input {
+  cursor: not-allowed;
+}
+
+.metron-switch--loading .metron-switch__thumb::after {
+  position: absolute;
+  inset: 0.2rem;
+  border: 1.5px solid rgb(22 22 22 / 28%);
+  border-top-color: var(--metron-obsidian);
+  border-radius: 50%;
+  content: "";
+  animation: metron-switch-spin 700ms linear infinite;
+}
+
+@keyframes metron-switch-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .metron-input,
+  .metron-textarea,
+  .metron-select,
+  .metron-switch__track,
+  .metron-switch__thumb {
+    transition-duration: 0.01ms;
+  }
+
+  .metron-switch--loading .metron-switch__thumb::after {
+    animation: none;
+    border-color: var(--metron-obsidian);
+  }
+}
