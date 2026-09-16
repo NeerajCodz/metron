@@ -13,6 +13,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.10.9"
+      - run: uv sync --locked
+        working-directory: apps/ai
       - uses: pnpm/action-setup@v4
         with:
           version: 10.28.2
@@ -22,10 +27,10 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm format:check
-      - run: pnpm turbo run lint --filter='!@metron/ui' --filter='!@metron/web'
-      - run: pnpm turbo run typecheck --filter='!@metron/ui' --filter='!@metron/web'
-      - run: pnpm turbo run test --filter='!@metron/ui' --filter='!@metron/web'
-      - run: pnpm turbo run build --filter='!@metron/ui' --filter='!@metron/web'
+      - run: pnpm turbo run lint --filter='!@metron/ui' --filter='!@metron/web' --filter='!@metron/ai'
+      - run: pnpm turbo run typecheck --filter='!@metron/ui' --filter='!@metron/web' --filter='!@metron/ai'
+      - run: pnpm turbo run test --filter='!@metron/ui' --filter='!@metron/web' --filter='!@metron/ai'
+      - run: pnpm turbo run build --filter='!@metron/ui' --filter='!@metron/web' --filter='!@metron/ai'
       - run: pnpm check:abi
 
   ai:
@@ -47,6 +52,7 @@ jobs:
   solidity:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - uses: foundry-rs/foundry-toolchain@v1
         with:
           version: v1.8.3
