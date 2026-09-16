@@ -16,16 +16,17 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.30.0",
     "@metron/ai": "workspace:*",
     "@metron/config": "workspace:*",
     "@metron/sdk": "workspace:*",
     "@metron/types": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.30.0",
     "zod": "^4.0.0"
   },
   "devDependencies": {
     "@metron/eslint-config": "workspace:*",
     "@metron/typescript-config": "workspace:*",
+    "@types/node": "^22.20.3",
     "tsx": "^4.19.0",
     "typescript": "^5.9.3",
     "vitest": "^4.0.0"
