@@ -1,3 +1,5 @@
+@import "./styles/actions.css";
+
 :root,
 .metron-theme {
   color-scheme: dark;

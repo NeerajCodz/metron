@@ -1,0 +1,277 @@
+.metron-button {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  max-width: 100%;
+  border: 1px solid transparent;
+  border-radius: var(--metron-radius-control);
+  font-family: var(--metron-font-sans);
+  font-weight: 650;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    color var(--metron-duration-fast) var(--metron-ease),
+    background-color var(--metron-duration-fast) var(--metron-ease),
+    border-color var(--metron-duration-fast) var(--metron-ease),
+    box-shadow var(--metron-duration-fast) var(--metron-ease),
+    transform var(--metron-duration-fast) var(--metron-ease);
+}
+
+.metron-button--sm {
+  min-height: 2.25rem;
+  padding: 0.625rem 0.85rem;
+  font-size: 0.8125rem;
+}
+
+.metron-button--md {
+  min-height: 2.75rem;
+  padding: 0.75rem 1.1rem;
+  font-size: 0.9rem;
+}
+
+.metron-button--lg {
+  min-height: 3.25rem;
+  padding: 0.9rem 1.35rem;
+  font-size: 1rem;
+}
+
+.metron-button--solid {
+  color: var(--metron-pearl);
+  background: var(--metron-crimson);
+  border-color: rgb(242 241 237 / 12%);
+  box-shadow:
+    inset 0 1px 0 rgb(242 241 237 / 14%),
+    0 10px 24px rgb(113 0 20 / 30%);
+}
+
+.metron-button--solid:hover:not(:disabled, [aria-disabled="true"]) {
+  background: var(--metron-crimson-bright);
+  border-color: rgb(242 241 237 / 22%);
+  box-shadow:
+    inset 0 1px 0 rgb(242 241 237 / 18%),
+    0 13px 30px rgb(113 0 20 / 40%);
+}
+
+.metron-button--glass {
+  color: var(--metron-pearl);
+  background: rgb(242 241 237 / 8%);
+  border-color: var(--metron-border-strong);
+  box-shadow:
+    inset 0 1px 0 rgb(242 241 237 / 12%),
+    var(--metron-shadow-control);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+}
+
+.metron-button--glass:hover:not(:disabled, [aria-disabled="true"]) {
+  background: rgb(242 241 237 / 13%);
+  border-color: rgb(242 241 237 / 34%);
+}
+
+.metron-button--quiet {
+  color: var(--metron-pearl);
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.metron-button--quiet:hover:not(:disabled, [aria-disabled="true"]) {
+  color: var(--metron-pearl);
+  background: rgb(242 241 237 / 9%);
+  border-color: var(--metron-border);
+}
+
+.metron-button--danger {
+  color: var(--metron-obsidian);
+  background: var(--metron-danger);
+  border-color: rgb(255 255 255 / 12%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 24%),
+    0 10px 26px rgb(113 0 20 / 34%);
+}
+
+.metron-button--danger:hover:not(:disabled, [aria-disabled="true"]) {
+  background: #e57588;
+  border-color: rgb(255 255 255 / 24%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 28%),
+    0 14px 32px rgb(113 0 20 / 44%);
+}
+
+.metron-button:focus-visible {
+  outline: 2px solid var(--metron-focus);
+  outline-offset: 3px;
+}
+
+.metron-button:active:not(:disabled, [aria-disabled="true"]) {
+  transform: translateY(1px) scale(0.985);
+  box-shadow: inset 0 2px 5px rgb(0 0 0 / 26%);
+}
+
+.metron-button:disabled,
+.metron-button[aria-disabled="true"] {
+  opacity: 0.48;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+
+.metron-button[data-loading="true"] {
+  cursor: wait;
+}
+
+.metron-button--full-width {
+  width: 100%;
+}
+
+.metron-button--icon-only {
+  aspect-ratio: 1;
+  padding: 0;
+}
+
+.metron-button--icon-only.metron-button--sm {
+  width: 2.25rem;
+}
+
+.metron-button--icon-only.metron-button--md {
+  width: 2.75rem;
+}
+
+.metron-button--icon-only.metron-button--lg {
+  width: 3.25rem;
+}
+
+.metron-button__label {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.metron-button__icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 1.1em;
+  height: 1.1em;
+}
+
+.metron-button__icon > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.metron-button__spinner {
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 1em;
+  height: 1em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: metron-button-spin 700ms linear infinite;
+}
+
+.metron-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 1.625rem;
+  padding: 0.25rem 0.625rem;
+  border: 1px solid transparent;
+  border-radius: var(--metron-radius-pill);
+  font-family: var(--metron-font-sans);
+  font-size: 0.75rem;
+  font-weight: 650;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.metron-badge__icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 0.95em;
+  height: 0.95em;
+}
+
+.metron-badge__icon > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.metron-badge--neutral {
+  color: var(--metron-pearl);
+  background: rgb(242 241 237 / 10%);
+  border-color: var(--metron-border);
+}
+
+.metron-badge--accent {
+  color: var(--metron-pearl);
+  background: var(--metron-crimson);
+  border-color: rgb(242 241 237 / 16%);
+}
+
+.metron-badge--sand {
+  color: #f6e7d9;
+  background: rgb(179 143 111 / 22%);
+  border-color: rgb(179 143 111 / 48%);
+}
+
+.metron-badge--success {
+  color: #c9e3c6;
+  background: rgb(72 110 69 / 34%);
+  border-color: rgb(159 189 156 / 40%);
+}
+
+.metron-badge--warning {
+  color: #f1d5ae;
+  background: rgb(126 85 32 / 38%);
+  border-color: rgb(216 178 126 / 44%);
+}
+
+.metron-badge--danger {
+  color: #ffb4c0;
+  background: rgb(113 0 20 / 48%);
+  border-color: rgb(214 90 111 / 48%);
+}
+
+@keyframes metron-button-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .metron-button {
+    transition: none;
+  }
+
+  .metron-button__spinner {
+    animation-duration: 1.6s;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .metron-button--glass {
+    background: #292626;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
