@@ -34,5 +34,26 @@ export {
   type ToastAction,
   type ToastProps,
 } from "./components/feedback.js";
+export {
+  DataList,
+  DataListItem,
+  Stat,
+  Timeline,
+  type DataListItemProps,
+  type DataListLayout,
+  type DataListProps,
+  type StatProps,
+  type StatTone,
+  type TimelineItem,
+  type TimelineOrientation,
+  type TimelineProps,
+  type TimelineStatus,
+} from "./components/data-display.js";
+export {
+  Progress,
+  type ProgressProps,
+  type ProgressSize,
+  type ProgressTone,
+} from "./components/progress.js";
 export { LiquidGlass, type LiquidGlassProps } from "./components/liquid-glass.js";
 export { cn } from "./lib/cn.js";

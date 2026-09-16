@@ -2,6 +2,7 @@
 @import "./styles/card.css";
 @import "./styles/forms.css";
 @import "./styles/feedback.css";
+@import "./styles/data.css";
 
 :root,
 .metron-theme {
