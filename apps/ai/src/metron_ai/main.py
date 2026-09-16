@@ -7,7 +7,7 @@ from fastapi import FastAPI, Header, HTTPException
 from pydantic import BaseModel
 
 from metron_ai.cascade import simulate_cascade
-from metron_ai.explain import explain
+from metron_ai.explain import answer_position, explain
 from metron_ai.models import (
     CascadeRequest,
     CascadeResponse,
@@ -21,6 +21,8 @@ from metron_ai.models import (
     LiquidityEstimateResponse,
     OptimizationRequest,
     OptimizationResponse,
+    PositionAnswerRequest,
+    PositionAnswerResponse,
     RecommendationRequest,
     RecommendationResponse,
     RecoveryRequest,
@@ -179,6 +181,13 @@ async def allocation_optimization(
 ) -> OptimizationResponse:
     require_service_token(x_metron_service_token)
     return optimize_allocation(request)
+
+@app.post("/v1/position/answer", response_model=PositionAnswerResponse, tags=["explanations"])
+async def position_answer(
+    request: PositionAnswerRequest, x_metron_service_token: str | None = Header(default=None)
+) -> PositionAnswerResponse:
+    require_service_token(x_metron_service_token)
+    return answer_position(request)
 
 @app.post("/v1/explain", response_model=ExplanationResponse, tags=["explanations"])
 @app.post("/v1/explanations", response_model=ExplanationResponse, tags=["explanations"])

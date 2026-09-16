@@ -297,3 +297,15 @@ class ScenarioDraftResponse(BaseModel):
     scenario: StressScenario
     source_text: str
     requires_approval: bool = True
+
+class PositionAnswerRequest(BaseModel):
+    trace_id: str = Field(min_length=1)
+    question: str = Field(min_length=1, max_length=1000)
+    indexed_data: dict[str, str | int | Decimal] = Field(min_length=1)
+    simulation_outputs: dict[str, str | int | Decimal] = Field(default_factory=dict)
+
+
+class PositionAnswerResponse(BaseModel):
+    trace_id: str
+    answer: str
+    provenance: list[str] = Field(min_length=1)

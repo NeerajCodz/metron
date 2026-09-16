@@ -4,6 +4,7 @@ import pytest
 from httpx import ASGITransport, AsyncClient
 
 from metron_ai.cascade import simulate_cascade
+from metron_ai.explain import answer_position
 from metron_ai.main import app
 from metron_ai.models import (
     CascadePosition,
@@ -12,6 +13,7 @@ from metron_ai.models import (
     LiquidityEstimateRequest,
     OptimizationOpportunity,
     OptimizationRequest,
+    PositionAnswerRequest,
     RecommendationRequest,
     RecoveryPolicy,
     RecoveryRequest,
@@ -253,3 +255,18 @@ def test_natural_language_scenario_is_an_unapproved_draft() -> None:
     assert draft.scenario.eth_price_shock_bps == -2000
     assert draft.scenario.stablecoin_depeg_bps == 300
     assert draft.scenario.dex_liquidity_shock_bps == 1000
+
+def test_position_answer_reports_only_supplied_provenance() -> None:
+    answer = answer_position(
+        PositionAnswerRequest(
+            trace_id="trace-answer",
+            question="why is liquidation risk changing?",
+            indexed_data={"liquidation_probability_bps": 1250},
+            simulation_outputs={"scenario": "stress-1"},
+        )
+    )
+    assert "1250" in answer.answer
+    assert answer.provenance == [
+        "indexed_data.liquidation_probability_bps",
+        "simulation_outputs.scenario",
+    ]
