@@ -12,7 +12,12 @@ const intent: CanonicalIntent = {
   nonce: "7",
   expiresAt: 2_000_000_000,
   objective: { targetApyMinBps: 800 },
-  risk: { maxDrawdownBps: 500, maxSlippageBps: 100, maxCapitalMoveBps: 1000, maxCollateralSaleBps: 800 },
+  risk: {
+    maxDrawdownBps: 500,
+    maxSlippageBps: 100,
+    maxCapitalMoveBps: 1000,
+    maxCollateralSaleBps: 800,
+  },
   exposure: { targetDeltaWad: "0", deltaToleranceWad: "100000000000000000" },
   chains: [421614],
   protocols: ["aave-v3", "uniswap-v4"],
@@ -61,11 +66,15 @@ describe("solver route engine", () => {
   it("matches the Solidity commitment encoding and rejects altered salt", () => {
     const route = buildCandidateRoutes(intent, context)[0]!;
     const intentId = context.intentId as `0x${string}`;
-    const solverId = "0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" as `0x${string}`;
-    const salt = "0xcccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" as `0x${string}`;
+    const solverId =
+      "0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" as `0x${string}`;
+    const salt =
+      "0xcccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" as `0x${string}`;
     const sealed = sealBid(intentId, solverId, route, salt);
     expect(verifyBidCommitment(intentId, solverId, sealed)).toBe(true);
-    expect(computeBidCommitment(intentId, solverId, sealed.routeHash, salt)).toBe(sealed.commitment);
+    expect(computeBidCommitment(intentId, solverId, sealed.routeHash, salt)).toBe(
+      sealed.commitment,
+    );
     expect(
       verifyBidCommitment(intentId, solverId, {
         ...sealed,

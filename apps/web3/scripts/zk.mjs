@@ -15,9 +15,12 @@ const packageNames = {
 function run(binary, args, cwd) {
   const result = spawnSync(binary, args, { cwd, stdio: "inherit" });
   if (result.error?.code === "ENOENT") {
-    throw new Error(`${binary} is required for zk:${command}; install the pinned Noir/Barretenberg toolchain`);
+    throw new Error(
+      `${binary} is required for zk:${command}; install the pinned Noir/Barretenberg toolchain`,
+    );
   }
-  if (result.status !== 0) throw new Error(`${binary} ${args.join(" ")} failed with status ${result.status}`);
+  if (result.status !== 0)
+    throw new Error(`${binary} ${args.join(" ")} failed with status ${result.status}`);
 }
 
 function requireFile(path, description) {
@@ -26,9 +29,11 @@ function requireFile(path, description) {
 
 for (const circuit of circuits) {
   const cwd = resolve(root, "zk", circuit);
-  if (!existsSync(resolve(cwd, "Nargo.toml"))) throw new Error(`missing circuit manifest: ${circuit}`);
+  if (!existsSync(resolve(cwd, "Nargo.toml")))
+    throw new Error(`missing circuit manifest: ${circuit}`);
   run("nargo", ["check"], cwd);
-  if (command === "compile" || command === "prove") run("nargo", ["compile", "--silence-warnings"], cwd);
+  if (command === "compile" || command === "prove")
+    run("nargo", ["compile", "--silence-warnings"], cwd);
   if (command === "prove") {
     const proverToml = resolve(cwd, "Prover.toml");
     requireFile(proverToml, `prover inputs for ${circuit}`);

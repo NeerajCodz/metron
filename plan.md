@@ -58,19 +58,19 @@ Frontend-facing contracts are still included. The SDK, ABI package, validation s
 
 These choices resolve the open decisions in `docs/spec.md` section 36. Implementation will validate them against current official testnet support before contracts are deployed.
 
-| Decision | Proposed choice |
-|---|---|
-| Deposit privacy | Public testnet deposit amounts with private intent parameters. Also implement ownership and collateral proof circuits, but make amount-private funding a separate proof capability rather than an anonymity claim. |
-| Uniswap v4 setup | Select currently supported testnet pool keys from official deployments. Include one bounded risk-aware hook and a local Anvil deployment path when a matching public testnet pool is unavailable. |
-| Initial hedge | Aave V3 borrow plus Uniswap swap for a lending-based short. No derivatives protocol is added without a named provider. |
-| Cross-chain asset model | Use LayerZero V2 for control messages and a documented prefunded destination executor for the first complete testnet route. Never describe OApp messaging as token bridging. |
-| Solver scoring | Use deterministic, versioned score weights. Start from protocol defaults, apply explicit intent preferences, and allow bounded regime inputs. Persist every score component. |
-| Rebalance cadence | Use configurable cooldown and hysteresis. Validate safe defaults through simulation and fork tests before deployment rather than hard-coding an unsupported interval in this plan. |
-| Automation trigger | Run the custom keeper as the primary orchestrator. Implement Chainlink Automation-compatible deterministic checks and execution as a second trigger path where supported. |
-| Oracle deviation | Use Chainlink as the approved primary feed and a configured Uniswap TWAP or second approved observation for deviation checks where the selected asset and pool support it. |
+| Decision                 | Proposed choice                                                                                                                                                                                                        |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Deposit privacy          | Public testnet deposit amounts with private intent parameters. Also implement ownership and collateral proof circuits, but make amount-private funding a separate proof capability rather than an anonymity claim.     |
+| Uniswap v4 setup         | Select currently supported testnet pool keys from official deployments. Include one bounded risk-aware hook and a local Anvil deployment path when a matching public testnet pool is unavailable.                      |
+| Initial hedge            | Aave V3 borrow plus Uniswap swap for a lending-based short. No derivatives protocol is added without a named provider.                                                                                                 |
+| Cross-chain asset model  | Use LayerZero V2 for control messages and a documented prefunded destination executor for the first complete testnet route. Never describe OApp messaging as token bridging.                                           |
+| Solver scoring           | Use deterministic, versioned score weights. Start from protocol defaults, apply explicit intent preferences, and allow bounded regime inputs. Persist every score component.                                           |
+| Rebalance cadence        | Use configurable cooldown and hysteresis. Validate safe defaults through simulation and fork tests before deployment rather than hard-coding an unsupported interval in this plan.                                     |
+| Automation trigger       | Run the custom keeper as the primary orchestrator. Implement Chainlink Automation-compatible deterministic checks and execution as a second trigger path where supported.                                              |
+| Oracle deviation         | Use Chainlink as the approved primary feed and a configured Uniswap TWAP or second approved observation for deviation checks where the selected asset and pool support it.                                             |
 | Emergency administration | Use role-separated OpenZeppelin access control. Deployment scripts transfer testnet administration to configured multisig addresses when supplied and reject production-like deployment with a default deployer owner. |
-| Insurance | Implement a separately funded testnet reserve with deterministic triggers, caps, and accounting. Make no production underwriting claim. |
-| Product naming | Use `metron` for package, service, contract deployment, and telemetry namespaces. Treat Isorropia as the concept name found in `docs/idea.md` unless naming is changed before implementation. |
+| Insurance                | Implement a separately funded testnet reserve with deterministic triggers, caps, and accounting. Make no production underwriting claim.                                                                                |
+| Product naming           | Use `metron` for package, service, contract deployment, and telemetry namespaces. Treat Isorropia as the concept name found in `docs/idea.md` unless naming is changed before implementation.                          |
 
 ## 5. Delivery phases
 

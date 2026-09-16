@@ -34,15 +34,20 @@ export interface PositionSimulationResult {
 
 export function simulatePosition(input: PositionSimulationInput): PositionSimulationResult {
   const shockBps = input.collateralShockBps ?? 0n;
-  if (shockBps < 0n || shockBps > 10_000n) throw new RangeError("collateral shock must be between 0 and 10000 bps");
+  if (shockBps < 0n || shockBps > 10_000n)
+    throw new RangeError("collateral shock must be between 0 and 10000 bps");
   if (input.debtUsdWad < 0n) throw new RangeError("debt must be non-negative");
-  if (input.minimumHealthFactorWad < 0n) throw new RangeError("minimum health factor must be non-negative");
+  if (input.minimumHealthFactorWad < 0n)
+    throw new RangeError("minimum health factor must be non-negative");
 
   const projectedCollateral = input.collateral.map((item) => {
     const value = (item.valueUsdWad * (10_000n - shockBps)) / 10_000n;
     return { valueUsdWad: value, liquidationThresholdBps: item.liquidationThresholdBps };
   });
-  const projectedCollateralUsdWad = projectedCollateral.reduce((sum, item) => sum + item.valueUsdWad, 0n);
+  const projectedCollateralUsdWad = projectedCollateral.reduce(
+    (sum, item) => sum + item.valueUsdWad,
+    0n,
+  );
   const projectedHealthFactorWad = calculateHealthFactorWad(projectedCollateral, input.debtUsdWad);
   const projectedDeltaWad = calculateNetDeltaWad(input.deltaComponents);
   const deltaOutsideTolerance = isDeltaRebalanceEligible(

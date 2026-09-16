@@ -68,7 +68,11 @@ export const recordChainTransaction = internalMutation({
         await ctx.db.patch(existing._id, { status: "orphaned", observedAt: Date.now() });
         throw new Error("transaction hash changed block association");
       }
-      await ctx.db.patch(existing._id, { status: args.status, traceId: args.traceId, observedAt: Date.now() });
+      await ctx.db.patch(existing._id, {
+        status: args.status,
+        traceId: args.traceId,
+        observedAt: Date.now(),
+      });
       return existing._id;
     }
     return ctx.db.insert("chainTransactions", { ...args, observedAt: Date.now() });
@@ -84,10 +88,13 @@ export const advanceCursor = internalMutation({
     confirmations: v.number(),
   },
   handler: async (ctx, args) => {
-    if (args.blockNumber < 0 || args.confirmations < 0) throw new Error("cursor values must be non-negative");
+    if (args.blockNumber < 0 || args.confirmations < 0)
+      throw new Error("cursor values must be non-negative");
     const existing = await ctx.db
       .query("indexerCursors")
-      .withIndex("by_chain_and_stream", (query) => query.eq("chainId", args.chainId).eq("stream", args.stream))
+      .withIndex("by_chain_and_stream", (query) =>
+        query.eq("chainId", args.chainId).eq("stream", args.stream),
+      )
       .unique();
     if (!existing) return ctx.db.insert("indexerCursors", { ...args, updatedAt: Date.now() });
     if (args.blockNumber < existing.blockNumber) return existing._id;
@@ -104,11 +111,18 @@ export const rewindCursor = internalMutation({
   handler: async (ctx, args) => {
     const existing = await ctx.db
       .query("indexerCursors")
-      .withIndex("by_chain_and_stream", (query) => query.eq("chainId", args.chainId).eq("stream", args.stream))
+      .withIndex("by_chain_and_stream", (query) =>
+        query.eq("chainId", args.chainId).eq("stream", args.stream),
+      )
       .unique();
     if (!existing) throw new Error("cursor not found");
-    if (args.blockNumber > existing.blockNumber) throw new Error("rewind target is ahead of cursor");
-    await ctx.db.patch(existing._id, { blockNumber: args.blockNumber, blockHash: args.blockHash, updatedAt: Date.now() });
+    if (args.blockNumber > existing.blockNumber)
+      throw new Error("rewind target is ahead of cursor");
+    await ctx.db.patch(existing._id, {
+      blockNumber: args.blockNumber,
+      blockHash: args.blockHash,
+      updatedAt: Date.now(),
+    });
     return existing._id;
   },
 });
@@ -118,6 +132,8 @@ export const getCursor = query({
   handler: async (ctx, args) =>
     ctx.db
       .query("indexerCursors")
-      .withIndex("by_chain_and_stream", (query) => query.eq("chainId", args.chainId).eq("stream", args.stream))
+      .withIndex("by_chain_and_stream", (query) =>
+        query.eq("chainId", args.chainId).eq("stream", args.stream),
+      )
       .unique(),
 });

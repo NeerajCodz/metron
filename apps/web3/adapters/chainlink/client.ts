@@ -48,8 +48,16 @@ export async function readChainlinkObservation(
 ): Promise<ChainlinkObservation> {
   const [decimals, description, round] = await Promise.all([
     client.readContract({ address: feed, abi: CHAINLINK_AGGREGATOR_ABI, functionName: "decimals" }),
-    client.readContract({ address: feed, abi: CHAINLINK_AGGREGATOR_ABI, functionName: "description" }),
-    client.readContract({ address: feed, abi: CHAINLINK_AGGREGATOR_ABI, functionName: "latestRoundData" }),
+    client.readContract({
+      address: feed,
+      abi: CHAINLINK_AGGREGATOR_ABI,
+      functionName: "description",
+    }),
+    client.readContract({
+      address: feed,
+      abi: CHAINLINK_AGGREGATOR_ABI,
+      functionName: "latestRoundData",
+    }),
   ]);
   return {
     feed,

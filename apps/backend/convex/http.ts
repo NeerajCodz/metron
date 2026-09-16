@@ -24,7 +24,8 @@ function requireInternalToken(request: Request): void {
 
 async function readJson(request: Request): Promise<Record<string, unknown>> {
   const body: unknown = await request.json();
-  if (!body || typeof body !== "object" || Array.isArray(body)) throw new Error("JSON object required");
+  if (!body || typeof body !== "object" || Array.isArray(body))
+    throw new Error("JSON object required");
   return body as Record<string, unknown>;
 }
 
@@ -36,7 +37,8 @@ function stringField(body: Record<string, unknown>, name: string): string {
 
 function numberField(body: Record<string, unknown>, name: string): number {
   const value = body[name];
-  if (typeof value !== "number" || !Number.isSafeInteger(value)) throw new Error(`${name} must be an integer`);
+  if (typeof value !== "number" || !Number.isSafeInteger(value))
+    throw new Error(`${name} must be an integer`);
   return value;
 }
 
@@ -132,7 +134,9 @@ router.route({
   handler: internalAction(async (ctx, request) => {
     const body = await readJson(request);
     return jsonResponse(
-      await ctx.runMutation(internal.solvers.selectWinner, { intentId: stringField(body, "intentId") as never }),
+      await ctx.runMutation(internal.solvers.selectWinner, {
+        intentId: stringField(body, "intentId") as never,
+      }),
     );
   }),
 });

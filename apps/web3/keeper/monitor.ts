@@ -20,11 +20,7 @@ export interface KeeperObservation {
 }
 
 export type KeeperTriggerKind =
-  | "emergency_unwind"
-  | "hedge_rebalance"
-  | "lp_recenter"
-  | "message_recovery"
-  | "risk_restriction";
+  "emergency_unwind" | "hedge_rebalance" | "lp_recenter" | "message_recovery" | "risk_restriction";
 
 export interface KeeperTrigger {
   key: string;
@@ -50,7 +46,10 @@ export function evaluateKeeperObservation(observation: KeeperObservation): Keepe
   if (observation.healthFactorWad < observation.minimumHealthFactorWad) {
     add("emergency_unwind", "health factor is below the configured minimum");
   }
-  if (difference(observation.observedDeltaWad, observation.targetDeltaWad) > observation.deltaToleranceWad) {
+  if (
+    difference(observation.observedDeltaWad, observation.targetDeltaWad) >
+    observation.deltaToleranceWad
+  ) {
     add("hedge_rebalance", "net delta is outside the configured tolerance");
   }
   if (observation.lpDriftBps > observation.maximumLpDriftBps) {
@@ -60,10 +59,10 @@ export function evaluateKeeperObservation(observation: KeeperObservation): Keepe
     add("message_recovery", "cross-chain message exceeded its timeout");
   }
   if (
-    observation.volatilityBps > observation.maximumVolatilityBps
-    || observation.stablecoinDeviationBps > observation.maximumStablecoinDeviationBps
-    || !observation.protocolHealthy
-    || observation.riskScoreBps > observation.maximumRiskScoreBps
+    observation.volatilityBps > observation.maximumVolatilityBps ||
+    observation.stablecoinDeviationBps > observation.maximumStablecoinDeviationBps ||
+    !observation.protocolHealthy ||
+    observation.riskScoreBps > observation.maximumRiskScoreBps
   ) {
     add("risk_restriction", "market or protocol risk gate is outside its configured bound");
   }

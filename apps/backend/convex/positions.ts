@@ -114,10 +114,16 @@ export const listMine = query({
   args: { status: v.optional(v.string()) },
   handler: async (ctx, args) => {
     const { user } = await requireUser(ctx);
-    const wallets = await ctx.db.query("wallets").withIndex("by_user", (query) => query.eq("userId", user._id)).collect();
+    const wallets = await ctx.db
+      .query("wallets")
+      .withIndex("by_user", (query) => query.eq("userId", user._id))
+      .collect();
     const addresses = new Set(wallets.map((wallet) => wallet.address));
     const positions = await ctx.db.query("positions").withIndex("by_owner").collect();
-    return positions.filter((position) => addresses.has(position.ownerAddress) && (!args.status || position.status === args.status));
+    return positions.filter(
+      (position) =>
+        addresses.has(position.ownerAddress) && (!args.status || position.status === args.status),
+    );
   },
 });
 
@@ -125,9 +131,13 @@ export const get = query({
   args: { positionId: v.id("positions") },
   handler: async (ctx, args) => {
     const { user } = await requireUser(ctx);
-    const wallets = await ctx.db.query("wallets").withIndex("by_user", (query) => query.eq("userId", user._id)).collect();
+    const wallets = await ctx.db
+      .query("wallets")
+      .withIndex("by_user", (query) => query.eq("userId", user._id))
+      .collect();
     const position = await ctx.db.get(args.positionId);
-    if (!position || !wallets.some((wallet) => wallet.address === position.ownerAddress)) return null;
+    if (!position || !wallets.some((wallet) => wallet.address === position.ownerAddress))
+      return null;
     const components = await ctx.db
       .query("positionComponents")
       .withIndex("by_position", (query) => query.eq("positionId", args.positionId))

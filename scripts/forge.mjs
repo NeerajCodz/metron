@@ -4,7 +4,8 @@ import { resolve } from "node:path";
 
 const repositoryRoot = resolve(import.meta.dirname, "..");
 const localExecutable = resolve(repositoryRoot, ".tools", "foundry", "forge.exe");
-const executable = process.env.FORGE_BIN ?? (existsSync(localExecutable) ? localExecutable : "forge");
+const executable =
+  process.env.FORGE_BIN ?? (existsSync(localExecutable) ? localExecutable : "forge");
 const result = spawnSync(executable, process.argv.slice(2), {
   cwd: process.cwd(),
   env: process.env,

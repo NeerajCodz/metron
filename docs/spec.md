@@ -1,15 +1,15 @@
 # Metron Technical Specification
 
-| Field | Value |
-|---|---|
-| Status | Draft |
-| Version | 0.1.0 |
-| Date | 2026-09-16 |
-| Primary environment | EVM testnets |
-| Coordination chain | Ethereum Sepolia |
-| Execution chains | Arbitrum Sepolia, Base Sepolia |
-| Optional execution chain | Optimism Sepolia |
-| Repository model | pnpm + Turborepo monorepo |
+| Field                    | Value                          |
+| ------------------------ | ------------------------------ |
+| Status                   | Draft                          |
+| Version                  | 0.1.0                          |
+| Date                     | 2026-09-16                     |
+| Primary environment      | EVM testnets                   |
+| Coordination chain       | Ethereum Sepolia               |
+| Execution chains         | Arbitrum Sepolia, Base Sepolia |
+| Optional execution chain | Optimism Sepolia               |
+| Repository model         | pnpm + Turborepo monorepo      |
 
 ## 1. Document Purpose
 
@@ -64,20 +64,20 @@ The initial implementation does not attempt to provide:
 
 ## 5. Terminology
 
-| Term | Definition |
-|---|---|
-| Intent | A set of desired financial outcomes and constraints rather than a preselected transaction path. |
-| Solver | An off-chain process that constructs and scores candidate execution routes satisfying an intent. |
-| Strategy | A concrete sequence of protocol actions selected to satisfy an intent. |
-| Position | The logical portfolio state created by an executed strategy across one or more chains. |
-| Health Factor (HF) | Lending safety metric derived from collateral, liquidation thresholds, and debt. |
-| Delta | Approximate first-order directional exposure of the managed position to an underlying asset. |
-| Delta tolerance | Maximum permitted absolute deviation from the target delta before rebalancing becomes eligible. |
-| Recovery action | A bounded action intended to restore health, delta, drawdown, or protocol-risk constraints. |
-| Commitment | Cryptographic commitment to private data used by the ZK subsystem. |
-| Nullifier | Value preventing reuse of a private note or authorization proof. |
-| Coordination chain | Chain on which the canonical intent/settlement coordination contracts are deployed. |
-| Execution chain | Chain on which lending, swaps, LP, hedge, or recovery actions are performed. |
+| Term               | Definition                                                                                       |
+| ------------------ | ------------------------------------------------------------------------------------------------ |
+| Intent             | A set of desired financial outcomes and constraints rather than a preselected transaction path.  |
+| Solver             | An off-chain process that constructs and scores candidate execution routes satisfying an intent. |
+| Strategy           | A concrete sequence of protocol actions selected to satisfy an intent.                           |
+| Position           | The logical portfolio state created by an executed strategy across one or more chains.           |
+| Health Factor (HF) | Lending safety metric derived from collateral, liquidation thresholds, and debt.                 |
+| Delta              | Approximate first-order directional exposure of the managed position to an underlying asset.     |
+| Delta tolerance    | Maximum permitted absolute deviation from the target delta before rebalancing becomes eligible.  |
+| Recovery action    | A bounded action intended to restore health, delta, drawdown, or protocol-risk constraints.      |
+| Commitment         | Cryptographic commitment to private data used by the ZK subsystem.                               |
+| Nullifier          | Value preventing reuse of a private note or authorization proof.                                 |
+| Coordination chain | Chain on which the canonical intent/settlement coordination contracts are deployed.              |
+| Execution chain    | Chain on which lending, swaps, LP, hedge, or recovery actions are performed.                     |
 
 ## 6. High-Level Architecture
 
@@ -115,22 +115,22 @@ The initial implementation does not attempt to provide:
 
 ### 6.1 State Ownership
 
-| State | Authoritative owner |
-|---|---|
-| Token balances | EVM contracts / token contracts |
-| Deposits | Vault contract |
-| Lending collateral and debt | Aave V3 and protocol position contracts |
-| LP position state | Uniswap v4 and protocol position contracts |
-| Hedge state | HedgeManager plus underlying protocol state |
-| Intent acceptance and settlement | IntentManager / SolverSettlement |
-| Cross-chain message state | LayerZero OApp contracts and local execution contracts |
-| ZK nullifier consumption | ZK verifier / vault contract state |
-| User application profile | Convex |
-| Indexed position projection | Convex |
-| Solver bid metadata | Convex and/or on-chain commitment state |
-| AI predictions | Convex cache; apps/ai is computational source |
-| Notifications | Convex |
-| Financial execution authority | Smart contracts only |
+| State                            | Authoritative owner                                    |
+| -------------------------------- | ------------------------------------------------------ |
+| Token balances                   | EVM contracts / token contracts                        |
+| Deposits                         | Vault contract                                         |
+| Lending collateral and debt      | Aave V3 and protocol position contracts                |
+| LP position state                | Uniswap v4 and protocol position contracts             |
+| Hedge state                      | HedgeManager plus underlying protocol state            |
+| Intent acceptance and settlement | IntentManager / SolverSettlement                       |
+| Cross-chain message state        | LayerZero OApp contracts and local execution contracts |
+| ZK nullifier consumption         | ZK verifier / vault contract state                     |
+| User application profile         | Convex                                                 |
+| Indexed position projection      | Convex                                                 |
+| Solver bid metadata              | Convex and/or on-chain commitment state                |
+| AI predictions                   | Convex cache; apps/ai is computational source          |
+| Notifications                    | Convex                                                 |
+| Financial execution authority    | Smart contracts only                                   |
 
 Convex MUST NOT be treated as the authoritative ledger for assets, debt, LP ownership, or settlement.
 
@@ -416,29 +416,29 @@ ZK circuits MUST remain under `apps/web3/zk`. Browser-facing proof helpers MAY b
 
 ## 8. Technology Stack
 
-| Layer | Technology |
-|---|---|
-| Frontend | Vite, React, TypeScript |
-| UI | Tailwind CSS, shadcn/ui |
-| Wallet | wagmi, viem, RainbowKit |
-| Backend | Convex |
-| AI service | Python, FastAPI |
-| ML | XGBoost and/or PyTorch depending on model requirements |
-| Smart contracts | Solidity >=0.8.24 <0.9.0, exact compiler pinned per deployment |
-| Contract framework | Foundry |
-| Contract libraries | OpenZeppelin |
-| Coordination chain | Ethereum Sepolia |
-| Execution chains | Arbitrum Sepolia, Base Sepolia |
-| Optional chain | Optimism Sepolia |
-| Lending | Aave V3 |
-| AMM / LP | Uniswap v4 |
-| Cross-chain messaging | LayerZero V2 OApp |
-| Oracle | Chainlink Data Feeds |
-| Automation | Chainlink Automation and/or custom keeper |
-| ZK | Noir + Barretenberg |
-| Solver runtime | TypeScript + Bun |
-| Local EVM | Anvil |
-| Contract simulation | Foundry fork tests; optional Tenderly tooling |
+| Layer                 | Technology                                                     |
+| --------------------- | -------------------------------------------------------------- |
+| Frontend              | Vite, React, TypeScript                                        |
+| UI                    | Tailwind CSS, shadcn/ui                                        |
+| Wallet                | wagmi, viem, RainbowKit                                        |
+| Backend               | Convex                                                         |
+| AI service            | Python, FastAPI                                                |
+| ML                    | XGBoost and/or PyTorch depending on model requirements         |
+| Smart contracts       | Solidity >=0.8.24 <0.9.0, exact compiler pinned per deployment |
+| Contract framework    | Foundry                                                        |
+| Contract libraries    | OpenZeppelin                                                   |
+| Coordination chain    | Ethereum Sepolia                                               |
+| Execution chains      | Arbitrum Sepolia, Base Sepolia                                 |
+| Optional chain        | Optimism Sepolia                                               |
+| Lending               | Aave V3                                                        |
+| AMM / LP              | Uniswap v4                                                     |
+| Cross-chain messaging | LayerZero V2 OApp                                              |
+| Oracle                | Chainlink Data Feeds                                           |
+| Automation            | Chainlink Automation and/or custom keeper                      |
+| ZK                    | Noir + Barretenberg                                            |
+| Solver runtime        | TypeScript + Bun                                               |
+| Local EVM             | Anvil                                                          |
+| Contract simulation   | Foundry fork tests; optional Tenderly tooling                  |
 
 ## 9. Functional Requirements
 
@@ -1397,17 +1397,17 @@ An indexed position record SHOULD contain:
 
 ```ts
 {
-  positionId,
-  ownerAddress,
-  status,
-  coordinationChainId,
-  componentIds,
-  latestBlockByChain,
-  netValueUsd,
-  netDelta,
-  healthFactor,
-  lastRiskSnapshotId,
-  updatedAt
+  (positionId,
+    ownerAddress,
+    status,
+    coordinationChainId,
+    componentIds,
+    latestBlockByChain,
+    netValueUsd,
+    netDelta,
+    healthFactor,
+    lastRiskSnapshotId,
+    updatedAt);
 }
 ```
 
@@ -1534,20 +1534,20 @@ Remote execution MUST authenticate the expected LayerZero peer and reject duplic
 
 ## 27. Failure Modes
 
-| Failure | Required behavior |
-|---|---|
-| AI service unavailable | Continue deterministic monitoring; no AI-dependent risk-increasing action. |
-| Convex unavailable | On-chain funds remain accessible through contracts; frontend may enter degraded read mode using RPC. |
-| Solver unavailable | Intent remains pending or user selects a deterministic fallback route if supported. |
-| Keeper unavailable | No unauthorized action occurs; automation is delayed. |
-| Oracle stale | Risk-increasing operations fail closed. |
-| LayerZero delayed | Cross-chain state remains pending; timeout/recovery path becomes visible. |
-| Destination execution fails | Record failure; do not mark strategy complete; initiate retry/recovery policy. |
-| ZK proof invalid | Reject intent authorization/operation. |
-| DEX slippage exceeds limit | Transaction reverts or route is abandoned. |
-| HF below emergency level | Attempt eligible recovery; otherwise allow underlying liquidation mechanics. |
-| Stablecoin depeg | Restrict exposure according to configured deterministic thresholds. |
-| Model output out of schema/range | Reject model output and use fallback rules. |
+| Failure                          | Required behavior                                                                                    |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| AI service unavailable           | Continue deterministic monitoring; no AI-dependent risk-increasing action.                           |
+| Convex unavailable               | On-chain funds remain accessible through contracts; frontend may enter degraded read mode using RPC. |
+| Solver unavailable               | Intent remains pending or user selects a deterministic fallback route if supported.                  |
+| Keeper unavailable               | No unauthorized action occurs; automation is delayed.                                                |
+| Oracle stale                     | Risk-increasing operations fail closed.                                                              |
+| LayerZero delayed                | Cross-chain state remains pending; timeout/recovery path becomes visible.                            |
+| Destination execution fails      | Record failure; do not mark strategy complete; initiate retry/recovery policy.                       |
+| ZK proof invalid                 | Reject intent authorization/operation.                                                               |
+| DEX slippage exceeds limit       | Transaction reverts or route is abandoned.                                                           |
+| HF below emergency level         | Attempt eligible recovery; otherwise allow underlying liquidation mechanics.                         |
+| Stablecoin depeg                 | Restrict exposure according to configured deterministic thresholds.                                  |
+| Model output out of schema/range | Reject model output and use fallback rules.                                                          |
 
 ## 28. Observability
 
@@ -1777,22 +1777,22 @@ No production signing secret may be exposed to Vite client bundles.
 
 ## 34. Requirements Traceability Matrix
 
-| Requirement group | Primary implementation | Primary tests |
-|---|---|---|
-| Intent creation/validation | web, backend, IntentManager | E2E intent flow, contract unit tests |
-| ZK privacy | web3/zk, ZK verifiers, SDK | circuit tests, verifier integration |
-| Solver marketplace | web3/solver, backend/solvers, SolverSettlement | auction unit/integration tests |
-| Aave integration | AaveV3Adapter, LendingManager | fork/integration tests |
-| Uniswap integration | UniswapV4Adapter, LiquidityManager | fork/integration/invariant tests |
-| Delta hedging | HedgeManager, AI optimizer | simulation + contract tests |
-| Cross-chain | LayerZeroAdapter, RemoteExecutor | cross-chain integration tests |
-| Oracle | ChainlinkOracle | stale/deviation/positive-value tests |
-| Automation | web3/keeper, automation contracts | keeper integration + authorization tests |
-| Liquidation risk | apps/ai | offline evaluation + API contract tests |
-| Recovery ranking | apps/ai + RecoveryExecutor | simulation + contract guardrail tests |
-| Cascade prediction | apps/ai | scenario/backtest tests |
-| Emergency unwind | CircuitBreaker, RecoveryExecutor | fork + atomicity tests |
-| Convex projections | backend/indexing | replay/idempotency tests |
+| Requirement group          | Primary implementation                         | Primary tests                            |
+| -------------------------- | ---------------------------------------------- | ---------------------------------------- |
+| Intent creation/validation | web, backend, IntentManager                    | E2E intent flow, contract unit tests     |
+| ZK privacy                 | web3/zk, ZK verifiers, SDK                     | circuit tests, verifier integration      |
+| Solver marketplace         | web3/solver, backend/solvers, SolverSettlement | auction unit/integration tests           |
+| Aave integration           | AaveV3Adapter, LendingManager                  | fork/integration tests                   |
+| Uniswap integration        | UniswapV4Adapter, LiquidityManager             | fork/integration/invariant tests         |
+| Delta hedging              | HedgeManager, AI optimizer                     | simulation + contract tests              |
+| Cross-chain                | LayerZeroAdapter, RemoteExecutor               | cross-chain integration tests            |
+| Oracle                     | ChainlinkOracle                                | stale/deviation/positive-value tests     |
+| Automation                 | web3/keeper, automation contracts              | keeper integration + authorization tests |
+| Liquidation risk           | apps/ai                                        | offline evaluation + API contract tests  |
+| Recovery ranking           | apps/ai + RecoveryExecutor                     | simulation + contract guardrail tests    |
+| Cascade prediction         | apps/ai                                        | scenario/backtest tests                  |
+| Emergency unwind           | CircuitBreaker, RecoveryExecutor               | fork + atomicity tests                   |
+| Convex projections         | backend/indexing                               | replay/idempotency tests                 |
 
 ## 35. Implementation Phases
 

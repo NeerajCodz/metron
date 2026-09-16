@@ -29,7 +29,11 @@
       "id": "FR-004",
       "title": "Intent validation",
       "status": "in-scope",
-      "implementation": ["packages/validation", "apps/backend/convex/intents", "apps/web3/contracts/core/IntentManager.sol"],
+      "implementation": [
+        "packages/validation",
+        "apps/backend/convex/intents",
+        "apps/web3/contracts/core/IntentManager.sol"
+      ],
       "verification": ["schema boundary tests", "IntentManager fuzz tests"]
     },
     {
@@ -50,7 +54,10 @@
       "id": "FR-007",
       "title": "Ownership proof",
       "status": "in-scope",
-      "implementation": ["apps/web3/zk/circuits/ownership", "apps/web3/contracts/zk/ZKOwnershipVerifier.sol"],
+      "implementation": [
+        "apps/web3/zk/circuits/ownership",
+        "apps/web3/contracts/zk/ZKOwnershipVerifier.sol"
+      ],
       "verification": ["ownership circuit tests", "nullifier replay invariant"]
     },
     {
@@ -64,7 +71,10 @@
       "id": "FR-009",
       "title": "Solver scoring",
       "status": "in-scope",
-      "implementation": ["packages/protocol/src/route-scoring.ts", "apps/web3/solver/engine/scorer.ts"],
+      "implementation": [
+        "packages/protocol/src/route-scoring.ts",
+        "apps/web3/solver/engine/scorer.ts"
+      ],
       "verification": ["deterministic scoring tests", "constraint rejection tests"]
     },
     {
@@ -78,7 +88,10 @@
       "id": "FR-011",
       "title": "MEV reduction",
       "status": "in-scope",
-      "implementation": ["apps/web3/solver/auction", "apps/web3/contracts/solver/SolverSettlement.sol"],
+      "implementation": [
+        "apps/web3/solver/auction",
+        "apps/web3/contracts/solver/SolverSettlement.sol"
+      ],
       "verification": ["reveal-window tests", "minimum-output tests"]
     },
     {
@@ -92,7 +105,11 @@
       "id": "FR-013",
       "title": "Concentrated liquidity",
       "status": "in-scope",
-      "implementation": ["apps/web3/contracts/defi/UniswapV4Adapter.sol", "apps/web3/contracts/defi/LiquidityManager.sol", "apps/web3/adapters/uniswap"],
+      "implementation": [
+        "apps/web3/contracts/defi/UniswapV4Adapter.sol",
+        "apps/web3/contracts/defi/LiquidityManager.sol",
+        "apps/web3/adapters/uniswap"
+      ],
       "verification": ["Uniswap fork tests", "liquidity position tests"]
     },
     {
@@ -127,7 +144,10 @@
       "id": "FR-018",
       "title": "Delta calculation",
       "status": "in-scope",
-      "implementation": ["packages/protocol/src/risk-math.ts", "apps/web3/contracts/libraries/DeltaMath.sol"],
+      "implementation": [
+        "packages/protocol/src/risk-math.ts",
+        "apps/web3/contracts/libraries/DeltaMath.sol"
+      ],
       "verification": ["signed delta tests", "cross-runtime delta vectors"]
     },
     {
@@ -155,7 +175,10 @@
       "id": "FR-022",
       "title": "Dynamic risk threshold",
       "status": "in-scope",
-      "implementation": ["apps/ai/src/api/threshold.py", "apps/web3/contracts/risk/RiskController.sol"],
+      "implementation": [
+        "apps/ai/src/api/threshold.py",
+        "apps/web3/contracts/risk/RiskController.sol"
+      ],
       "verification": ["threshold bound tests", "regime sensitivity tests"]
     },
     {
@@ -267,7 +290,11 @@
       "id": "NFR-005",
       "title": "Replay protection",
       "status": "in-scope",
-      "implementation": ["apps/web3/contracts/core", "apps/web3/contracts/crosschain", "apps/web3/contracts/zk"],
+      "implementation": [
+        "apps/web3/contracts/core",
+        "apps/web3/contracts/crosschain",
+        "apps/web3/contracts/zk"
+      ],
       "verification": ["nonce tests", "message replay tests", "nullifier invariant"]
     },
     {

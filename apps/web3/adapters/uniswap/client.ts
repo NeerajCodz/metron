@@ -49,8 +49,18 @@ export async function readUniswapPoolState(
   poolId: Bytes32,
 ): Promise<UniswapPoolState> {
   const [slot0, liquidity] = await Promise.all([
-    client.readContract({ address: stateView, abi: STATE_VIEW_ABI, functionName: "getSlot0", args: [poolId] }),
-    client.readContract({ address: stateView, abi: STATE_VIEW_ABI, functionName: "getLiquidity", args: [poolId] }),
+    client.readContract({
+      address: stateView,
+      abi: STATE_VIEW_ABI,
+      functionName: "getSlot0",
+      args: [poolId],
+    }),
+    client.readContract({
+      address: stateView,
+      abi: STATE_VIEW_ABI,
+      functionName: "getLiquidity",
+      args: [poolId],
+    }),
   ]);
   return {
     stateView,

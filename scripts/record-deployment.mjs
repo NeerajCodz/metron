@@ -17,19 +17,28 @@ if (!chain || !(chain in chainIds) || !runFile) {
 }
 const layerZeroEndpoint = process.env.LAYERZERO_ENDPOINT_ADDRESS;
 const layerZeroEndpointId = Number(process.env.LAYERZERO_ENDPOINT_ID);
-if (!/^0x[0-9a-fA-F]{40}$/.test(layerZeroEndpoint ?? "") || !Number.isSafeInteger(layerZeroEndpointId) || layerZeroEndpointId <= 0) {
+if (
+  !/^0x[0-9a-fA-F]{40}$/.test(layerZeroEndpoint ?? "") ||
+  !Number.isSafeInteger(layerZeroEndpointId) ||
+  layerZeroEndpointId <= 0
+) {
   throw new Error("set LAYERZERO_ENDPOINT_ADDRESS and positive LAYERZERO_ENDPOINT_ID");
 }
 
 const run = JSON.parse(await readFile(resolve(runFile), "utf8"));
-const creates = run.transactions?.filter((transaction) => transaction.transactionType === "CREATE") ?? [];
+const creates =
+  run.transactions?.filter((transaction) => transaction.transactionType === "CREATE") ?? [];
 if (creates.length === 0) throw new Error("broadcast file contains no CREATE transactions");
 const contracts = {};
 for (const transaction of creates) {
   if (!transaction.contractName || !transaction.contractAddress || !transaction.hash) {
     throw new Error("each CREATE transaction needs contractName, contractAddress, and hash");
   }
-  const artifactPath = resolve("apps/web3/out", `${transaction.contractName}.sol`, `${transaction.contractName}.json`);
+  const artifactPath = resolve(
+    "apps/web3/out",
+    `${transaction.contractName}.sol`,
+    `${transaction.contractName}.json`,
+  );
   const artifact = JSON.parse(await readFile(artifactPath, "utf8"));
   const bytecode = artifact.deployedBytecode?.object;
   if (typeof bytecode !== "string" || !bytecode.startsWith("0x") || bytecode.length <= 2) {
@@ -40,7 +49,9 @@ for (const transaction of creates) {
     deploymentTransaction: transaction.hash,
     bytecodeHash: `0x${createHash("sha256").update(bytecode.slice(2), "hex").digest("hex")}`,
     compilerVersion: "0.8.30",
-    sourceCommit: execFileSync("git", ["rev-parse", "--short=8", "HEAD"], { encoding: "utf8" }).trim(),
+    sourceCommit: execFileSync("git", ["rev-parse", "--short=8", "HEAD"], {
+      encoding: "utf8",
+    }).trim(),
     deployedAt: Date.now(),
   };
 }

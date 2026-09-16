@@ -21,8 +21,17 @@ export const ensure = mutation({
       return existing._id;
     }
     return args.displayName === undefined
-      ? ctx.db.insert("users", { externalSubject: identity.subject, createdAt: now, updatedAt: now })
-      : ctx.db.insert("users", { externalSubject: identity.subject, displayName: args.displayName, createdAt: now, updatedAt: now });
+      ? ctx.db.insert("users", {
+          externalSubject: identity.subject,
+          createdAt: now,
+          updatedAt: now,
+        })
+      : ctx.db.insert("users", {
+          externalSubject: identity.subject,
+          displayName: args.displayName,
+          createdAt: now,
+          updatedAt: now,
+        });
   },
 });
 
@@ -43,7 +52,10 @@ export const registerWallet = mutation({
   handler: async (ctx, args) => {
     const { user } = await requireUser(ctx);
     const address = assertAddress(args.address);
-    if (args.chainIds.length === 0 || args.chainIds.some((chainId) => !Number.isInteger(chainId) || chainId <= 0)) {
+    if (
+      args.chainIds.length === 0 ||
+      args.chainIds.some((chainId) => !Number.isInteger(chainId) || chainId <= 0)
+    ) {
       throw new Error("wallet must include positive chain IDs");
     }
     const existing = await ctx.db
@@ -56,12 +68,22 @@ export const registerWallet = mutation({
       if (args.label === undefined) {
         await ctx.db.patch(existing._id, { chainIds: args.chainIds, updatedAt: now });
       } else {
-        await ctx.db.patch(existing._id, { chainIds: args.chainIds, label: args.label, updatedAt: now });
+        await ctx.db.patch(existing._id, {
+          chainIds: args.chainIds,
+          label: args.label,
+          updatedAt: now,
+        });
       }
       return existing._id;
     }
     return args.label === undefined
-      ? ctx.db.insert("wallets", { userId: user._id, address, chainIds: args.chainIds, createdAt: now, updatedAt: now })
+      ? ctx.db.insert("wallets", {
+          userId: user._id,
+          address,
+          chainIds: args.chainIds,
+          createdAt: now,
+          updatedAt: now,
+        })
       : ctx.db.insert("wallets", {
           userId: user._id,
           address,
@@ -77,6 +99,9 @@ export const listWallets = query({
   args: {},
   handler: async (ctx) => {
     const { user } = await requireUser(ctx);
-    return ctx.db.query("wallets").withIndex("by_user", (query) => query.eq("userId", user._id)).collect();
+    return ctx.db
+      .query("wallets")
+      .withIndex("by_user", (query) => query.eq("userId", user._id))
+      .collect();
   },
 });

@@ -18,7 +18,10 @@ export const recordPrediction = internalMutation({
     generatedAt: v.number(),
   },
   handler: async (ctx, args) => {
-    if (args.confidenceBps !== undefined && (args.confidenceBps < 0 || args.confidenceBps > 10_000)) {
+    if (
+      args.confidenceBps !== undefined &&
+      (args.confidenceBps < 0 || args.confidenceBps > 10_000)
+    ) {
       throw new Error("confidence is outside basis-point bounds");
     }
     return ctx.db.insert("aiPredictions", args);
@@ -28,6 +31,9 @@ export const recordPrediction = internalMutation({
 export const listByTrace = internalQuery({
   args: { traceId: v.string() },
   handler: async (ctx, args) => {
-    return ctx.db.query("aiPredictions").withIndex("by_trace", (query) => query.eq("traceId", args.traceId)).collect();
+    return ctx.db
+      .query("aiPredictions")
+      .withIndex("by_trace", (query) => query.eq("traceId", args.traceId))
+      .collect();
   },
 });

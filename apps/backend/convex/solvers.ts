@@ -11,8 +11,12 @@ async function assertIntentOwner(ctx: Parameters<typeof requireUser>[0], intentI
   const { user } = await requireUser(ctx);
   const intent = await ctx.db.get(intentId);
   if (!intent) throw new Error("intent not found");
-  const wallets = await ctx.db.query("wallets").withIndex("by_user", (query) => query.eq("userId", user._id)).collect();
-  if (!wallets.some((wallet) => wallet.address === intent.ownerAddress)) throw new Error("intent ownership mismatch");
+  const wallets = await ctx.db
+    .query("wallets")
+    .withIndex("by_user", (query) => query.eq("userId", user._id))
+    .collect();
+  if (!wallets.some((wallet) => wallet.address === intent.ownerAddress))
+    throw new Error("intent ownership mismatch");
   return { user, intent };
 }
 
@@ -29,7 +33,8 @@ export const register = mutation({
       .query("wallets")
       .withIndex("by_address", (query) => query.eq("address", operatorAddress))
       .unique();
-    if (!wallet || wallet.userId !== user._id) throw new Error("solver operator wallet is not owned by user");
+    if (!wallet || wallet.userId !== user._id)
+      throw new Error("solver operator wallet is not owned by user");
     if (!args.solverId.trim()) throw new Error("solver ID is required");
     const existing = await ctx.db
       .query("solverRegistry")
@@ -37,7 +42,8 @@ export const register = mutation({
       .unique();
     const now = Date.now();
     if (existing) {
-      if (existing.operatorAddress !== operatorAddress) throw new Error("solver ID is registered to another operator");
+      if (existing.operatorAddress !== operatorAddress)
+        throw new Error("solver ID is registered to another operator");
       await ctx.db.patch(existing._id, { endpoint: args.endpoint, enabled: true, updatedAt: now });
       return existing._id;
     }
@@ -64,7 +70,11 @@ export const register = mutation({
 
 export const listEnabled = query({
   args: {},
-  handler: async (ctx) => ctx.db.query("solverRegistry").withIndex("by_enabled", (query) => query.eq("enabled", true)).collect(),
+  handler: async (ctx) =>
+    ctx.db
+      .query("solverRegistry")
+      .withIndex("by_enabled", (query) => query.eq("enabled", true))
+      .collect(),
 });
 
 export const commitBid = internalMutation({
@@ -88,7 +98,9 @@ export const commitBid = internalMutation({
     }
     const existing = await ctx.db
       .query("solverBidCommits")
-      .withIndex("by_intent_and_solver", (query) => query.eq("intentId", args.intentId).eq("solverId", args.solverId))
+      .withIndex("by_intent_and_solver", (query) =>
+        query.eq("intentId", args.intentId).eq("solverId", args.solverId),
+      )
       .unique();
     if (existing) throw new Error("solver already committed for intent");
     return ctx.db.insert("solverBidCommits", {
@@ -112,12 +124,16 @@ export const revealBid = internalMutation({
     const salt = assertBytes32(args.salt, "solver salt");
     const commit = await ctx.db
       .query("solverBidCommits")
-      .withIndex("by_intent_and_solver", (query) => query.eq("intentId", args.intentId).eq("solverId", args.solverId))
+      .withIndex("by_intent_and_solver", (query) =>
+        query.eq("intentId", args.intentId).eq("solverId", args.solverId),
+      )
       .unique();
     if (!commit) throw new Error("solver commitment not found");
     const existing = await ctx.db
       .query("solverBidReveals")
-      .withIndex("by_intent_and_solver", (query) => query.eq("intentId", args.intentId).eq("solverId", args.solverId))
+      .withIndex("by_intent_and_solver", (query) =>
+        query.eq("intentId", args.intentId).eq("solverId", args.solverId),
+      )
       .unique();
     if (existing) throw new Error("solver already revealed for intent");
 
@@ -145,7 +161,8 @@ export const revealBid = internalMutation({
     } else {
       parsedRoute = routeResult.data as unknown as SolverRoute;
       if (parsedRoute.solverId !== args.solverId) rejectionReasons.push("SOLVER_ID_MISMATCH");
-      if (parsedRoute.validityDeadline <= Math.floor(Date.now() / 1000)) rejectionReasons.push("ROUTE_EXPIRED");
+      if (parsedRoute.validityDeadline <= Math.floor(Date.now() / 1000))
+        rejectionReasons.push("ROUTE_EXPIRED");
     }
     let scoreJson: string | undefined;
     let routeId = "invalid";
@@ -161,13 +178,19 @@ export const revealBid = internalMutation({
         : null;
       if (!version) rejectionReasons.push("INTENT_VERSION_MISSING");
       else {
-        const canonical = canonicalIntentSchema.parse(JSON.parse(version.canonicalJson)) as unknown as CanonicalIntent;
+        const canonical = canonicalIntentSchema.parse(
+          JSON.parse(version.canonicalJson),
+        ) as unknown as CanonicalIntent;
         const score = scoreRoute(parsedRoute, {
           maximumSlippageBps: BigInt(canonical.risk.maxSlippageBps),
           maximumDrawdownBps: BigInt(canonical.risk.maxDrawdownBps),
           ...(canonical.risk.maxLiquidationProbabilityBps === undefined
             ? {}
-            : { maximumLiquidationProbabilityBps: BigInt(canonical.risk.maxLiquidationProbabilityBps) }),
+            : {
+                maximumLiquidationProbabilityBps: BigInt(
+                  canonical.risk.maxLiquidationProbabilityBps,
+                ),
+              }),
           ...(canonical.risk.maxImpermanentLossBps === undefined
             ? {}
             : { maximumImpermanentLossBps: BigInt(canonical.risk.maxImpermanentLossBps) }),
@@ -204,7 +227,9 @@ export const selectWinner = internalMutation({
     if (!intent) throw new Error("intent not found");
     const existing = await ctx.db
       .query("strategies")
-      .withIndex("by_intent_and_selected", (query) => query.eq("intentId", args.intentId).eq("selected", true))
+      .withIndex("by_intent_and_selected", (query) =>
+        query.eq("intentId", args.intentId).eq("selected", true),
+      )
       .unique();
     if (existing) return existing._id;
     const reveals = await ctx.db
@@ -243,6 +268,9 @@ export const listForIntent = query({
   args: { intentId: v.id("intents") },
   handler: async (ctx, args) => {
     await assertIntentOwner(ctx, args.intentId);
-    return ctx.db.query("strategies").withIndex("by_intent", (query) => query.eq("intentId", args.intentId)).collect();
+    return ctx.db
+      .query("strategies")
+      .withIndex("by_intent", (query) => query.eq("intentId", args.intentId))
+      .collect();
   },
 });

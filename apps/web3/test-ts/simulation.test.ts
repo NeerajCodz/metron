@@ -32,7 +32,13 @@ describe("position simulation", () => {
 
   it("fails closed when the projected health factor is below policy", () => {
     const result = simulatePosition({
-      collateral: [{ asset: "0x1111111111111111111111111111111111111111", valueUsdWad: 100n, liquidationThresholdBps: 8_000n }],
+      collateral: [
+        {
+          asset: "0x1111111111111111111111111111111111111111",
+          valueUsdWad: 100n,
+          liquidationThresholdBps: 8_000n,
+        },
+      ],
       debtUsdWad: 100n,
       deltaComponents: [],
       targetDeltaWad: 0n,

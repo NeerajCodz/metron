@@ -37,21 +37,37 @@ describe("offchain protocol readers", () => {
       "0x1111111111111111111111111111111111111111",
     );
     expect(observation.answer).toBe(200_000_000_000n);
-    expect(normalizeChainlinkAnswer(observation.answer, observation.decimals)).toBe(2_000n * 10n ** 18n);
+    expect(normalizeChainlinkAnswer(observation.answer, observation.decimals)).toBe(
+      2_000n * 10n ** 18n,
+    );
   });
 
   it("reads Aave account data and reserve indexes", async () => {
     const client = clientFor([
-      { functionName: "getUserAccountData", result: [100n, 40n, 60n, 8_000n, 7_500n, 2n * 10n ** 18n] },
+      {
+        functionName: "getUserAccountData",
+        result: [100n, 40n, 60n, 8_000n, 7_500n, 2n * 10n ** 18n],
+      },
       { functionName: "getReserveNormalizedIncome", result: 1_01n * 10n ** 16n },
       { functionName: "getReserveNormalizedVariableDebt", result: 1_02n * 10n ** 16n },
     ]);
     await expect(
-      readAaveAccountData(client, "0x2222222222222222222222222222222222222222", "0x3333333333333333333333333333333333333333"),
+      readAaveAccountData(
+        client,
+        "0x2222222222222222222222222222222222222222",
+        "0x3333333333333333333333333333333333333333",
+      ),
     ).resolves.toMatchObject({ totalDebtBase: 40n, healthFactor: 2n * 10n ** 18n });
     await expect(
-      readAaveReserveIndexes(client, "0x2222222222222222222222222222222222222222", "0x4444444444444444444444444444444444444444"),
-    ).resolves.toMatchObject({ normalizedIncome: 1_01n * 10n ** 16n, normalizedVariableDebt: 1_02n * 10n ** 16n });
+      readAaveReserveIndexes(
+        client,
+        "0x2222222222222222222222222222222222222222",
+        "0x4444444444444444444444444444444444444444",
+      ),
+    ).resolves.toMatchObject({
+      normalizedIncome: 1_01n * 10n ** 16n,
+      normalizedVariableDebt: 1_02n * 10n ** 16n,
+    });
   });
 
   it("reads Uniswap pool state and squares Q96 prices exactly", async () => {

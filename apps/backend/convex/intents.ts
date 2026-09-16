@@ -6,10 +6,15 @@ import { v } from "convex/values";
 
 import { mutation, query } from "./_generated/server.js";
 import { assertAddress, assertBytes32, requireUser } from "./lib/auth.js";
-async function assertWalletOwner(ctx: Parameters<typeof requireUser>[0], walletId: Id<"wallets">, address: string) {
+async function assertWalletOwner(
+  ctx: Parameters<typeof requireUser>[0],
+  walletId: Id<"wallets">,
+  address: string,
+) {
   const { user } = await requireUser(ctx);
   const wallet = await ctx.db.get(walletId);
-  if (!wallet || wallet.userId !== user._id || wallet.address !== address) throw new Error("wallet ownership mismatch");
+  if (!wallet || wallet.userId !== user._id || wallet.address !== address)
+    throw new Error("wallet ownership mismatch");
   return { user, wallet };
 }
 
@@ -68,8 +73,10 @@ export const publish = mutation({
     }
     const parsed = canonicalIntentSchema.parse(decoded);
     const canonical = normalizeIntent(parsed as unknown as CanonicalIntent);
-    if (canonical.owner !== intent.ownerAddress) throw new Error("canonical owner does not match intent owner");
-    if (canonical.expiresAt !== intent.expiresAt) throw new Error("canonical expiry does not match intent");
+    if (canonical.owner !== intent.ownerAddress)
+      throw new Error("canonical owner does not match intent owner");
+    if (canonical.expiresAt !== intent.expiresAt)
+      throw new Error("canonical expiry does not match intent");
     const canonicalHash = hashNormalizedIntent(canonical);
     const now = Date.now();
     const versionId = await ctx.db.insert("intentVersions", {
@@ -98,7 +105,11 @@ export const cancel = mutation({
     if (!intent) throw new Error("intent not found");
     if (!intent.walletId) throw new Error("intent has no wallet owner");
     await assertWalletOwner(ctx, intent.walletId, intent.ownerAddress);
-    if (intent.status === "settled" || intent.status === "cancelled" || intent.status === "expired") {
+    if (
+      intent.status === "settled" ||
+      intent.status === "cancelled" ||
+      intent.status === "expired"
+    ) {
       throw new Error("intent is terminal");
     }
     await ctx.db.patch(args.intentId, { status: "cancelled", updatedAt: Date.now() });
@@ -127,9 +138,15 @@ export const listMine = query({
   args: { status: v.optional(v.string()) },
   handler: async (ctx, args) => {
     const { user } = await requireUser(ctx);
-    const wallets = await ctx.db.query("wallets").withIndex("by_user", (query) => query.eq("userId", user._id)).collect();
+    const wallets = await ctx.db
+      .query("wallets")
+      .withIndex("by_user", (query) => query.eq("userId", user._id))
+      .collect();
     const addresses = new Set(wallets.map((wallet) => wallet.address));
     const intents = await ctx.db.query("intents").withIndex("by_owner").collect();
-    return intents.filter((intent) => addresses.has(intent.ownerAddress) && (!args.status || intent.status === args.status));
+    return intents.filter(
+      (intent) =>
+        addresses.has(intent.ownerAddress) && (!args.status || intent.status === args.status),
+    );
   },
 });

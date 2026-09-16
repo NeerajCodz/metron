@@ -1,0 +1,7 @@
+.agents/
+packages/ui/
+apps/backend/.convex/
+apps/web3/out/
+apps/web3/cache/
+apps/web3/broadcast/
+pnpm-lock.yaml

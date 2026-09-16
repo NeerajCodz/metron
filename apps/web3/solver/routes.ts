@@ -36,7 +36,12 @@ function asHex(value: string): `0x${string}` {
   return value as `0x${string}`;
 }
 
-function actionTarget(target: Address, asset: Address, amount: string, actionType: "supply" | "add_liquidity") {
+function actionTarget(
+  target: Address,
+  asset: Address,
+  amount: string,
+  actionType: "supply" | "add_liquidity",
+) {
   return {
     actionIndex: 0,
     chainId: 0,
@@ -49,7 +54,10 @@ function actionTarget(target: Address, asset: Address, amount: string, actionTyp
   };
 }
 
-export function buildCandidateRoutes(intent: CanonicalIntent, context: RouteBuildContext): SolverRoute[] {
+export function buildCandidateRoutes(
+  intent: CanonicalIntent,
+  context: RouteBuildContext,
+): SolverRoute[] {
   if (context.markets.length === 0) return [];
   const allowedChains = new Set(intent.chains);
   const allowedProtocols = new Set(intent.protocols);
@@ -58,7 +66,8 @@ export function buildCandidateRoutes(intent: CanonicalIntent, context: RouteBuil
   const routes: SolverRoute[] = [];
 
   for (const market of context.markets) {
-    if (!allowedChains.has(market.chainId) || !allowedAssets.has(market.asset.toLowerCase())) continue;
+    if (!allowedChains.has(market.chainId) || !allowedAssets.has(market.asset.toLowerCase()))
+      continue;
     if (allowedProtocols.has(PROTOCOL_IDS.aaveV3)) {
       routes.push({
         schemaVersion: "1.0.0",
@@ -66,7 +75,12 @@ export function buildCandidateRoutes(intent: CanonicalIntent, context: RouteBuil
         solverId: context.solverId,
         intentId: context.intentId,
         strategyId: `${routeId(context, "lending", market)}:strategy`,
-        actions: [{ ...actionTarget(market.lendingTarget, market.asset, "0", "supply"), chainId: market.chainId }],
+        actions: [
+          {
+            ...actionTarget(market.lendingTarget, market.asset, "0", "supply"),
+            chainId: market.chainId,
+          },
+        ],
         expectedNetApyBps: market.expectedNetApyBps,
         expectedDrawdownBps: market.expectedDrawdownBps,
         expectedImpermanentLossBps: 0,
@@ -88,7 +102,12 @@ export function buildCandidateRoutes(intent: CanonicalIntent, context: RouteBuil
         solverId: context.solverId,
         intentId: context.intentId,
         strategyId: `${routeId(context, "liquidity", market)}:strategy`,
-        actions: [{ ...actionTarget(market.liquidityTarget, market.asset, "0", "add_liquidity"), chainId: market.chainId }],
+        actions: [
+          {
+            ...actionTarget(market.liquidityTarget, market.asset, "0", "add_liquidity"),
+            chainId: market.chainId,
+          },
+        ],
         expectedNetApyBps: market.expectedNetApyBps,
         expectedDrawdownBps: market.expectedDrawdownBps,
         expectedImpermanentLossBps: market.expectedImpermanentLossBps,

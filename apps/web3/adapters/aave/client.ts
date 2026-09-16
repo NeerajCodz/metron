@@ -74,7 +74,12 @@ export async function readAaveReserveIndexes(
   asset: Address,
 ): Promise<AaveReserveIndexes> {
   const [normalizedIncome, normalizedVariableDebt] = await Promise.all([
-    client.readContract({ address: pool, abi: AAVE_POOL_ABI, functionName: "getReserveNormalizedIncome", args: [asset] }),
+    client.readContract({
+      address: pool,
+      abi: AAVE_POOL_ABI,
+      functionName: "getReserveNormalizedIncome",
+      args: [asset],
+    }),
     client.readContract({
       address: pool,
       abi: AAVE_POOL_ABI,

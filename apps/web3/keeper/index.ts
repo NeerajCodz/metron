@@ -19,7 +19,10 @@ export type KeeperSubmit = (request: KeeperActionRequest) => Promise<void>;
 export class KeeperRuntime {
   private readonly idempotency = new KeeperIdempotency();
 
-  async runCycle(observations: readonly KeeperObservation[], submit: KeeperSubmit): Promise<KeeperTrigger[]> {
+  async runCycle(
+    observations: readonly KeeperObservation[],
+    submit: KeeperSubmit,
+  ): Promise<KeeperTrigger[]> {
     const triggers = this.idempotency.filterNew(observations.flatMap(evaluateKeeperObservation));
     const submitted: KeeperTrigger[] = [];
     for (const trigger of triggers) {
