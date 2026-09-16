@@ -243,6 +243,191 @@ button {
 .app-emergency-button {
   min-height: 2.45rem;
 }
+.app-emergency-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid rgb(155 23 48 / 68%);
+  border-radius: var(--metron-radius-control);
+  background: var(--metron-crimson);
+  color: var(--metron-pearl);
+  font-size: 0.72rem;
+  font-weight: 650;
+  text-decoration: none;
+  transition:
+    border-color var(--metron-duration-fast) var(--metron-ease),
+    background-color var(--metron-duration-fast) var(--metron-ease);
+}
+
+.app-emergency-button:hover {
+  border-color: var(--metron-crimson-bright);
+  background: var(--metron-crimson-bright);
+}
+
+.app-risk-banner {
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    border-color var(--metron-duration-fast) var(--metron-ease),
+    background-color var(--metron-duration-fast) var(--metron-ease);
+}
+
+.app-risk-banner:hover {
+  border-color: rgb(245 158 11 / 55%);
+  background: rgb(245 158 11 / 13%);
+}
+
+.app-risk-banner__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--metron-sand-bright);
+  font-size: 0.7rem;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.app-feedback {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 45;
+  display: grid;
+  gap: 0.5rem;
+  width: min(24rem, calc(100vw - 2rem));
+  pointer-events: none;
+}
+
+.app-feedback__job,
+.app-feedback__notification {
+  border: 1px solid var(--metron-border-strong);
+  border-radius: var(--metron-radius-control);
+  background: rgb(12 12 12 / 94%);
+  box-shadow: 0 1rem 2.5rem rgb(0 0 0 / 32%);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.app-feedback__job {
+  padding: 0.75rem 0.85rem;
+  color: var(--metron-pearl-muted);
+  font-size: 0.72rem;
+}
+
+.app-feedback__job-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  color: var(--metron-pearl);
+  font-weight: 650;
+}
+
+.app-feedback__progress {
+  height: 0.22rem;
+  margin-top: 0.6rem;
+  overflow: hidden;
+  border-radius: var(--metron-radius-pill);
+  background: var(--metron-border);
+}
+
+.app-feedback__progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--metron-sand-bright);
+  transition: width 180ms var(--metron-ease);
+}
+
+.app-feedback__job p {
+  margin: 0.55rem 0 0;
+  color: var(--metron-pearl-dim);
+  font-size: 0.66rem;
+  line-height: 1.4;
+}
+
+.app-feedback__notification {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.65rem 0.7rem;
+  color: var(--metron-pearl-muted);
+  font-size: 0.7rem;
+  pointer-events: auto;
+}
+
+.app-feedback__notification svg {
+  color: var(--metron-success);
+}
+
+.app-feedback__notification.is-warning svg {
+  color: var(--metron-warning);
+}
+
+.app-feedback__notification.is-error svg {
+  color: var(--metron-crimson-bright);
+}
+
+.app-feedback__notification button {
+  display: grid;
+  place-items: center;
+  padding: 0.15rem;
+  border: 0;
+  background: transparent;
+  color: var(--metron-pearl-dim);
+  cursor: pointer;
+}
+
+.app-feedback__notification button:hover {
+  color: var(--metron-pearl);
+}
+
+.app-not-found {
+  display: grid;
+  justify-items: start;
+  gap: 0.7rem;
+  max-width: 36rem;
+  padding: 3rem 0;
+}
+
+.app-not-found__eyebrow {
+  margin: 0;
+  color: var(--metron-sand-bright);
+  font-family: var(--metron-font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.app-not-found h1 {
+  margin: 0;
+  color: var(--metron-pearl);
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  letter-spacing: -0.04em;
+}
+
+.app-not-found p:not(.app-not-found__eyebrow) {
+  margin: 0;
+  color: var(--metron-pearl-muted);
+  line-height: 1.55;
+}
+
+.app-not-found__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.65rem;
+  color: var(--metron-sand-bright);
+  font-size: 0.78rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.app-not-found__link:hover {
+  color: var(--metron-pearl);
+}
 
 .app-sidebar__build {
   display: flex;

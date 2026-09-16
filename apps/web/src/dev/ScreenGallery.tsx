@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   ChevronLeft,
   ChevronRight,
@@ -247,7 +248,7 @@ export function ScreenGallery() {
     };
   }, [widthId]);
 
-  const activeLabel = pending ? `${active?.label ?? "Route"} → ${pending.label}` : active?.label ?? "Live app";
+  const activeLabel = pending ? `Loading ${pending.label}` : active?.label ?? "Live app";
   const selectedWidth = WIDTHS.find((option) => option.id === widthId) ?? WIDTHS[0];
 
   return (
@@ -389,9 +390,8 @@ export function ScreenGallery() {
                 <span style={{ display: "inline-flex", alignItems: "center", gap: "5px", marginRight: "auto", paddingLeft: "2px", color: "var(--metron-pearl-dim, #77746f)", fontFamily: "var(--metron-font-mono, monospace)", fontSize: "9px" }}><Timer size={11} aria-hidden="true" /> delay</span>
                 {([0, 1200] as const).map((option) => <button key={option} type="button" onClick={() => setDelay(option)} aria-pressed={delay === option} style={{ ...chipStyle, ...(delay === option ? { borderColor: "var(--metron-crimson-glow, #710014)", background: "var(--metron-crimson, #710014)", color: "var(--metron-pearl, #f2f1ed)" } : {}) }}>{option === 0 ? "off" : "1.2s"}</button>)}
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "5px", padding: "2px", color: "var(--metron-pearl-dim, #77746f)", fontFamily: "var(--metron-font-mono, monospace)", fontSize: "9px" }}><PanelLeft size={11} aria-hidden="true" /> <span>[ / ] previous · next</span></div>
+              <div style={{ display: "flex", alignItems: "center", gap: "5px", padding: "2px", color: "var(--metron-pearl-dim, #77746f)", fontFamily: "var(--metron-font-mono, monospace)", fontSize: "9px" }}><PanelLeft size={11} aria-hidden="true" /> <span><kbd>[</kbd> previous&nbsp;&nbsp;<kbd>]</kbd> next</span></div>
             </div>
-          </div>
         ) : null}
 
         <div style={{ ...panelStyle, display: "flex", alignItems: "center", gap: "2px" }}>
