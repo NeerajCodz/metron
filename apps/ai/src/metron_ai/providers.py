@@ -390,8 +390,31 @@ class ModelRuntime:
         return ProviderCompletion(text=text, provider=provider.config.id, model=provider.model, tool_calls=calls)
 
     @staticmethod
+    def _gemini_schema(value: Mapping[str, Any]) -> dict[str, Any]:
+        allowed = {"type", "format", "description", "nullable", "enum", "items", "properties", "required"}
+        sanitized: dict[str, Any] = {}
+        for key, item in value.items():
+            if key not in allowed:
+                continue
+            if key == "properties" and isinstance(item, Mapping):
+                sanitized[key] = {
+                    str(name): ModelRuntime._gemini_schema(schema)
+                    for name, schema in item.items()
+                    if isinstance(schema, Mapping)
+                }
+            elif key in {"items"} and isinstance(item, Mapping):
+                sanitized[key] = ModelRuntime._gemini_schema(item)
+            else:
+                sanitized[key] = item
+        return sanitized
+
+    @staticmethod
     def _gemini_tool(tool: ToolDefinition) -> dict[str, Any]:
-        return {"name": tool.name, "description": tool.description, "parameters": dict(tool.parameters)}
+        return {
+            "name": tool.name,
+            "description": tool.description,
+            "parameters": ModelRuntime._gemini_schema(tool.parameters),
+        }
 
     @staticmethod
     def _openai_tool(tool: ToolDefinition) -> dict[str, Any]:
