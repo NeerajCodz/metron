@@ -1,0 +1,200 @@
+.metron-glass-navigation {
+  width: 100%;
+  color: var(--metron-pearl);
+}
+
+.metron-glass-navigation__surface {
+  width: 100%;
+  border-radius: var(--metron-radius-card);
+}
+
+.metron-glass-navigation__layout {
+  display: flex;
+  min-width: 0;
+  min-height: 4.25rem;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.6rem 0.7rem;
+}
+
+.metron-glass-navigation__brand {
+  display: flex;
+  min-width: max-content;
+  flex: none;
+  align-items: center;
+  padding-inline: 0.55rem;
+  color: var(--metron-pearl);
+  font-size: 1.05rem;
+  font-weight: 720;
+  letter-spacing: -0.025em;
+}
+
+.metron-glass-navigation__brand-link {
+  display: inline-flex;
+  align-items: center;
+  color: inherit;
+  text-decoration: none;
+  border-radius: 0.45rem;
+}
+
+.metron-glass-navigation__brand-link:focus-visible {
+  outline: 2px solid var(--metron-focus);
+  outline-offset: 4px;
+}
+
+.metron-glass-navigation__viewport {
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-inline: contain;
+  scrollbar-color: var(--metron-border-strong) transparent;
+  scrollbar-width: thin;
+}
+
+.metron-glass-navigation__viewport::-webkit-scrollbar {
+  height: 4px;
+}
+
+.metron-glass-navigation__viewport::-webkit-scrollbar-thumb {
+  background: var(--metron-border-strong);
+  border-radius: var(--metron-radius-pill);
+}
+
+.metron-glass-navigation__list {
+  display: flex;
+  width: max-content;
+  min-width: 100%;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.metron-glass-navigation__item {
+  flex: none;
+}
+
+.metron-glass-navigation__link {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  min-height: 2.7rem;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 0.9rem;
+  overflow: hidden;
+  color: var(--metron-pearl-muted);
+  font-size: 0.9rem;
+  font-weight: 580;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  border-radius: var(--metron-radius-pill);
+  transition:
+    color var(--metron-duration-fast) var(--metron-ease),
+    background-color var(--metron-duration-fast) var(--metron-ease),
+    border-color var(--metron-duration-fast) var(--metron-ease),
+    transform var(--metron-duration-fast) var(--metron-ease);
+}
+
+.metron-glass-navigation__link::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  content: "";
+  background: linear-gradient(135deg, rgb(242 241 237 / 10%), rgb(113 0 20 / 9%));
+  opacity: 0;
+  transition: opacity var(--metron-duration-fast) var(--metron-ease);
+}
+
+.metron-glass-navigation__link:hover:not(.metron-glass-navigation__link--disabled) {
+  color: var(--metron-pearl);
+  background: rgb(242 241 237 / 6%);
+}
+
+.metron-glass-navigation__link:active:not(.metron-glass-navigation__link--disabled) {
+  transform: scale(0.97);
+}
+
+.metron-glass-navigation__link:focus-visible {
+  outline: 2px solid var(--metron-focus);
+  outline-offset: -2px;
+}
+
+.metron-glass-navigation__link--active {
+  color: var(--metron-pearl);
+  background: rgb(113 0 20 / 24%);
+  border-color: rgb(179 143 111 / 24%);
+  box-shadow:
+    inset 0 1px 0 rgb(242 241 237 / 12%),
+    0 8px 22px rgb(0 0 0 / 18%);
+}
+
+.metron-glass-navigation__link--active::before {
+  opacity: 1;
+}
+
+.metron-glass-navigation__link--disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.metron-glass-navigation__icon {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  color: var(--metron-sand);
+}
+
+.metron-glass-navigation__actions {
+  display: flex;
+  min-width: max-content;
+  flex: none;
+  align-items: center;
+  gap: 0.5rem;
+  padding-left: 0.15rem;
+}
+
+.metron-glass-navigation__actions > :where(a, button):focus-visible {
+  outline: 2px solid var(--metron-focus);
+  outline-offset: 3px;
+}
+
+@media (max-width: 42rem) {
+  .metron-glass-navigation__layout {
+    gap: 0.4rem;
+    padding: 0.5rem;
+  }
+
+  .metron-glass-navigation__brand {
+    padding-inline: 0.35rem;
+  }
+
+  .metron-glass-navigation__list {
+    justify-content: flex-start;
+  }
+
+  .metron-glass-navigation__link {
+    min-height: 2.55rem;
+    padding-inline: 0.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .metron-glass-navigation__link,
+  .metron-glass-navigation__link::before {
+    transition: none;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .metron-glass-navigation__surface {
+    background: var(--metron-surface-strong);
+  }
+}

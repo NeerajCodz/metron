@@ -87,5 +87,10 @@ export {
   type DropdownMenuItemProps,
   type DropdownMenuProps,
 } from "./components/dropdown-menu.js";
+export {
+  GlassNavigation,
+  type GlassNavigationItem,
+  type GlassNavigationProps,
+} from "./components/navigation.js";
 export { LiquidGlass, type LiquidGlassProps } from "./components/liquid-glass.js";
 export { cn } from "./lib/cn.js";
