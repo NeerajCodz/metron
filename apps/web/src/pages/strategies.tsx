@@ -10,6 +10,7 @@ import {
   Filter,
   Gauge,
   Layers3,
+  RefreshCw,
   Search,
   ShieldCheck,
   SlidersHorizontal,
@@ -167,12 +168,14 @@ function StrategyCard({
   strategy,
   selected,
   inspected,
+  busy,
   onInspect,
   onSelect,
 }: {
   strategy: Strategy;
   selected: boolean;
   inspected: boolean;
+  busy: "inspect" | "select" | null;
   onInspect: () => void;
   onSelect: () => void;
 }) {
@@ -335,18 +338,28 @@ function StrategyCard({
         <Button
           variant="quiet"
           size="sm"
-          leadingIcon={inspected ? <X size={14} /> : <ExternalLink size={14} />}
+          loading={busy === "inspect"}
+          loadingLabel="Inspecting"
+          leadingIcon={
+            busy === "inspect" ? undefined : inspected ? <X size={14} /> : <ExternalLink size={14} />
+          }
           onClick={onInspect}
           aria-expanded={inspected}
+          disabled={busy !== null}
         >
           {inspected ? "Close details" : "Inspect"}
         </Button>
         <Button
           variant={selected ? "sand" : "outline"}
           size="sm"
-          trailingIcon={selected ? <Check size={14} /> : <ChevronRight size={14} />}
+          loading={busy === "select"}
+          loadingLabel="Selecting"
+          trailingIcon={
+            busy ? undefined : selected ? <Check size={14} /> : <ChevronRight size={14} />
+          }
           onClick={onSelect}
           aria-pressed={selected}
+          disabled={busy !== null}
         >
           {selected ? "Selected" : "Select strategy"}
         </Button>
@@ -363,7 +376,45 @@ export function StrategiesPage() {
   const [selectedId, setSelectedId] = useState("delta-anchor");
   const [inspectedId, setInspectedId] = useState<string | null>(null);
   const [showAll, setShowAll] = useState(false);
+  const [action, setAction] = useState<{
+    kind: "inspect" | "select" | "reset" | "show";
+    strategyId?: string;
+    status: "running" | "success" | "error";
+    message: string;
+  } | null>(null);
 
+  const runAction = (
+    kind: "inspect" | "select" | "reset" | "show",
+    message: string,
+    strategyId?: string,
+    complete?: () => void,
+  ) => {
+    setAction({ kind, strategyId, status: "running", message: `${message}…` });
+    window.setTimeout(() => {
+      complete?.();
+      setAction({ kind, strategyId, status: "success", message: `${message} complete.` });
+    }, 500);
+  };
+
+  const inspectStrategy = (strategyId: string) => {
+    if (inspectedId === strategyId) {
+      setInspectedId(null);
+      setAction({ kind: "inspect", strategyId, status: "success", message: "Inspection closed." });
+      return;
+    }
+    runAction("inspect", "Loading inspection report", strategyId, () => setInspectedId(strategyId));
+  };
+
+  const selectStrategy = (strategyId: string) => {
+    if (selectedId === strategyId) {
+      setAction({ kind: "select", strategyId, status: "success", message: "Strategy is already selected." });
+      return;
+    }
+    const strategy = strategies.find((candidate) => candidate.id === strategyId);
+    runAction("select", `Selecting ${strategy?.name ?? "strategy"}`, strategyId, () =>
+      setSelectedId(strategyId),
+    );
+  };
   const filteredStrategies = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
     const filtered = strategies.filter((strategy) => {
@@ -657,16 +708,38 @@ export function StrategiesPage() {
             variant="quiet"
             size="md"
             leadingIcon={<Filter size={15} />}
-            onClick={() => {
-              setRiskFilter("all");
-              setNetworkFilter("all");
-              setSortBy("fit");
-              setQuery("");
-            }}
+            loading={action?.kind === "reset" && action.status === "running"}
+            loadingLabel="Resetting"
+            onClick={() =>
+              runAction("reset", "Resetting strategy filters", undefined, () => {
+                setRiskFilter("all");
+                setNetworkFilter("all");
+                setSortBy("fit");
+                setQuery("");
+              })
+            }
+            disabled={action?.status === "running"}
           >
             Reset filters
           </Button>
         </section>
+        {action ? (
+          <div
+            role="status"
+            aria-live="polite"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.55rem",
+              margin: "0 0 14px",
+              color: action.status === "running" ? colors.sand : colors.green,
+              fontSize: "12px",
+            }}
+          >
+            {action.status === "running" ? <RefreshCw className="web-page-strategies__spin" size={14} /> : <Check size={14} />}
+            {action.message}
+          </div>
+        ) : null}
 
         <div
           style={{
@@ -715,10 +788,15 @@ export function StrategiesPage() {
                 strategy={strategy}
                 selected={selectedId === strategy.id}
                 inspected={inspectedId === strategy.id}
-                onInspect={() =>
-                  setInspectedId((current) => (current === strategy.id ? null : strategy.id))
+                busy={
+                  action?.status === "running" && action.strategyId === strategy.id
+                    ? action.kind === "inspect" || action.kind === "select"
+                      ? action.kind
+                      : null
+                    : null
                 }
-                onSelect={() => setSelectedId(strategy.id)}
+                onInspect={() => inspectStrategy(strategy.id)}
+                onSelect={() => selectStrategy(strategy.id)}
               />
             ))}
           </div>
@@ -986,9 +1064,23 @@ export function StrategiesPage() {
               </tbody>
             </table>
             <div style={{ borderTop: `1px solid ${colors.border}`, padding: "10px 18px" }}>
-              <Button variant="quiet" size="sm" onClick={() => setShowAll((visible) => !visible)}>
+              <Button
+                variant="quiet"
+                size="sm"
+                loading={action?.kind === "show" && action.status === "running"}
+                loadingLabel="Updating"
+                onClick={() =>
+                  runAction(
+                    "show",
+                    showAll ? "Showing top candidates" : "Loading all candidates",
+                    undefined,
+                    () => setShowAll((visible) => !visible),
+                  )
+                }
+                disabled={action?.status === "running"}
+              >
                 {showAll ? "Show top three" : "View all candidates"}
-                <ArrowRight size={14} />
+                {action?.kind !== "show" ? <ArrowRight size={14} /> : null}
               </Button>
             </div>
           </div>
@@ -1047,8 +1139,11 @@ export function StrategiesPage() {
             <Button
               variant="crimson"
               size="md"
-              trailingIcon={<ArrowRight size={15} />}
-              onClick={() => setInspectedId(selectedStrategy.id)}
+              loading={action?.kind === "inspect" && action.status === "running" && action.strategyId === selectedStrategy.id}
+              loadingLabel="Inspecting"
+              trailingIcon={action?.status === "running" ? undefined : <ArrowRight size={15} />}
+              onClick={() => inspectStrategy(selectedStrategy.id)}
+              disabled={action?.status === "running"}
             >
               Review selected strategy
             </Button>

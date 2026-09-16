@@ -380,8 +380,25 @@ export function StrategyDetailPage() {
   const [executionOpen, setExecutionOpen] = useState(false);
   const [manageOpen, setManageOpen] = useState(false);
   const [paused, setPaused] = useState(false);
+  const [action, setAction] = useState<{
+    kind: "node" | "rebalance" | "manage" | "prepare" | "pause";
+    status: "running" | "success" | "error";
+    message: string;
+  } | null>(null);
   const detail = nodeDetails[selectedNode];
   const SelectedIcon = nodes.find((node) => node.id === selectedNode)?.icon ?? Wallet;
+
+  const runAction = (
+    kind: "node" | "rebalance" | "manage" | "prepare" | "pause",
+    message: string,
+    complete?: () => void,
+  ) => {
+    setAction({ kind, status: "running", message: `${message}…` });
+    window.setTimeout(() => {
+      complete?.();
+      setAction({ kind, status: "success", message: `${message} complete.` });
+    }, 550);
+  };
 
   return (
     <main className="web-page-strategy-detail">
@@ -412,16 +429,38 @@ export function StrategyDetailPage() {
             <Button
               variant="outline"
               size="sm"
-              leadingIcon={<SlidersHorizontal className="web-page-strategy-detail__button-icon" />}
-              onClick={() => setManageOpen((open) => !open)}
+              loading={action?.kind === "manage" && action.status === "running"}
+              loadingLabel="Opening controls"
+              leadingIcon={
+                action?.kind === "manage" && action.status === "running" ? undefined : (
+                  <SlidersHorizontal className="web-page-strategy-detail__button-icon" />
+                )
+              }
+              onClick={() =>
+                runAction("manage", "Loading strategy controls", () =>
+                  setManageOpen((open) => !open),
+                )
+              }
+              disabled={action?.status === "running"}
             >
               {manageOpen ? "Close manage" : "Manage strategy"}
             </Button>
             <Button
               variant="crimson"
               size="sm"
-              leadingIcon={<Play className="web-page-strategy-detail__button-icon" />}
-              onClick={() => setExecutionOpen((open) => !open)}
+              loading={action?.kind === "rebalance" && action.status === "running"}
+              loadingLabel="Preparing review"
+              leadingIcon={
+                action?.kind === "rebalance" && action.status === "running" ? undefined : (
+                  <Play className="web-page-strategy-detail__button-icon" />
+                )
+              }
+              onClick={() =>
+                runAction("rebalance", "Preparing rebalance review", () =>
+                  setExecutionOpen((open) => !open),
+                )
+              }
+              disabled={action?.status === "running"}
             >
               {executionOpen ? "Hide execution" : "Execute rebalance"}
             </Button>
@@ -476,6 +515,23 @@ export function StrategyDetailPage() {
             </button>
           ))}
         </div>
+        {action ? (
+          <div
+            role="status"
+            aria-live="polite"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              margin: "0.8rem 0 -0.2rem",
+              color: action.status === "running" ? "#c8aa8e" : "#55c995",
+              fontSize: "0.78rem",
+            }}
+          >
+            {action.status === "running" ? <RefreshCw size={14} /> : <Check size={14} />}
+            {action.message}
+          </div>
+        ) : null}
 
         <div className="web-page-strategy-detail__layout">
           <section
@@ -536,8 +592,13 @@ export function StrategyDetailPage() {
                     type="button"
                     className={`web-page-strategy-detail__node ${node.className ?? ""} ${selectedNode === node.id ? "web-page-strategy-detail__node--selected" : ""}`}
                     style={node.position}
-                    onClick={() => setSelectedNode(node.id)}
+                    onClick={() =>
+                      runAction("node", `Loading ${node.name} details`, () =>
+                        setSelectedNode(node.id),
+                      )
+                    }
                     aria-pressed={selectedNode === node.id}
+                    aria-busy={action?.kind === "node" && action.status === "running"}
                   >
                     <span className="web-page-strategy-detail__node-label">
                       <Icon />
@@ -592,7 +653,9 @@ export function StrategyDetailPage() {
                   className="web-page-strategy-detail__close"
                   type="button"
                   aria-label="Clear selected node"
-                  onClick={() => setSelectedNode("capital")}
+                  onClick={() =>
+                    runAction("node", "Clearing node details", () => setSelectedNode("capital"))
+                  }
                 >
                   <X />
                 </button>
@@ -822,22 +885,38 @@ export function StrategyDetailPage() {
             <Button
               variant="quiet"
               size="sm"
+              loading={action?.kind === "pause" && action.status === "running"}
+              loadingLabel={paused ? "Resuming" : "Pausing"}
               leadingIcon={
-                paused ? (
-                  <Play className="web-page-strategy-detail__button-icon" />
-                ) : (
-                  <Pause className="web-page-strategy-detail__button-icon" />
+                action?.kind === "pause" && action.status === "running"
+                  ? undefined
+                  : paused
+                    ? <Play className="web-page-strategy-detail__button-icon" />
+                    : <Pause className="web-page-strategy-detail__button-icon" />
+              }
+              onClick={() =>
+                runAction("pause", paused ? "Resuming automation" : "Pausing automation", () =>
+                  setPaused((current) => !current),
                 )
               }
-              onClick={() => setPaused((current) => !current)}
+              disabled={action?.status === "running"}
             >
               {paused ? "Resume automation" : "Pause automation"}
             </Button>
             <Button
               variant="crimson"
               size="sm"
-              leadingIcon={<RefreshCw className="web-page-strategy-detail__button-icon" />}
-              onClick={() => setExecutionOpen(true)}
+              loading={action?.kind === "rebalance" && action.status === "running"}
+              loadingLabel="Preparing review"
+              leadingIcon={
+                action?.kind === "rebalance" && action.status === "running"
+                  ? undefined
+                  : <RefreshCw className="web-page-strategy-detail__button-icon" />
+              }
+              onClick={() =>
+                runAction("rebalance", "Preparing rebalance review", () => setExecutionOpen(true))
+              }
+              disabled={action?.status === "running"}
             >
               Review rebalance
             </Button>
@@ -863,14 +942,30 @@ export function StrategyDetailPage() {
               slippage.
             </p>
             <div className="web-page-strategy-detail__drawer-actions">
-              <Button variant="outline" size="sm" onClick={() => setExecutionOpen(false)}>
+              <Button
+                variant="outline"
+                size="sm"
+                loading={action?.kind === "rebalance" && action.status === "running"}
+                loadingLabel="Updating"
+                onClick={() =>
+                  runAction("rebalance", "Keeping current positions", () => setExecutionOpen(false))
+                }
+                disabled={action?.status === "running"}
+              >
                 Keep current positions
               </Button>
               <Button
                 variant="crimson"
                 size="sm"
-                leadingIcon={<ArrowUpRight className="web-page-strategy-detail__button-icon" />}
-                onClick={() => setExecutionOpen(false)}
+                loading={action?.kind === "prepare" && action.status === "running"}
+                loadingLabel="Preparing transaction"
+                leadingIcon={
+                  action?.kind === "prepare" && action.status === "running"
+                    ? undefined
+                    : <ArrowUpRight className="web-page-strategy-detail__button-icon" />
+                }
+                onClick={() => runAction("prepare", "Preparing transaction")}
+                disabled={action?.status === "running"}
               >
                 Prepare transaction
               </Button>
@@ -898,14 +993,30 @@ export function StrategyDetailPage() {
               <Button
                 variant="outline"
                 size="sm"
-                leadingIcon={<Clock3 className="web-page-strategy-detail__button-icon" />}
+                loading={action?.kind === "manage" && action.status === "running"}
+                loadingLabel="Saving schedule"
+                leadingIcon={
+                  action?.kind === "manage" && action.status === "running"
+                    ? undefined
+                    : <Clock3 className="web-page-strategy-detail__button-icon" />
+                }
+                onClick={() => runAction("manage", "Saving schedule preference")}
+                disabled={action?.status === "running"}
               >
                 Edit schedule
               </Button>
               <Button
                 variant="sand"
                 size="sm"
-                leadingIcon={<Target className="web-page-strategy-detail__button-icon" />}
+                loading={action?.kind === "manage" && action.status === "running"}
+                loadingLabel="Saving guardrails"
+                leadingIcon={
+                  action?.kind === "manage" && action.status === "running"
+                    ? undefined
+                    : <Target className="web-page-strategy-detail__button-icon" />
+                }
+                onClick={() => runAction("manage", "Saving guardrails")}
+                disabled={action?.status === "running"}
               >
                 Edit guardrails
               </Button>

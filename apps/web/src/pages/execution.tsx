@@ -86,10 +86,13 @@ const bridgeItems = [
 
 export function ExecutionPage() {
   const [routeConfirmed, setRouteConfirmed] = useState(false);
+  const [confirmationStatus, setConfirmationStatus] = useState<
+    "idle" | "running" | "success" | "error"
+  >("idle");
   const [mevCommitted, setMevCommitted] = useState(true);
   const [executionWindow, setExecutionWindow] = useState("next-block");
   const [copied, setCopied] = useState(false);
-
+  const [explorerStatus, setExplorerStatus] = useState<"idle" | "running" | "success">("idle");
   const handleCopyAddress = async () => {
     try {
       await navigator.clipboard.writeText("0x7F3a2cA18F9c0D5A4bE191c2");
@@ -97,6 +100,19 @@ export function ExecutionPage() {
     } catch {
       setCopied(false);
     }
+  };
+  const confirmRoute = () => {
+    if (routeConfirmed || confirmationStatus === "running" || !mevCommitted) return;
+    setConfirmationStatus("running");
+    window.setTimeout(() => {
+      setRouteConfirmed(true);
+      setConfirmationStatus("success");
+    }, 900);
+  };
+
+  const openExplorer = () => {
+    setExplorerStatus("running");
+    window.setTimeout(() => setExplorerStatus("success"), 450);
   };
 
   return (
@@ -113,10 +129,16 @@ export function ExecutionPage() {
         </div>
         <div className="web-page-execution__header-meta">
           <Badge
-            variant={routeConfirmed ? "success" : "sand"}
-            leadingIcon={<CircleAlert size={13} />}
+            variant={confirmationStatus === "running" ? "warning" : routeConfirmed ? "success" : "sand"}
+            leadingIcon={
+              confirmationStatus === "running" ? <RefreshCw size={13} /> : <CircleAlert size={13} />
+            }
           >
-            {routeConfirmed ? "Route confirmed" : "Ready to execute"}
+            {confirmationStatus === "running"
+              ? "Confirming route"
+              : routeConfirmed
+                ? "Route confirmed"
+                : "Ready to execute"}
           </Badge>
           <span className="web-page-execution__intent-id">Intent MT-2048</span>
         </div>
@@ -364,11 +386,17 @@ export function ExecutionPage() {
                   variant="crimson"
                   size="lg"
                   fullWidth
+                  loading={confirmationStatus === "running"}
+                  loadingLabel="Confirming route"
                   leadingIcon={
-                    routeConfirmed ? <CheckCircle2 size={17} /> : <LockKeyhole size={17} />
+                    confirmationStatus === "running"
+                      ? undefined
+                      : routeConfirmed
+                        ? <CheckCircle2 size={17} />
+                        : <LockKeyhole size={17} />
                   }
-                  onClick={() => setRouteConfirmed(true)}
-                  disabled={routeConfirmed}
+                  onClick={confirmRoute}
+                  disabled={routeConfirmed || confirmationStatus === "running" || !mevCommitted}
                 >
                   {routeConfirmed ? "Route confirmed" : "Confirm route"}
                 </Button>
@@ -377,7 +405,10 @@ export function ExecutionPage() {
                     variant="quiet"
                     size="sm"
                     fullWidth
-                    onClick={() => setRouteConfirmed(false)}
+                    onClick={() => {
+                      setRouteConfirmed(false);
+                      setConfirmationStatus("idle");
+                    }}
                   >
                     Edit route
                   </Button>
@@ -390,13 +421,29 @@ export function ExecutionPage() {
 
             <InlineAlert
               variant={routeConfirmed ? "success" : "info"}
-              icon={routeConfirmed ? <CheckCircle2 size={17} /> : <ShieldCheck size={17} />}
-              title={routeConfirmed ? "Signature request ready" : "Simulation passed"}
+              icon={
+                confirmationStatus === "running" ? (
+                  <RefreshCw size={17} />
+                ) : routeConfirmed ? (
+                  <CheckCircle2 size={17} />
+                ) : (
+                  <ShieldCheck size={17} />
+                )
+              }
+              title={
+                confirmationStatus === "running"
+                  ? "Preparing signature request"
+                  : routeConfirmed
+                    ? "Signature request ready"
+                    : "Simulation passed"
+              }
               className="web-page-execution__alert"
             >
-              {routeConfirmed
-                ? "Open your wallet to authorize the prepared transaction."
-                : "No revert risk found across the selected route and destination call."}
+              {confirmationStatus === "running"
+                ? "Validating the protected route and preparing the wallet handoff."
+                : routeConfirmed
+                  ? "Open your wallet to authorize the prepared transaction."
+                  : "No revert risk found across the selected route and destination call."}
             </InlineAlert>
           </div>
         </section>
@@ -526,11 +573,14 @@ export function ExecutionPage() {
               <Button
                 variant="quiet"
                 size="sm"
-                trailingIcon={<ExternalLink size={14} />}
+                loading={explorerStatus === "running"}
+                loadingLabel="Opening"
+                trailingIcon={explorerStatus === "running" ? undefined : <ExternalLink size={14} />}
                 className="web-page-execution__explorer-link"
-                onClick={() => undefined}
+                onClick={openExplorer}
+                disabled={explorerStatus === "running"}
               >
-                View on explorer
+                {explorerStatus === "success" ? "Explorer ready" : "View on explorer"}
               </Button>
             </CardContent>
           </Card>

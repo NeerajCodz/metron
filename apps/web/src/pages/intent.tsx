@@ -99,6 +99,9 @@ export function IntentPage() {
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [parseStatus, setParseStatus] = useState<"idle" | "running" | "success" | "error">("success");
+  const [confirmStatus, setConfirmStatus] = useState<"idle" | "running" | "success" | "error">("idle");
+  const [actionMessage, setActionMessage] = useState("");
   const [advanced, setAdvanced] = useState({
     slippage: "0.50%",
     cadence: "Monthly",
@@ -123,22 +126,39 @@ export function IntentPage() {
     if (!intentText.trim() || isProcessing) return;
 
     setIsProcessing(true);
+    setParseStatus("running");
     setIsParsed(false);
     setIsConfirmed(false);
+    setConfirmStatus("idle");
     setShowConfirmation(false);
+    setActionMessage("Mapping outcomes into explicit constraints…");
 
     window.setTimeout(() => {
+      const validBrief = intentText.trim().length >= 24;
       setIsProcessing(false);
-      setIsParsed(true);
+      setIsParsed(validBrief);
+      setParseStatus(validBrief ? "success" : "error");
+      setActionMessage(
+        validBrief
+          ? "Intent translated successfully. Review each boundary before confirming."
+          : "Add a little more detail about capital, risk, or timing before reviewing.",
+      );
     }, 850);
   };
 
   const confirmIntent = () => {
-    if (!privacyAccepted || !isParsed || isProcessing) return;
-    setIsConfirmed(true);
-    setShowConfirmation(true);
+    if (!privacyAccepted || !isParsed || isProcessing || confirmStatus === "running") return;
+    setConfirmStatus("running");
+    setIsConfirmed(false);
+    setShowConfirmation(false);
+    setActionMessage("Recording your private mandate in this workspace…");
+    window.setTimeout(() => {
+      setConfirmStatus("success");
+      setIsConfirmed(true);
+      setShowConfirmation(true);
+      setActionMessage("Intent confirmed. Your mandate is ready for strategy design.");
+    }, 700);
   };
-
   return (
     <main className="web-page-intent" style={pageStyle}>
       <div className="web-page-intent__shell" style={shellStyle}>
@@ -235,6 +255,9 @@ export function IntentPage() {
                     setIntentText(event.target.value);
                     setIsConfirmed(false);
                     setShowConfirmation(false);
+                    setParseStatus("idle");
+                    setConfirmStatus("idle");
+                    setActionMessage("Draft changed. Review the updated brief when ready.");
                   }}
                   rows={9}
                   placeholder="For example: Put $20,000 to work for a year, keep 30% liquid, and avoid more than a 10% drawdown."
@@ -327,8 +350,10 @@ export function IntentPage() {
               title="Review what Metron heard"
               description="Edit any value before you make this intent available to strategy design."
               action={
-                <Badge variant={isParsed ? "success" : "warning"}>
-                  {isProcessing ? "Processing" : isParsed ? "Ready to review" : "Needs review"}
+                <Badge
+                  variant={isProcessing ? "warning" : parseStatus === "error" ? "danger" : isParsed ? "success" : "outline"}
+                >
+                  {isProcessing ? "Processing" : parseStatus === "error" ? "Needs detail" : isParsed ? "Ready to review" : "Draft changed"}
                 </Badge>
               }
             >
@@ -397,7 +422,16 @@ export function IntentPage() {
                     onChange={(value) => updateConstraint("networks", value)}
                   />
                 </div>
-              ) : null}
+              ) : (
+                <InlineAlert
+                  variant="warning"
+                  icon={<AlertTriangle size={16} aria-hidden="true" />}
+                  title="More detail needed"
+                >
+                  Metron could not confidently extract boundaries from this brief. Add capital, risk,
+                  or timing details, then review again.
+                </InlineAlert>
+              )}
 
               <div
                 className="web-page-intent__advanced"
@@ -579,7 +613,9 @@ export function IntentPage() {
                 variant={isConfirmed ? "secondary" : "crimson"}
                 size="lg"
                 fullWidth
-                disabled={!privacyAccepted || !isParsed || isProcessing}
+                loading={confirmStatus === "running"}
+                loadingLabel="Recording commitment"
+                disabled={!privacyAccepted || !isParsed || isProcessing || confirmStatus === "running"}
                 onClick={confirmIntent}
                 leadingIcon={
                   isConfirmed ? (
@@ -589,12 +625,40 @@ export function IntentPage() {
                   )
                 }
                 trailingIcon={
-                  !isConfirmed ? <ArrowRight size={17} aria-hidden="true" /> : undefined
+                  !isConfirmed && confirmStatus !== "running" ? (
+                    <ArrowRight size={17} aria-hidden="true" />
+                  ) : undefined
                 }
                 style={{ marginTop: showConfirmation || !privacyAccepted ? "0.75rem" : 0 }}
               >
                 {isConfirmed ? "Intent confirmed" : "Confirm intent"}
               </Button>
+              {confirmStatus === "running" ? (
+                <div
+                  role="status"
+                  aria-live="polite"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                    marginTop: "0.75rem",
+                    color: "#c8aa8e",
+                    fontSize: "0.78rem",
+                  }}
+                >
+                  <RefreshCw size={14} className="web-page-intent__spin" aria-hidden="true" />
+                  Recording private commitment…
+                </div>
+              ) : null}
+              {actionMessage ? (
+                <p
+                  role="status"
+                  aria-live="polite"
+                  style={{ ...mutedText, fontSize: "0.74rem", margin: "0.7rem 0 0" }}
+                >
+                  {actionMessage}
+                </p>
+              ) : null}
             </div>
           </div>
         </section>
