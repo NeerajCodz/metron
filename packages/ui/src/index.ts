@@ -26,5 +26,13 @@ export {
   type TextareaProps,
 } from "./components/field.js";
 export { Switch, type SwitchProps } from "./components/switch.js";
+export {
+  InlineAlert,
+  Toast,
+  type FeedbackVariant,
+  type InlineAlertProps,
+  type ToastAction,
+  type ToastProps,
+} from "./components/feedback.js";
 export { LiquidGlass, type LiquidGlassProps } from "./components/liquid-glass.js";
 export { cn } from "./lib/cn.js";
