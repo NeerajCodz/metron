@@ -12,8 +12,9 @@ The following checks passed on the current tree:
 - `pnpm turbo run test --filter='!@metron/ui'`
 - `pnpm turbo run build --filter='!@metron/ui'`
 - `pnpm check:abi`, covering 153 generated contract ABIs
-- Foundry regression, covering 20 suites and 82 Solidity tests
+- Foundry regression, covering 21 suites and 83 Solidity tests, including the direct core custody lifecycle driver
 - Web3 TypeScript tests, covering 5 files and 11 tests
+- SDK tests, covering 4 tests, including proof-runner and public-input encoding behavior
 - AI tests, covering 12 tests
 - `node --check apps/web3/scripts/zk.mjs`
 
