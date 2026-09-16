@@ -1178,8 +1178,9 @@ export function RiskCenterPage() {
   }, [simulationState]);
 
   const selectedScenario = stressScenarios.find((scenario) => scenario.id === selectedScenarioId) ?? stressScenarios[0]!;
-  const horizonValues = horizonData[horizon];
-  const horizonPeak = Math.max(...horizonValues);
+  const horizonValues = horizonData[horizon] ?? [];
+  const horizonStart = horizonValues[0] ?? 0;
+  const horizonPeak = horizonValues.length > 0 ? Math.max(...horizonValues) : 0;
   const currentProtectionCount = Object.values(protections).filter(Boolean).length;
 
   const simulation = useMemo(() => {
@@ -1343,7 +1344,7 @@ export function RiskCenterPage() {
               <div
                 className="web-page-risk-chart-plot"
                 role="img"
-                aria-label={`${horizon} liquidation probability rises from ${horizonValues[0].toFixed(1)} percent to ${horizonPeak.toFixed(1)} percent, with a 15 percent watchline`}
+                aria-label={`${horizon} liquidation probability rises from ${horizonStart.toFixed(1)} percent to ${horizonPeak.toFixed(1)} percent, with a 15 percent watchline`}
               >
                 <div className="web-page-risk-chart-grid" aria-hidden="true">
                   <span className="web-page-risk-chart-grid-line" />

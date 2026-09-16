@@ -216,9 +216,9 @@ export function AutomationPage() {
       ...current,
       {
         id: nextId,
-        trigger: triggerOptions[1],
-        condition: conditionOptions[1],
-        action: actionOptions[2],
+        trigger: triggerOptions[1] ?? "Asset price moves by",
+        condition: conditionOptions[1] ?? "for two consecutive checks",
+        action: actionOptions[2] ?? "Pause strategy and notify me",
       },
     ]);
     setSaved(false);

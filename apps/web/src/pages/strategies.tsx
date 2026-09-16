@@ -42,7 +42,7 @@ type Strategy = {
   accent: string;
 };
 
-const strategies: Strategy[] = [
+const strategies: [Strategy, ...Strategy[]] = [
   {
     id: "delta-anchor",
     rank: 1,

@@ -29,6 +29,12 @@ import {
 type EventCategory = "Strategy" | "Risk" | "Execution" | "Automation" | "System";
 type EventStatus = "Completed" | "Action required" | "Monitoring" | "Failed";
 
+type ActivityDetailRow = {
+  label: string;
+  value: string;
+  detail?: string;
+};
+
 type AuditEvent = {
   id: string;
   category: EventCategory;
@@ -41,8 +47,8 @@ type AuditEvent = {
   chain: string;
   position: string;
   tx?: string;
-  observed: Array<{ label: string; value: string; detail?: string }>;
-  calculation: Array<{ label: string; value: string }>;
+  observed: ActivityDetailRow[];
+  calculation: ActivityDetailRow[];
   prediction?: { label: string; value: string; confidence: string; horizon: string };
   action: string;
   result: string;
@@ -310,10 +316,9 @@ const events: AuditEvent[] = [
     ],
   },
 ];
-const defaultEvent = events[0];
-if (!defaultEvent) {
+const defaultEvent: AuditEvent = events[0] ?? (() => {
   throw new Error("Activity event seed is empty.");
-}
+})();
 
 
 const categoryOptions = ["All categories", "Strategy", "Risk", "Execution", "Automation", "System"];
@@ -384,7 +389,7 @@ export function ActivityPage() {
     });
   }, [category, query, status]);
 
-  const selectedEvent = events.find((event) => event.id === selectedId) ?? filteredEvents[0] ?? defaultEvent;
+  const selectedEvent: AuditEvent = events.find((event) => event.id === selectedId) ?? filteredEvents[0] ?? defaultEvent;
   const prediction = selectedEvent.prediction;
   const transaction = selectedEvent.transaction;
   const hasFilters = query.length > 0 || category !== "All categories" || status !== "All statuses";
@@ -652,7 +657,7 @@ export function ActivityPage() {
                   </DetailSection>
                   <DetailSection eyebrow="Calculation" icon={<Sparkles size={14} />}>
                     <div className="web-page-activity-data">
-                      {selectedEvent.calculation.map((item) => <div className="web-page-activity-data-item" key={item.label}><div className="web-page-activity-data-label">{item.label}</div><div className="web-page-activity-data-value">{item.value}</div></div>)}
+                      {selectedEvent.calculation.map((item) => <div className="web-page-activity-data-item" key={item.label}><div className="web-page-activity-data-label">{item.label}</div><div className="web-page-activity-data-value">{item.value}</div>{item.detail && <div className="web-page-activity-data-detail">{item.detail}</div>}</div>)}
                     </div>
                   </DetailSection>
                   {prediction && <DetailSection eyebrow="Prediction" icon={<Activity size={14} />}>
