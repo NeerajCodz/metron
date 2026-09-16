@@ -32,7 +32,7 @@ These checks cannot be completed from this workstation without external credenti
 
 - Testnet and mainnet fork runs against live Aave, Uniswap, Chainlink, and LayerZero deployments.
 - Cross-chain delivery and replay checks through a live LayerZero endpoint.
-- On-chain submission of a generated proof to deployed verifier contracts.
+- On-chain submission of a generated proof to deployed verifier contracts. The current generated Solidity output still needs repository-compatible via-IR integration; wrapper contracts and native proof verification are covered locally.
 - Full production deployment with real admin keys, RPC URLs, solver services, and service tokens.
 - Container build and startup. Docker Desktop was installed but its Linux engine was not running when `docker compose -f infra/docker-compose.yml build` was attempted.
 
