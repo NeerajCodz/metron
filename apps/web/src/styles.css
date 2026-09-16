@@ -559,6 +559,32 @@ button {
   background: var(--metron-crimson-bright);
 }
 
+.topbar-icon-button.is-active {
+  border-color: var(--metron-border-strong);
+  background: var(--metron-surface-hover);
+  color: var(--metron-pearl);
+}
+
+.notification-count {
+  position: absolute;
+  top: -0.35rem;
+  right: -0.4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.05rem;
+  height: 1.05rem;
+  padding: 0 0.22rem;
+  border: 2px solid var(--metron-black);
+  border-radius: 999px;
+  background: var(--metron-crimson-bright);
+  color: var(--metron-pearl);
+  font-family: var(--metron-font-mono);
+  font-size: 0.53rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
 .wallet-button {
   gap: 0.5rem;
   padding: 0.35rem 0.5rem 0.35rem 0.35rem;
@@ -587,6 +613,70 @@ button {
   background: rgb(245 158 11 / 8%);
   color: var(--metron-pearl-muted);
   font-size: 0.74rem;
+}
+
+/* Notification center */
+.notification-center__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 4.7rem max(1rem, env(safe-area-inset-right)) 1rem;
+  background: rgb(0 0 0 / 26%);
+}
+
+.notification-center__panel {
+  width: min(27rem, calc(100vw - 2rem));
+  max-height: min(39rem, calc(100dvh - 5.7rem));
+  overflow: auto;
+  border: 1px solid var(--metron-border-strong);
+  border-radius: var(--metron-radius-card, 0.8rem);
+  background: var(--metron-surface-raised, #151516);
+  box-shadow: var(--metron-shadow-control, 0 1.5rem 4rem rgb(0 0 0 / 52%));
+}
+
+.notification-center__list {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.notification-center__item {
+  display: grid;
+  grid-template-columns: 1.9rem minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 0.55rem;
+  padding: 0.72rem 0.5rem;
+  border: 1px solid transparent;
+  border-radius: 0.58rem;
+  background: transparent;
+  transition:
+    border-color var(--metron-duration-fast) var(--metron-ease),
+    background-color var(--metron-duration-fast) var(--metron-ease);
+}
+
+.notification-center__item:hover,
+.notification-center__item:focus-within {
+  border-color: var(--metron-border);
+  background: var(--metron-surface-hover);
+}
+
+@media (max-width: 520px) {
+  .notification-center__backdrop {
+    align-items: flex-end;
+    padding: 0;
+    background: rgb(0 0 0 / 48%);
+  }
+
+  .notification-center__panel {
+    width: 100%;
+    max-height: min(40rem, 92dvh);
+    border-radius: 0.9rem 0.9rem 0 0;
+  }
 }
 
 .app-risk-banner strong {

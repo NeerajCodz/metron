@@ -29,6 +29,7 @@ import {
   Routes,
   useLocation,
 } from "react-router-dom";
+import { SettingsPage } from "./pages/settings";
 import { ActivityPage } from "./pages/activity";
 import { AutomationPage } from "./pages/automation";
 import { DashboardPage } from "./pages/dashboard";
@@ -37,10 +38,11 @@ import { ExecutionPage } from "./pages/execution";
 import { IntentPage } from "./pages/intent";
 import { PortfolioPage } from "./pages/portfolio";
 import { RiskCenterPage } from "./pages/risk";
-import { SettingsPage } from "./pages/settings";
+import { NotificationsPage } from "./pages/notifications";
 import { StrategiesPage } from "./pages/strategies";
 import { StrategyDetailPage } from "./pages/strategy-detail";
 import { MetronStateProvider, useMetronState } from "./state/metron-state";
+import { NotificationCenter } from "./components/notification-center";
 import { BackgroundLayout, Badge } from "@metron/ui";
 
 const DevScreenGallery = import.meta.env.DEV
@@ -61,6 +63,7 @@ const primaryNavigation: NavItem[] = [
   { to: "/risk", label: "Risk center", icon: ShieldAlert },
   { to: "/automation", label: "Automation", icon: Workflow },
   { to: "/activity", label: "Activity", icon: Activity },
+  { to: "/notifications", label: "Notifications", icon: Bell },
   { to: "/settings", label: "Settings", icon: Settings },
 ];
 
@@ -76,6 +79,7 @@ const routeLabels: Array<{ match: (pathname: string) => boolean; label: string }
   { match: (pathname) => pathname === "/automation", label: "Automation" },
   { match: (pathname) => pathname === "/automation/policies", label: "Automation / Policies" },
   { match: (pathname) => pathname === "/activity", label: "Activity" },
+  { match: (pathname) => pathname === "/notifications", label: "Notifications" },
   { match: (pathname) => pathname === "/settings", label: "Settings" },
   { match: (pathname) => pathname.startsWith("/execution/"), label: "Execution" },
   { match: (pathname) => pathname === "/emergency", label: "Emergency controls" },
@@ -109,6 +113,7 @@ function AppRoutes() {
       <Route path="/automation" element={<AutomationPage />} />
       <Route path="/automation/policies" element={<AutomationPage />} />
       <Route path="/activity" element={<ActivityPage />} />
+      <Route path="/notifications" element={<NotificationsPage />} />
       <Route path="/settings" element={<SettingsPage />} />
       <Route path="/execution/:executionId" element={<ExecutionPage />} />
       <Route path="/emergency" element={<EmergencyPage />} />
@@ -164,13 +169,16 @@ function ShellFeedback() {
 function RouterShell() {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { wallet, connectWallet } = useMetronState();
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const { wallet, connectWallet, notifications } = useMetronState();
+  const unreadNotificationCount = notifications.filter((notification) => !notification.read).length;
   const currentLabel =
     routeLabels.find(({ match }) => match(location.pathname))?.label ?? "Control room";
 
   useEffect(() => {
     setSidebarOpen(false);
-  }, [location.pathname]);
+    setNotificationsOpen(false);
+  }, [location.pathname, location.search, location.hash]);
 
   useEffect(() => {
     if (!sidebarOpen) return;
@@ -180,6 +188,14 @@ function RouterShell() {
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [sidebarOpen]);
+  useEffect(() => {
+    if (!notificationsOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setNotificationsOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [notificationsOpen]);
 
   return (
     <BackgroundLayout
@@ -291,9 +307,24 @@ function RouterShell() {
               >
                 Mainnet connected
               </Badge>
-              <button className="topbar-icon-button" aria-label="View notifications" type="button">
+              <button
+                className={`topbar-icon-button${notificationsOpen ? " is-active" : ""}`}
+                aria-label={
+                  unreadNotificationCount > 0
+                    ? `View notifications (${unreadNotificationCount} unread)`
+                    : "View notifications"
+                }
+                aria-expanded={notificationsOpen}
+                aria-haspopup="dialog"
+                type="button"
+                onClick={() => setNotificationsOpen((open) => !open)}
+              >
                 <Bell size={17} aria-hidden="true" />
-                <span className="notification-dot" aria-hidden="true" />
+                {unreadNotificationCount > 0 ? (
+                  <span className="notification-count" aria-label={`${unreadNotificationCount} unread`}>
+                    {unreadNotificationCount > 99 ? "99+" : unreadNotificationCount}
+                  </span>
+                ) : null}
               </button>
               <button
                 className="wallet-button"
@@ -327,6 +358,7 @@ function RouterShell() {
           <ShellFeedback />
         </div>
 
+        <NotificationCenter open={notificationsOpen} onOpenChange={setNotificationsOpen} />
         {DevScreenGallery ? (
           <Suspense fallback={null}>
             <DevScreenGallery />

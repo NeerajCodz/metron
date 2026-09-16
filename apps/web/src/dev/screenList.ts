@@ -34,6 +34,13 @@ export const GALLERY_SCREENS = [
     group: "Automation",
   },
   { id: "activity", path: "/activity", target: "/activity", label: "Activity", group: "Control room" },
+  {
+    id: "notifications",
+    path: "/notifications",
+    target: "/notifications",
+    label: "Notifications",
+    group: "Control room",
+  },
   { id: "settings", path: "/settings", target: "/settings", label: "Settings", group: "Control room" },
   {
     id: "execution-detail",
