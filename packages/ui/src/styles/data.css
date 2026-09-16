@@ -9,13 +9,8 @@
   color: var(--metron-pearl);
   border: 1px solid var(--metron-border);
   border-radius: var(--metron-radius-card);
-  background:
-    linear-gradient(140deg, rgb(242 241 237 / 8%), transparent 42%),
-    linear-gradient(320deg, rgb(113 0 20 / 13%), transparent 48%),
-    var(--metron-surface);
-  box-shadow:
-    inset 0 1px 0 rgb(242 241 237 / 12%),
-    var(--metron-shadow-control);
+  background: transparent;
+  box-shadow: var(--metron-shadow-control);
   backdrop-filter: blur(20px) saturate(140%);
   -webkit-backdrop-filter: blur(20px) saturate(140%);
 }
@@ -25,12 +20,7 @@
   inset: auto 1.25rem 0;
   height: 1px;
   content: "";
-  background: linear-gradient(90deg, transparent, var(--metron-stat-accent), transparent);
-  opacity: 0.7;
-}
-
-.metron-stat[data-tone="neutral"] {
-  --metron-stat-accent: var(--metron-sand);
+  background: var(--metron-stat-accent);
 }
 
 .metron-stat[data-tone="accent"] {
@@ -262,9 +252,7 @@
 }
 
 .metron-timeline__item[data-status="current"] .metron-timeline__marker {
-  box-shadow:
-    0 0 0 4px rgb(179 143 111 / 14%),
-    0 0 20px rgb(179 143 111 / 24%);
+  box-shadow: none;
 }
 
 .metron-timeline__marker > svg {

@@ -46,12 +46,8 @@
   min-width: 0;
   border: 1px solid var(--metron-border);
   border-radius: var(--metron-radius-control);
-  background:
-    linear-gradient(135deg, rgb(242 241 237 / 7%), transparent 44%),
-    rgb(11 11 11 / 58%);
-  box-shadow:
-    inset 0 1px 0 rgb(242 241 237 / 8%),
-    0 10px 24px rgb(0 0 0 / 16%);
+  background: transparent;
+  box-shadow: none;
   color: var(--metron-pearl);
   font: inherit;
   line-height: 1.4;
@@ -84,31 +80,28 @@
 .metron-textarea:hover:not(:disabled):not(:read-only),
 .metron-select:hover:not(:disabled) {
   border-color: var(--metron-border-strong);
-  background-color: rgb(34 31 31 / 76%);
+  background-color: transparent;
 }
 
 .metron-input:focus-visible,
 .metron-textarea:focus-visible,
 .metron-select:focus-visible {
   border-color: var(--metron-focus);
-  box-shadow:
-    0 0 0 3px rgb(179 143 111 / 20%),
-    inset 0 1px 0 rgb(242 241 237 / 10%);
+  box-shadow: 0 0 0 2px var(--metron-focus);
 }
 
 .metron-input[aria-invalid="true"],
 .metron-textarea[aria-invalid="true"],
 .metron-select[aria-invalid="true"] {
   border-color: var(--metron-danger);
-  box-shadow: 0 0 0 1px rgb(214 90 111 / 20%);
+  box-shadow: 0 0 0 1px var(--metron-danger);
 }
 
 .metron-input[aria-invalid="true"]:focus-visible,
 .metron-textarea[aria-invalid="true"]:focus-visible,
 .metron-select[aria-invalid="true"]:focus-visible {
-  box-shadow:
-    0 0 0 3px rgb(214 90 111 / 22%),
-    inset 0 1px 0 rgb(242 241 237 / 10%);
+  border-color: var(--metron-danger);
+  box-shadow: 0 0 0 2px var(--metron-danger);
 }
 
 .metron-input:disabled,
@@ -176,12 +169,8 @@
   overflow: hidden;
   border: 1px solid var(--metron-border-strong);
   border-radius: var(--metron-radius-pill);
-  background:
-    linear-gradient(135deg, rgb(242 241 237 / 9%), transparent 55%),
-    rgb(22 22 22 / 88%);
-  box-shadow:
-    inset 0 1px 2px rgb(0 0 0 / 42%),
-    0 7px 18px rgb(0 0 0 / 18%);
+  background: transparent;
+  box-shadow: none;
   transition:
     border-color var(--metron-duration-fast) var(--metron-ease),
     background-color var(--metron-duration-fast) var(--metron-ease),
@@ -197,22 +186,20 @@
   border: 1px solid rgb(242 241 237 / 28%);
   border-radius: 50%;
   background: var(--metron-pearl);
-  box-shadow: 0 4px 10px rgb(0 0 0 / 42%);
+  box-shadow: none;
   transition:
     transform var(--metron-duration-medium) var(--metron-ease),
     background-color var(--metron-duration-fast) var(--metron-ease);
 }
 
 .metron-switch__input:checked + .metron-switch__track {
-  border-color: rgb(179 143 111 / 50%);
-  background:
-    linear-gradient(135deg, rgb(242 241 237 / 13%), transparent 48%),
-    var(--metron-crimson);
+  border-color: var(--metron-crimson);
+  background: var(--metron-crimson);
 }
 
 .metron-switch__input:checked + .metron-switch__track .metron-switch__thumb {
   transform: translateX(1.25rem);
-  background: var(--metron-sand);
+  background: var(--metron-pearl);
 }
 
 .metron-switch__input:focus-visible + .metron-switch__track {

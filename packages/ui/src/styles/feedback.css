@@ -1,26 +1,21 @@
 .metron-inline-alert,
 .metron-toast {
   --metron-feedback-accent: var(--metron-sand);
-  --metron-feedback-wash: rgb(179 143 111 / 10%);
+  --metron-feedback-action-text: var(--metron-obsidian);
   color: var(--metron-pearl);
 }
 
 .metron-inline-alert--success,
-.metron-toast--success {
-  --metron-feedback-accent: var(--metron-success);
-  --metron-feedback-wash: rgb(159 189 156 / 10%);
-}
-
+.metron-toast--success,
 .metron-inline-alert--warning,
 .metron-toast--warning {
-  --metron-feedback-accent: var(--metron-warning);
-  --metron-feedback-wash: rgb(216 178 126 / 11%);
+  --metron-feedback-accent: var(--metron-sand);
 }
 
 .metron-inline-alert--error,
 .metron-toast--error {
-  --metron-feedback-accent: var(--metron-danger);
-  --metron-feedback-wash: rgb(214 90 111 / 11%);
+  --metron-feedback-accent: var(--metron-crimson);
+  --metron-feedback-action-text: var(--metron-pearl);
 }
 
 .metron-inline-alert {
@@ -28,14 +23,11 @@
   align-items: flex-start;
   gap: 0.75rem;
   padding: 0.875rem 1rem;
-  border: 1px solid color-mix(in srgb, var(--metron-feedback-accent) 34%, transparent);
-  border-inline-start-width: 3px;
+  border: 1px solid var(--metron-border);
+  border-inline-start: 3px solid var(--metron-feedback-accent);
   border-radius: var(--metron-radius-control);
-  background:
-    linear-gradient(135deg, rgb(242 241 237 / 6%), transparent 45%),
-    var(--metron-feedback-wash),
-    rgb(22 22 22 / 74%);
-  box-shadow: inset 0 1px 0 rgb(242 241 237 / 6%);
+  background: transparent;
+  box-shadow: none;
 }
 
 .metron-inline-alert__icon,
@@ -91,15 +83,10 @@
   width: min(100%, 26rem);
   padding: 1rem;
   overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--metron-feedback-accent) 28%, var(--metron-border));
+  border: 1px solid var(--metron-border);
   border-radius: var(--metron-radius-card);
-  background:
-    linear-gradient(135deg, rgb(242 241 237 / 11%), transparent 38%),
-    radial-gradient(circle at 100% 100%, var(--metron-feedback-wash), transparent 58%),
-    rgb(22 22 22 / 78%);
-  box-shadow:
-    inset 0 1px 0 rgb(242 241 237 / 14%),
-    var(--metron-shadow-raised);
+  background: transparent;
+  box-shadow: var(--metron-shadow-raised);
   backdrop-filter: blur(var(--metron-blur)) saturate(145%);
   -webkit-backdrop-filter: blur(var(--metron-blur)) saturate(145%);
 }
@@ -143,17 +130,18 @@
   min-height: 2rem;
   margin-block-start: 0.75rem;
   padding: 0.375rem 0.75rem;
-  border: 1px solid color-mix(in srgb, var(--metron-feedback-accent) 38%, transparent);
+  border: 1px solid var(--metron-feedback-accent);
   border-radius: var(--metron-radius-pill);
-  background: var(--metron-feedback-wash);
+  background: transparent;
   color: var(--metron-feedback-accent);
   font-size: 0.8125rem;
   font-weight: 700;
 }
 
 .metron-toast__action:hover:not(:disabled) {
+  color: var(--metron-feedback-action-text);
   border-color: var(--metron-feedback-accent);
-  background: color-mix(in srgb, var(--metron-feedback-accent) 18%, transparent);
+  background: var(--metron-feedback-accent);
 }
 
 .metron-toast__action:disabled {

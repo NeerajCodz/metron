@@ -48,33 +48,27 @@
 .metron-button--solid {
   color: var(--metron-pearl);
   background: var(--metron-crimson);
-  border-color: rgb(242 241 237 / 12%);
-  box-shadow:
-    inset 0 1px 0 rgb(242 241 237 / 14%),
-    0 10px 24px rgb(113 0 20 / 30%);
+  border-color: var(--metron-crimson);
+  box-shadow: none;
 }
 
 .metron-button--solid:hover:not(:disabled, [aria-disabled="true"]) {
   background: var(--metron-crimson-bright);
-  border-color: rgb(242 241 237 / 22%);
-  box-shadow:
-    inset 0 1px 0 rgb(242 241 237 / 18%),
-    0 13px 30px rgb(113 0 20 / 40%);
+  border-color: var(--metron-crimson-bright);
+  box-shadow: none;
 }
 
 .metron-button--glass {
   color: var(--metron-pearl);
-  background: rgb(242 241 237 / 8%);
+  background: transparent;
   border-color: var(--metron-border-strong);
-  box-shadow:
-    inset 0 1px 0 rgb(242 241 237 / 12%),
-    var(--metron-shadow-control);
+  box-shadow: var(--metron-shadow-control);
   backdrop-filter: blur(16px) saturate(140%);
   -webkit-backdrop-filter: blur(16px) saturate(140%);
 }
 
 .metron-button--glass:hover:not(:disabled, [aria-disabled="true"]) {
-  background: rgb(242 241 237 / 13%);
+  background: transparent;
   border-color: rgb(242 241 237 / 34%);
 }
 
@@ -92,20 +86,16 @@
 }
 
 .metron-button--danger {
-  color: var(--metron-obsidian);
-  background: var(--metron-danger);
-  border-color: rgb(255 255 255 / 12%);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 24%),
-    0 10px 26px rgb(113 0 20 / 34%);
+  color: var(--metron-pearl);
+  background: var(--metron-crimson);
+  border-color: var(--metron-crimson);
+  box-shadow: none;
 }
 
 .metron-button--danger:hover:not(:disabled, [aria-disabled="true"]) {
-  background: #e57588;
-  border-color: rgb(255 255 255 / 24%);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 28%),
-    0 14px 32px rgb(113 0 20 / 44%);
+  background: var(--metron-crimson-bright);
+  border-color: var(--metron-crimson-bright);
+  box-shadow: none;
 }
 
 .metron-button:focus-visible {
@@ -115,7 +105,7 @@
 
 .metron-button:active:not(:disabled, [aria-disabled="true"]) {
   transform: translateY(1px) scale(0.985);
-  box-shadow: inset 0 2px 5px rgb(0 0 0 / 26%);
+  box-shadow: none;
 }
 
 .metron-button:disabled,
@@ -225,31 +215,21 @@
 .metron-badge--accent {
   color: var(--metron-pearl);
   background: var(--metron-crimson);
-  border-color: rgb(242 241 237 / 16%);
+  border-color: var(--metron-crimson);
 }
 
-.metron-badge--sand {
-  color: #f6e7d9;
-  background: rgb(179 143 111 / 22%);
-  border-color: rgb(179 143 111 / 48%);
-}
-
-.metron-badge--success {
-  color: #c9e3c6;
-  background: rgb(72 110 69 / 34%);
-  border-color: rgb(159 189 156 / 40%);
-}
-
+.metron-badge--sand,
+.metron-badge--success,
 .metron-badge--warning {
-  color: #f1d5ae;
-  background: rgb(126 85 32 / 38%);
-  border-color: rgb(216 178 126 / 44%);
+  color: var(--metron-obsidian);
+  background: var(--metron-sand);
+  border-color: var(--metron-sand);
 }
 
 .metron-badge--danger {
-  color: #ffb4c0;
-  background: rgb(113 0 20 / 48%);
-  border-color: rgb(214 90 111 / 48%);
+  color: var(--metron-pearl);
+  background: var(--metron-crimson);
+  border-color: var(--metron-crimson);
 }
 
 @keyframes metron-button-spin {

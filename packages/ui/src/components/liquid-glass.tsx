@@ -51,8 +51,8 @@ const blurValues: Record<BlurIntensity, string> = {
 const glowValues: Record<GlowIntensity, string> = {
   none: "none",
   sm: "0 18px 48px rgb(0 0 0 / 34%)",
-  md: "0 26px 72px rgb(0 0 0 / 46%), 0 0 36px rgb(113 0 20 / 14%)",
-  lg: "0 34px 96px rgb(0 0 0 / 54%), 0 0 52px rgb(113 0 20 / 22%)",
+  md: "0 26px 72px rgb(0 0 0 / 46%)",
+  lg: "0 34px 96px rgb(0 0 0 / 54%)",
 };
 
 export function LiquidGlass({

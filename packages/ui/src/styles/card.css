@@ -5,10 +5,7 @@
 
 .metron-card__glass {
   width: 100%;
-  background:
-    radial-gradient(circle at 12% 0%, rgb(242 241 237 / 9%), transparent 32%),
-    radial-gradient(circle at 90% 110%, rgb(113 0 20 / 17%), transparent 40%),
-    rgb(12 12 12 / 82%);
+  background: transparent;
 }
 
 .metron-card__surface {
@@ -152,15 +149,15 @@
 }
 
 .metron-metric-card__change--positive {
-  color: #c9e3c6;
-  background: rgb(72 110 69 / 28%);
-  border-color: rgb(159 189 156 / 38%);
+  color: var(--metron-obsidian);
+  background: var(--metron-sand);
+  border-color: var(--metron-sand);
 }
 
 .metron-metric-card__change--negative {
-  color: #ffb4c0;
-  background: rgb(113 0 20 / 42%);
-  border-color: rgb(214 90 111 / 42%);
+  color: var(--metron-pearl);
+  background: var(--metron-crimson);
+  border-color: var(--metron-crimson);
 }
 
 @media (max-width: 36rem) {

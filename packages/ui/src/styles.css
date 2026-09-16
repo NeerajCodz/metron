@@ -12,22 +12,20 @@
   color-scheme: dark;
   --metron-crimson: #710014;
   --metron-crimson-bright: #9b1730;
-  --metron-crimson-soft: rgb(113 0 20 / 28%);
   --metron-sand: #b38f6f;
-  --metron-sand-soft: rgb(179 143 111 / 16%);
   --metron-pearl: #f2f1ed;
   --metron-pearl-muted: rgb(242 241 237 / 68%);
   --metron-obsidian: #161616;
   --metron-ink: #0b0b0b;
-  --metron-surface: rgb(29 27 27 / 72%);
-  --metron-surface-strong: rgb(34 31 31 / 88%);
-  --metron-surface-hover: rgb(50 43 43 / 86%);
+  --metron-surface: transparent;
+  --metron-surface-strong: #202020;
+  --metron-surface-hover: rgb(242 241 237 / 8%);
   --metron-border: rgb(242 241 237 / 14%);
   --metron-border-strong: rgb(242 241 237 / 24%);
   --metron-focus: #b38f6f;
-  --metron-danger: #d65a6f;
-  --metron-success: #9fbd9c;
-  --metron-warning: #d8b27e;
+  --metron-danger: #710014;
+  --metron-success: #b38f6f;
+  --metron-warning: #b38f6f;
   --metron-font-sans: "Satoshi", "Avenir Next", "Segoe UI Variable", "Segoe UI", sans-serif;
   --metron-font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
   --metron-radius-control: 0.875rem;
@@ -45,10 +43,7 @@
 
 .metron-theme {
   min-height: 100%;
-  background:
-    radial-gradient(circle at 15% -10%, rgb(113 0 20 / 48%), transparent 33rem),
-    radial-gradient(circle at 86% 12%, rgb(179 143 111 / 12%), transparent 30rem),
-    linear-gradient(145deg, #090909 0%, var(--metron-obsidian) 48%, #0f0d0d 100%);
+  background: var(--metron-obsidian);
 }
 
 .metron-theme,
@@ -99,10 +94,7 @@
   overflow: hidden;
   border: 0;
   border-radius: var(--metron-glass-radius);
-  background:
-    linear-gradient(135deg, rgb(242 241 237 / 10%), transparent 38%),
-    linear-gradient(315deg, rgb(113 0 20 / 10%), transparent 45%),
-    var(--metron-surface);
+  background: transparent;
   box-shadow: var(--metron-glass-glow);
   color: var(--metron-pearl);
   transform-style: preserve-3d;
@@ -144,18 +136,16 @@
 
 .metron-liquid-glass__bend {
   z-index: -3;
-  background: rgb(22 22 22 / 36%);
+  background: transparent;
   backdrop-filter: blur(var(--metron-glass-blur)) saturate(150%) contrast(1.05);
   -webkit-backdrop-filter: blur(var(--metron-glass-blur)) saturate(150%) contrast(1.05);
 }
 
 .metron-liquid-glass__face {
   z-index: -2;
-  background:
-    radial-gradient(circle at 12% 0%, rgb(242 241 237 / 18%), transparent 28%),
-    radial-gradient(circle at 88% 100%, rgb(179 143 111 / 10%), transparent 34%);
+  background: linear-gradient(135deg, rgb(242 241 237 / 13%), transparent 36%);
   box-shadow:
-    inset 0 1px 0 rgb(242 241 237 / 22%),
+    inset 0 1px 0 rgb(242 241 237 / 20%),
     inset 0 -1px 0 rgb(0 0 0 / 32%);
 }
 
@@ -165,7 +155,7 @@
   border: 1px solid var(--metron-border);
   box-shadow:
     inset 1px 1px 1px rgb(242 241 237 / 7%),
-    inset -1px -1px 1px rgb(113 0 20 / 12%);
+    inset -1px -1px 1px rgb(0 0 0 / 24%);
 }
 
 .metron-liquid-glass__content {

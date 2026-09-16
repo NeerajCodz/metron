@@ -103,7 +103,7 @@ function App() {
           <div>
             <p className="showcase__eyebrow">Metron Interface System</p>
             <h1 className="showcase__title" id="showcase-title">
-              Precision UI for capital in motion.
+              Capital in motion.
             </h1>
           </div>
           <div>
