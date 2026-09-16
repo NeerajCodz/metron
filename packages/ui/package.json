@@ -24,7 +24,7 @@
     "dev": "vite --host 0.0.0.0",
     "lint": "eslint src preview vite.config.ts --max-warnings=0",
     "preview": "vite preview",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.preview.json --noEmit"
   },
   "dependencies": {
     "motion": "^12.25.0"
